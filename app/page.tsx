@@ -10,9 +10,8 @@ import { BookIntroModal } from '@/components/common/BookIntroModal';
 import { SearchModal } from '@/components/common/SearchModal';
 import { InfoModal } from '@/components/common/InfoModal';
 
-// Page section
-// import { HomePage } from '@/pages/Home';
 import { HomePage } from './pages/Home';
+
 
 // Types & Data
 import { ServiceItem, FrameworkStage } from '@/types';

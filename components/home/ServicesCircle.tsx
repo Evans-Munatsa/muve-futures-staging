@@ -8,7 +8,7 @@ interface ServicesCircleProps {
 
 export const ServicesCircle: React.FC<ServicesCircleProps> = ({ onSelectService }) => {
   return (
-    <section id="services" className="relative bg-[#8cc63f] py-20 lg:py-32 overflow-hidden">
+    <section id="services" className="relative bg-[#A5CD39] py-20 lg:py-32 overflow-hidden">
       
       {/* Decorative Large White Semi-Circle on Left */}
       <div 

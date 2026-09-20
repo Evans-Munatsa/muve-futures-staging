@@ -4,7 +4,7 @@ import { QuoteAndPillars } from '@/components/home/QuoteAndPillars';
 import { JourneyAndWhoWeSupport } from '@/components/home/JourneyAndWhoWeSupport';
 import { ServicesCircle } from '@/components/home/ServicesCircle';
 import { FourStageApproach } from '@/components/home/FourStageApproach';
-import { PartnershipsAndReferral } from '@/components/home/PartnershipsAndReferral';
+// import { PartnershipsAndReferral } from '@/components/home/PartnershipsAndReferral';
 import { ResourcesAndCallToAction } from '@/components/home/ResourcesAndCallToAction';
 import { ServiceItem, FrameworkStage } from '@/types';
 
@@ -54,10 +54,10 @@ export const HomePage: React.FC<HomePageProps> = ({
         onDiscoverMore={onDiscoverStage}
       />
 
-      <PartnershipsAndReferral
+      {/* <PartnershipsAndReferral
         onBookIntro={onBookIntro}
         onOpenReferral={() => onOpenReferral()}
-      />
+      /> */}
 
       <ResourcesAndCallToAction
         onVisitResources={onVisitResources}

@@ -11,7 +11,7 @@ export const JourneyAndWhoWeSupport: React.FC<JourneyAndWhoWeSupportProps> = ({
   onExploreServices,
 }) => {
   return (
-    <section id="who-we-support" className="bg-[#8cc63f] pt-16 pb-16 lg:pt-24 lg:pb-24">
+    <section id="who-we-support" className="bg-[#A5CD39] pt-16 pb-16 lg:pt-24 lg:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 lg:space-y-20">
         
         {/* Section: Every Journey Starts Somewhere Different */}
