@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Define the font variable for Tailwind v4 utility engine */
+@theme {
+  --font-brand: 'Fredoka', cursive, sans-serif;
+  --font-sans: var(--font-lexend-deca), sans-serif;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -27,14 +33,12 @@
   html {
     scroll-behavior: smooth;
   }
+  
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    /* Set Lexend Deca as the sole layout font configuration */
+    font-family: var(--font-lexend-deca), sans-serif;
     color: #092233;
     background-color: #A5CD39;
     overflow-x: hidden;
   }
-}
-
-.font-brand {
-  font-family: 'Fredoka', cursive, sans-serif;
 }
