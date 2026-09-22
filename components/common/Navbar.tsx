@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search, Menu, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { DesktopNavLink } from '@/components/common/navbar/DesktopNavLink';
 import { MobileNavMenu } from '@/components/common/navbar/MobileNavMenu';
 import { PageId } from '@/app/types';
 import { NAV_LINKS_CONFIG, REFERRAL_HREF } from '@/constants';
+import { cn } from '@/lib/utils';
 
 const DROPDOWN_CLOSE_DELAY_MS = 180;
 
@@ -26,6 +28,28 @@ export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
   const [activeDropdown, setActiveDropdown] = useState<PageId | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
+  // True once the full-size header has scrolled out of view.
+  const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const height = barRef.current?.offsetHeight ?? 0;
+        setStuck(window.scrollY > Math.max(height - 40, 40));
+      });
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   // Close any open dropdown on outside click.
   useEffect(() => {
@@ -55,7 +79,7 @@ export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
     setMobileMenuOpen(false);
   };
 
-  const renderDesktopLinks = (links: typeof NAV_LINKS_CONFIG, align: 'left' | 'right') =>
+  const renderDesktopLinks = (links: typeof NAV_LINKS_CONFIG, align: 'left' | 'right', compact = false) =>
     links.map((link) => (
       <DesktopNavLink
         key={link.id}
@@ -66,14 +90,22 @@ export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
         onOpen={() => openDropdown(link.id)}
         onScheduleClose={scheduleCloseDropdown}
         onNavigate={closeMenus}
+        compact={compact}
       />
     ));
 
   return (
-    // Sticky on mobile. On desktop the header matches the design frames (305 design
-    // units tall, see app/globals.css) and scrolls away with the page.
-    <header ref={headerRef} className="sticky top-0 z-40 w-full bg-brand-green text-white lg:static">
-      <div className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:relative lg:block lg:u-h-305 lg:u-w-1920 lg:px-0">
+    // Mobile: a sticky bar. Desktop: the full-size header from the design frames
+    // (305 design units, see app/globals.css) scrolls away, and a compact bar
+    // slides down in its place so the navigation stays at the top.
+    <header
+      ref={headerRef}
+      className={cn(
+        'sticky top-0 z-40 w-full bg-brand-green text-white transition-shadow lg:static',
+        stuck && 'shadow-lg lg:shadow-none'
+      )}
+    >
+      <div ref={barRef} className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:relative lg:block lg:u-h-305 lg:u-w-1920 lg:px-0">
         <nav aria-label="Primary" className="hidden items-center lg:absolute lg:u-left-255 lg:u-top-160 lg:flex lg:u-gap-65">
           {renderDesktopLinks(LEFT_NAV, 'left')}
         </nav>
@@ -144,6 +176,45 @@ export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
       </div>
 
       {mobileMenuOpen && <MobileNavMenu currentPage={currentPage} onNavigate={closeMenus} />}
+
+      {/* Compact desktop bar, shown once the full header has scrolled away */}
+      <AnimatePresence>
+        {stuck && (
+          <motion.div
+            key="compact-nav"
+            initial={{ y: '-100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '-100%' }}
+            transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+            className="fixed inset-x-0 top-0 z-50 hidden bg-brand-green shadow-lg lg:block"
+          >
+            <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-12 px-8">
+              <nav aria-label="Primary (compact)" className="flex items-center justify-end gap-10">
+                {renderDesktopLinks(LEFT_NAV, 'left', true)}
+              </nav>
+              <Link href="/" onClick={closeMenus} aria-label="Muve Futures home">
+                <motion.span className="block" whileHover={{ rotate: -4, scale: 1.06 }}>
+                  <Image src="/logo.svg" width={281} height={135} alt="Muve Futures" className="h-14 w-auto" />
+                </motion.span>
+              </Link>
+              <div className="flex items-center gap-10">
+                <nav aria-label="Secondary (compact)" className="flex items-center gap-10">
+                  {renderDesktopLinks(RIGHT_NAV, 'right', true)}
+                </nav>
+                <button
+                  type="button"
+                  onClick={onOpenSearch}
+                  className="flex h-8 w-16 cursor-pointer items-center justify-center gap-1.5 rounded-full bg-white text-brand-navy transition hover:shadow-md"
+                  aria-label="Search site"
+                >
+                  <span className="text-sm font-bold leading-none" aria-hidden="true">…</span>
+                  <Search className="h-4 w-4 stroke-[3]" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

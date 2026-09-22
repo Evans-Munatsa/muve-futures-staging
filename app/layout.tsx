@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 // such as /coming-soon can opt out of them.
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en-GB" className={lexendDeca.variable}>
+    <html lang="en-GB" className={lexendDeca.variable} data-scroll-behavior="smooth">
       <body className="font-lexend-deca flex min-h-full flex-col">{children}</body>
     </html>
   );

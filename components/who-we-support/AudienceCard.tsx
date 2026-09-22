@@ -1,9 +1,12 @@
 import Link from 'next/link';
+import { Tilt } from '@/components/motion/Tilt';
 import { Audience } from '@/constants';
 
 export function AudienceCard({ audience }: { audience: Audience }) {
   return (
-    <article
+    <Tilt
+      as="article"
+      max={6}
       id={`card-audience-${audience.slug}`}
       className="flex w-full flex-col rounded-tr-[3rem] bg-brand-pink p-7 text-brand-ink sm:rounded-tr-[4rem] sm:p-8"
     >
@@ -26,6 +29,6 @@ export function AudienceCard({ audience }: { audience: Audience }) {
           Explore →
         </Link>
       </div>
-    </article>
+    </Tilt>
   );
 }

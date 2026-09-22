@@ -1,12 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Hop } from '@/components/motion/Hop';
+import { Reveal } from '@/components/motion/Reveal';
 
 export function WhyChooseUs() {
   return (
     <section className="relative mx-auto w-[90%] max-w-6xl">
       <div className="flex flex-col sm:flex-row sm:items-end">
-        <div className="pb-10 sm:w-[58%] sm:pb-12 sm:pl-[5%]">
+        <Reveal from="left" className="pb-10 sm:w-[58%] sm:pb-12 sm:pl-[5%]">
           <span className="text-xs font-bold uppercase tracking-wider text-white sm:text-lg">
             The Difference
           </span>
@@ -26,19 +28,21 @@ export function WhyChooseUs() {
               Discover Our Approach
             </Link>
           </Button>
-        </div>
+        </Reveal>
 
         {/* Cut-out photo that stands on the pink CTA card below */}
-        <div className="relative mx-auto w-[60%] sm:mx-0 sm:ml-auto sm:mr-[7%] sm:w-[28%]">
-          <Image
-            src="/images/boy-thinking.webp"
-            alt="Smiling boy resting his chin on his hand"
-            width={1356}
-            height={1626}
-            sizes="(min-width: 640px) 28vw, 60vw"
-            className="h-auto w-full"
-          />
-        </div>
+        <Reveal from="up" delay={0.2} className="relative mx-auto w-[60%] sm:mx-0 sm:ml-auto sm:mr-[7%] sm:w-[28%]">
+          <Hop height={18} tilt={3}>
+            <Image
+              src="/images/boy-thinking.webp"
+              alt="Smiling boy resting his chin on his hand"
+              width={1356}
+              height={1626}
+              sizes="(min-width: 640px) 28vw, 60vw"
+              className="h-auto w-full"
+            />
+          </Hop>
+        </Reveal>
       </div>
     </section>
   );

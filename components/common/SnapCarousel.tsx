@@ -111,7 +111,7 @@ export function SnapCarousel<T>({
 
         <div
           ref={trackRef}
-          className="no-scrollbar flex w-full snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth sm:gap-8"
+          className="no-scrollbar -my-6 flex w-full snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth py-6 sm:gap-8"
         >
           {items.map((item, i) => (
             <div
