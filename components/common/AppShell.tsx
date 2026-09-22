@@ -2,13 +2,18 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { MotionConfig } from 'motion/react';
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
-import { SearchModal } from '@/components/common/SearchModal';
-import { InfoModal } from '@/components/common/InfoModal';
+import { PointerProvider } from '@/components/motion/Drift';
 import { InfoModalContent, SiteActions, SiteActionsContext } from '@/components/common/SiteActions';
 import { PageId } from '@/app/types';
 import { BOOK_INTRO_HREF, referralHref } from '@/constants';
+
+// Lazy-loaded: the dialog code is only downloaded the first time one is opened.
+const SearchModal = dynamic(() => import('@/components/common/SearchModal').then((m) => m.SearchModal));
+const InfoModal = dynamic(() => import('@/components/common/InfoModal').then((m) => m.InfoModal));
 
 function getActivePage(pathname: string): PageId {
   const [segment] = pathname.replace(/^\//, '').split('/');
@@ -36,6 +41,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const currentPage = getActivePage(pathname);
 
   const [searchOpen, setSearchOpen] = useState(false);
+  // Stay mounted after the first open so the dialogs can animate closed.
+  const [searchUsed, setSearchUsed] = useState(false);
   const [info, setInfo] = useState<InfoModalContent | null>(null);
 
   // Forms are full pages rather than pop-ups, so these navigate.
@@ -45,7 +52,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     () => ({
       openReferral,
       openBookIntro: () => router.push(BOOK_INTRO_HREF),
-      openSearch: () => setSearchOpen(true),
+      openSearch: () => {
+        setSearchUsed(true);
+        setSearchOpen(true);
+      },
       openInfo: setInfo,
     }),
     [openReferral, router]
@@ -60,30 +70,39 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <SiteActionsContext.Provider value={actions}>
-      <Navbar currentPage={currentPage} onOpenSearch={actions.openSearch} />
+    // reducedMotion="user": every animation respects the OS reduce-motion setting.
+    <MotionConfig reducedMotion="user">
+      <PointerProvider>
+        <SiteActionsContext.Provider value={actions}>
+          <Navbar currentPage={currentPage} onOpenSearch={actions.openSearch} />
 
-      <main className="flex w-full flex-1 flex-col">{children}</main>
+          <main className="flex w-full flex-1 flex-col">{children}</main>
 
-      <Footer />
+          <Footer />
 
-      <SearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        onNavigate={handleNavigate}
-        onOpenService={(slug) => router.push(`/services/${slug}`)}
-      />
+          {searchUsed && (
+            <SearchModal
+              isOpen={searchOpen}
+              onClose={() => setSearchOpen(false)}
+              onNavigate={handleNavigate}
+              onOpenService={(slug) => router.push(`/services/${slug}`)}
+            />
+          )}
 
-      <InfoModal
-        isOpen={info !== null}
-        onClose={() => setInfo(null)}
-        title={info?.title ?? ''}
-        subtitle={info?.subtitle}
-        content={info?.content}
-        stageData={info?.stageData}
-        actionText={info?.actionText}
-        onActionClick={info?.onAction}
-      />
-    </SiteActionsContext.Provider>
+          {info !== null && (
+            <InfoModal
+              isOpen
+              onClose={() => setInfo(null)}
+              title={info.title}
+              subtitle={info.subtitle}
+              content={info.content}
+              stageData={info.stageData}
+              actionText={info.actionText}
+              onActionClick={info.onAction}
+            />
+          )}
+        </SiteActionsContext.Provider>
+      </PointerProvider>
+    </MotionConfig>
   );
 }

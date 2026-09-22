@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { BookOpen, Clock, ArrowRight } from 'lucide-react';
+import { Stagger, StaggerItem } from '@/components/motion/Reveal';
 
 interface GuidesLibraryProps {
   articles: ResourceArticle[];
@@ -39,11 +40,12 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
             </p>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          // Keyed on the result set so a new search/filter replays the stagger.
+          <Stagger key={articles.map((a) => a.id).join()} stagger={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((art) => (
+              <StaggerItem key={art.id} className="flex">
               <Card
-                key={art.id}
-                className="overflow-hidden border-neutral-200 hover:shadow-xl transition-all duration-300 bg-white flex flex-col justify-between group"
+                className="w-full overflow-hidden border-neutral-200 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-white flex flex-col justify-between group"
               >
                 {/* Image */}
                 <div className="relative aspect-[16/9] overflow-hidden bg-neutral-100">
@@ -53,6 +55,7 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute top-3 left-3">
                     <Badge variant="navy" className="text-[11px] font-bold">
@@ -98,8 +101,9 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
                   </div>
                 </div>
               </Card>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         )}
 
         {/* Read Article Dialog */}
@@ -113,6 +117,7 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
                     alt={selectedArticle.title}
                     className="w-full h-full object-cover opacity-80"
                     referrerPolicy="no-referrer"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 flex flex-col justify-end text-white">
                     <Badge variant="lime" className="text-[10px] self-start mb-2">

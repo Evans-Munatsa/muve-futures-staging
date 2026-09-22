@@ -7,6 +7,9 @@ import { PILLARS_DATA } from '@/constants';
 import { Button } from '@/components/ui/button';
 import { homeButton } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
+import { Drift } from '@/components/motion/Drift';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
+import { Tilt } from '@/components/motion/Tilt';
 
 /*
  * Frame y 1464–2460. Orange runs to y 2217 (753 in section terms); cards sit at
@@ -32,15 +35,15 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
       {/* Orange band behind the quote and the top of the cards */}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 hidden bg-brand-orange lg:block lg:u-h-753" />
 
-      <div className="relative text-center text-white lg:absolute lg:inset-x-0 lg:u-top-80">
+      <Reveal className="relative text-center text-white lg:absolute lg:inset-x-0 lg:u-top-80">
         <p className="mx-auto max-w-3xl text-base font-bold leading-[1.3] sm:text-xl lg:u-max-w-1560 lg:u-text-28 lg:tracking-[-0.02em]">
           “Every programme is designed around the individual learner rather than expecting every
           learner to fit a standard model. We adapt education to meet each young person’s needs,
           goals and preferred way of learning.”
         </p>
-      </div>
+      </Reveal>
 
-      <div className="relative mt-6 flex justify-center lg:absolute lg:u-left-836 lg:u-top-197 lg:mt-0">
+      <Reveal from="pop" delay={0.2} className="relative mt-6 flex justify-center lg:absolute lg:u-left-836 lg:u-top-197 lg:mt-0">
         <Button
           id="quote-btn-learn-more"
           onClick={onLearnMore}
@@ -48,22 +51,25 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
         >
           Learn More
         </Button>
-      </div>
+      </Reveal>
 
-      <ul className="relative mx-auto mt-10 grid max-w-xl grid-cols-2 gap-4 lg:static lg:mt-0 lg:block lg:max-w-none">
+      <Stagger as="ul" stagger={0.14} className="relative mx-auto mt-10 grid max-w-xl grid-cols-2 gap-4 lg:static lg:mt-0 lg:block lg:max-w-none">
         {PILLARS_DATA.map((pillar, i) => {
           const isFlipped = !!flipped[pillar.id];
           const { left, corner } = CARDS[i];
 
           return (
-            <li
+            <StaggerItem
+              as="li"
+              from="up"
               key={pillar.id}
               id={`card-pillar-${pillar.id}`}
               className={cn(
-                'relative aspect-[356/627] [perspective:1000px] lg:absolute lg:u-top-318 lg:u-h-627 lg:u-w-356 lg:aspect-auto',
+                'relative aspect-[356/627] lg:absolute lg:u-top-318 lg:u-h-627 lg:u-w-356 lg:aspect-auto',
                 left
               )}
             >
+              <Tilt className="h-full w-full [perspective:1000px]">
               <button
                 type="button"
                 onClick={() => toggle(pillar.id)}
@@ -106,17 +112,26 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
                   </span>
                 </span>
               </button>
-            </li>
+              </Tilt>
+            </StaggerItem>
           );
         })}
-      </ul>
+      </Stagger>
 
       {/* White triangles; section coordinates = frame y − 1464 */}
       <svg className="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible lg:block" viewBox="0 0 1920 996" aria-hidden="true">
-        <polygon points="167.1,608.2 188.3,537.7 238.7,591.3" fill="#fff" />
-        <polygon points="647.9,352.6 581.3,321.2 641.8,279.2" fill="#fff" />
-        <polygon points="953.4,714.2 994.9,653.3 1026.9,719.6" fill="#fff" />
-        <polygon points="1583.6,297.1 1657.2,295.9 1621.5,360.3" fill="#fff" />
+        <Drift depth={30} spin={16}>
+          <polygon points="167.1,608.2 188.3,537.7 238.7,591.3" fill="#fff" />
+        </Drift>
+        <Drift depth={36} spin={-14} delay={0.15}>
+          <polygon points="647.9,352.6 581.3,321.2 641.8,279.2" fill="#fff" />
+        </Drift>
+        <Drift depth={28} spin={12} delay={0.3}>
+          <polygon points="953.4,714.2 994.9,653.3 1026.9,719.6" fill="#fff" />
+        </Drift>
+        <Drift depth={34} spin={-16} delay={0.45}>
+          <polygon points="1583.6,297.1 1657.2,295.9 1621.5,360.3" fill="#fff" />
+        </Drift>
       </svg>
     </section>
   );

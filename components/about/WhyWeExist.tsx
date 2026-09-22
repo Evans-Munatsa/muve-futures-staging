@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import { Award, Crown, ScrollText } from 'lucide-react';
+import { Hop } from '@/components/motion/Hop';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 
 const PILLARS = [
   {
@@ -22,7 +24,7 @@ const PILLARS = [
 export function WhyWeExist() {
   return (
     <section className="mx-auto w-[90%] max-w-6xl pb-16 sm:pb-20">
-      <div className="relative rounded-tr-[3rem] bg-brand-orange px-6 pt-12 pb-10 sm:rounded-tr-[5rem] sm:px-14 sm:pt-14 lg:pb-12">
+      <Reveal className="relative rounded-tr-[3rem] bg-brand-orange px-6 pt-12 pb-10 sm:rounded-tr-[5rem] sm:px-14 sm:pt-14 lg:pb-12">
         <h2 className="text-center text-2xl font-bold text-white sm:text-4xl">Why We Exist</h2>
 
         <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-white sm:text-base">
@@ -33,9 +35,9 @@ export function WhyWeExist() {
         </p>
 
         <div className="mt-10 lg:ml-[22%]">
-          <ul className="space-y-8 lg:space-y-12">
+          <Stagger as="ul" stagger={0.15} className="space-y-8 lg:space-y-12">
             {PILLARS.map(({ icon: Icon, label, copy }) => (
-              <li key={label} className="grid gap-3 text-white sm:grid-cols-[15rem_1fr] sm:gap-0">
+              <StaggerItem as="li" from="right" key={label} className="grid gap-3 text-white sm:grid-cols-[15rem_1fr] sm:gap-0">
                 <span className="flex items-center gap-3 whitespace-nowrap sm:justify-end sm:pr-9">
                   <Icon className="h-8 w-8 shrink-0 stroke-[1.5]" aria-hidden="true" />
                   <span className="text-lg font-bold sm:text-2xl">{label}</span>
@@ -43,23 +45,25 @@ export function WhyWeExist() {
                 <p className="text-sm leading-relaxed sm:border-l-[3px] sm:border-white sm:pl-9 sm:text-base">
                   {copy}
                 </p>
-              </li>
+              </StaggerItem>
             ))}
-          </ul>
+          </Stagger>
         </div>
 
         {/* Cut-out photo, anchored to the bottom-left and bleeding just past the card */}
-        <div className="pointer-events-none absolute -bottom-1 left-[-2%] hidden w-[26%] lg:block">
-          <Image
-            src="/images/girl-arms-crossed.webp"
-            alt="Smiling girl with her arms crossed"
-            width={955}
-            height={1420}
-            sizes="(min-width: 1024px) 26vw, 0px"
-            className="h-auto w-full"
-          />
-        </div>
-      </div>
+        <Reveal from="up" delay={0.3} className="absolute -bottom-1 left-[-2%] hidden w-[26%] lg:block">
+          <Hop height={18}>
+            <Image
+              src="/images/girl-arms-crossed.webp"
+              alt="Smiling girl with her arms crossed"
+              width={955}
+              height={1420}
+              sizes="(min-width: 1024px) 26vw, 0px"
+              className="h-auto w-full"
+            />
+          </Hop>
+        </Reveal>
+      </Reveal>
     </section>
   );
 }

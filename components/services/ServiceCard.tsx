@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Tilt } from '@/components/motion/Tilt';
 import { ServiceOffering } from '@/constants';
 
 export function ServiceCard({ service }: { service: ServiceOffering }) {
   const Icon = service.icon;
 
   return (
-    <article
+    <Tilt
+      as="article"
+      max={6}
       id={`card-service-${service.slug}`}
       className="flex w-full flex-col rounded-tr-[3rem] bg-brand-lime p-7 text-brand-ink sm:rounded-tr-[4rem] sm:p-8"
     >
@@ -35,6 +38,6 @@ export function ServiceCard({ service }: { service: ServiceOffering }) {
           <Link href={`/services/${service.slug}`}>{service.linkLabel} →</Link>
         </Button>
       </div>
-    </article>
+    </Tilt>
   );
 }

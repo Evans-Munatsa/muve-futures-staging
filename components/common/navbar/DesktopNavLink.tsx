@@ -12,6 +12,8 @@ interface DesktopNavLinkProps {
   onOpen: () => void;
   onScheduleClose: () => void;
   onNavigate: () => void;
+  /** Second copy in the compact sticky bar: skip element ids so they stay unique. */
+  compact?: boolean;
 }
 
 export function DesktopNavLink({
@@ -22,6 +24,7 @@ export function DesktopNavLink({
   onOpen,
   onScheduleClose,
   onNavigate,
+  compact = false,
 }: DesktopNavLinkProps) {
   const hasDropdown = !!link.dropdown;
 
@@ -34,7 +37,7 @@ export function DesktopNavLink({
     >
       <Link
         href={link.href}
-        id={`nav-${link.id}`}
+        id={compact ? undefined : `nav-${link.id}`}
         onClick={onNavigate}
         aria-haspopup={hasDropdown || undefined}
         aria-expanded={hasDropdown ? isOpen : undefined}
@@ -52,7 +55,7 @@ export function DesktopNavLink({
 
       {hasDropdown && isOpen && (
         <div
-          id={`dropdown-menu-${link.id}`}
+          id={compact ? undefined : `dropdown-menu-${link.id}`}
           className={cn(
             'absolute top-[calc(100%+1rem)] z-50 min-w-72 bg-brand-orange px-8 py-8 text-right shadow-xl',
             'animate-in fade-in-0 zoom-in-95 duration-150',

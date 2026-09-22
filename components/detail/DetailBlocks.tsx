@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import type { CardTone, CopyBlock, DetailBlock, SplitItem } from '@/constants';
 import { cn } from '@/lib/utils';
+import { Hop } from '@/components/motion/Hop';
+import { Reveal } from '@/components/motion/Reveal';
 
 const TONE: Record<CardTone, string> = {
   pink: 'bg-brand-pink text-white',
@@ -42,7 +44,9 @@ function Card({ block }: { block: Extract<DetailBlock, { kind: 'card' }> }) {
     <div className={cn('relative', cutout && 'lg:pt-28')}>
       {cutout && (
         // On desktop the photo is as tall as card + top padding, so it always rises out of the card.
-        <div
+        // It hops on hover.
+        <Hop
+          height={20}
           className={cn(
             'relative z-10 mx-auto w-3/5 sm:w-2/5 lg:absolute lg:inset-y-0 lg:mx-0 lg:flex lg:w-[42%] lg:items-end',
             cutout.side === 'left' ? 'lg:left-[4%] lg:justify-start' : 'lg:right-[3%] lg:justify-end'
@@ -56,7 +60,7 @@ function Card({ block }: { block: Extract<DetailBlock, { kind: 'card' }> }) {
             sizes="(min-width: 1024px) 40vw, 60vw"
             className="h-auto w-full lg:h-full lg:w-auto lg:max-w-full lg:object-contain lg:object-bottom"
           />
-        </div>
+        </Hop>
       )}
 
       <div
@@ -188,7 +192,7 @@ function Cutout({ block }: { block: Extract<DetailBlock, { kind: 'cutout' }> }) 
   const { photo, size = 'lg' } = block;
   return (
     // Negative margin cancels the stack gap so the photo stands on the next block.
-    <div className={cn('relative z-10 mx-auto -mb-10 sm:-mb-14', size === 'lg' ? 'w-full sm:w-[92%]' : 'w-3/5 sm:w-[34%]')}>
+    <Hop height={14} tilt={0} className={cn('relative z-10 mx-auto -mb-10 sm:-mb-14', size === 'lg' ? 'w-full sm:w-[92%]' : 'w-3/5 sm:w-[34%]')}>
       <Image
         src={photo.src}
         alt={photo.alt}
@@ -197,25 +201,46 @@ function Cutout({ block }: { block: Extract<DetailBlock, { kind: 'cutout' }> }) 
         sizes={size === 'lg' ? '(min-width: 1152px) 1060px, 90vw' : '(min-width: 640px) 34vw, 60vw'}
         className="h-auto w-full"
       />
-    </div>
+    </Hop>
   );
 }
 
 export function DetailBlocks({ blocks }: { blocks: DetailBlock[] }) {
   return (
     <div className="mx-auto flex w-[90%] max-w-6xl flex-col gap-10 sm:gap-14">
+      {/* Each block slides into view as it is scrolled to */}
       {blocks.map((block, i) => {
         switch (block.kind) {
           case 'card':
-            return <Card key={i} block={block} />;
+            return (
+              <Reveal key={i}>
+                <Card block={block} />
+              </Reveal>
+            );
           case 'text':
-            return <TextBlock key={i} block={block} />;
+            return (
+              <Reveal key={i} from={block.accent ? 'left' : 'up'}>
+                <TextBlock block={block} />
+              </Reveal>
+            );
           case 'split':
-            return <Split key={i} block={block} />;
+            return (
+              <Reveal key={i}>
+                <Split block={block} />
+              </Reveal>
+            );
           case 'photo':
-            return <PhotoBlock key={i} block={block} />;
+            return (
+              <Reveal key={i} from="zoom">
+                <PhotoBlock block={block} />
+              </Reveal>
+            );
           case 'cutout':
-            return <Cutout key={i} block={block} />;
+            return (
+              <Reveal key={i} from="pop" className="relative z-10">
+                <Cutout block={block} />
+              </Reveal>
+            );
         }
       })}
     </div>

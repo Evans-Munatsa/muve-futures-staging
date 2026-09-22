@@ -6,6 +6,7 @@ import { GuidesLibrary } from '@/components/resources/GuidesLibrary';
 import { PolicyDownloads } from '@/components/resources/PolicyDownloads';
 import { ReferralFAQ } from '@/components/resources/ReferralFAQ';
 import { RESOURCE_ARTICLES } from '@/constants';
+import { Reveal } from '@/components/motion/Reveal';
 
 const CATEGORIES = ['All', 'EBSNA & Attendance', 'SEND Strategies', 'Local Authority & Section 19', 'Parent Guides'];
 
@@ -35,9 +36,15 @@ export function ResourcesContent() {
         onSelectCategory={setActiveCategory}
         categories={CATEGORIES}
       />
-      <GuidesLibrary articles={filteredArticles} />
-      <PolicyDownloads />
-      <ReferralFAQ />
+      <Reveal>
+        <GuidesLibrary articles={filteredArticles} />
+      </Reveal>
+      <Reveal>
+        <PolicyDownloads />
+      </Reveal>
+      <Reveal>
+        <ReferralFAQ />
+      </Reveal>
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { ReferralButton } from '@/components/common/ActionButtons';
 import { homeButton, homeType } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
+import { Hop } from '@/components/motion/Hop';
+import { Reveal } from '@/components/motion/Reveal';
 
 /* Frame y 7873–8463 (resources band) and 8463–9075 (closing call to action). */
 export function ResourcesAndCallToAction() {
@@ -18,32 +20,36 @@ export function ResourcesAndCallToAction() {
           className="object-cover"
         />
 
-        <h2 className={cn(homeType.heading, 'relative lg:absolute lg:u-left-389 lg:u-top-88')}>
-          Resources For Schools, Families
-          <br className="hidden sm:block" /> and Professionals
-        </h2>
+        <Reveal from="left" className="relative lg:absolute lg:u-left-389 lg:u-top-88">
+          <h2 className={homeType.heading}>
+            Resources For Schools, Families
+            <br className="hidden sm:block" /> and Professionals
+          </h2>
+        </Reveal>
 
-        <div className="relative mt-6 lg:absolute lg:u-left-1218 lg:u-top-202 lg:mt-0">
+        <Reveal from="pop" delay={0.3} className="relative mt-6 lg:absolute lg:u-left-1218 lg:u-top-202 lg:mt-0">
           <Button asChild variant="outline-white" className={cn(homeButton.outlineSm, 'lg:u-w-311')}>
             <Link id="btn-visit-resources" href="/resources">
               Visit Our Resources
             </Link>
           </Button>
-        </div>
+        </Reveal>
       </section>
 
       <section className="relative bg-brand-orange px-6 pb-14 text-white lg:u-h-612 lg:p-0">
-        <div className="relative mx-auto aspect-[879/608] w-3/4 max-w-sm lg:absolute lg:-u-left-48 lg:u-top-26 lg:u-h-608 lg:u-w-879 lg:max-w-none">
-          <Image
-            src="/images/home/apple-books.webp"
-            alt="Stack of books with a red apple on top"
-            fill
-            sizes="(min-width: 1024px) 46vw, 75vw"
-            className="object-contain"
-          />
-        </div>
+        <Reveal from="left" className="relative mx-auto aspect-[879/608] w-3/4 max-w-sm lg:absolute lg:-u-left-48 lg:u-top-26 lg:u-h-608 lg:u-w-879 lg:max-w-none">
+          <Hop className="relative h-full w-full" height={18} tilt={3}>
+            <Image
+              src="/images/home/apple-books.webp"
+              alt="Stack of books with a red apple on top"
+              fill
+              sizes="(min-width: 1024px) 46vw, 75vw"
+              className="object-contain"
+            />
+          </Hop>
+        </Reveal>
 
-        <div className="relative text-center lg:absolute lg:u-right-266 lg:u-top-84 lg:u-w-934 lg:text-right">
+        <Reveal from="right" className="relative text-center lg:absolute lg:u-right-266 lg:u-top-84 lg:u-w-934 lg:text-right">
           <h2 className={homeType.heading}>
             Every Young Person
             <br className="hidden sm:block" /> Deserves The Opportunity
@@ -60,7 +66,7 @@ export function ResourcesAndCallToAction() {
           >
             Make a Referral
           </ReferralButton>
-        </div>
+        </Reveal>
       </section>
     </>
   );

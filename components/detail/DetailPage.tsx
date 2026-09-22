@@ -3,6 +3,7 @@ import { CtaButton } from '@/components/detail/CtaButton';
 import { DetailBlocks } from '@/components/detail/DetailBlocks';
 import { ClosingShapes, HeroShapes } from '@/components/detail/Shapes';
 import { cn } from '@/lib/utils';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 
 interface DetailPageProps {
   content: DetailPageContent;
@@ -29,24 +30,32 @@ export function DetailPage({ content, variant, accent = 'pink', referralService 
             variant === 'audience' ? 'max-w-6xl' : 'max-w-5xl'
           )}
         >
-          <p className="inline-block rounded-full border-[3px] border-white px-4 py-1 text-xs font-bold uppercase tracking-wide sm:text-lg">
-            {hero.badge}
-          </p>
+          <Stagger onLoad stagger={0.15} delay={0.1}>
+            <StaggerItem from="pop">
+              <p className="inline-block rounded-full border-[3px] border-white px-4 py-1 text-xs font-bold uppercase tracking-wide sm:text-lg">
+                {hero.badge}
+              </p>
+            </StaggerItem>
 
-          <h1
-            className={cn(
-              'mx-auto mt-6 text-3xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-7xl',
-              variant === 'service' && 'max-w-[52rem]'
-            )}
-          >
-            {hero.title}
-          </h1>
+            <StaggerItem>
+              <h1
+                className={cn(
+                  'mx-auto mt-6 text-3xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-7xl',
+                  variant === 'service' && 'max-w-[52rem]'
+                )}
+              >
+                {hero.title}
+              </h1>
+            </StaggerItem>
 
-          <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed sm:text-lg">{hero.intro}</p>
+            <StaggerItem>
+              <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed sm:text-lg">{hero.intro}</p>
+            </StaggerItem>
 
-          <div className="mt-8">
-            <CtaButton cta={hero.cta} referralService={referralService} />
-          </div>
+            <StaggerItem from="pop" className="mt-8">
+              <CtaButton cta={hero.cta} referralService={referralService} />
+            </StaggerItem>
+          </Stagger>
         </div>
       </section>
 
@@ -56,13 +65,15 @@ export function DetailPage({ content, variant, accent = 'pink', referralService 
         <ClosingShapes />
 
         <div className="relative z-10 mx-auto w-[90%] max-w-4xl py-16 text-center text-white sm:py-24">
-          <h2 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            {closing.title}
-          </h2>
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed sm:text-lg">{closing.body}</p>
-          <div className="mt-8">
+          <Reveal>
+            <h2 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              {closing.title}
+            </h2>
+            <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed sm:text-lg">{closing.body}</p>
+          </Reveal>
+          <Reveal from="pop" delay={0.2} className="mt-8">
             <CtaButton cta={closing.cta} referralService={referralService} />
-          </div>
+          </Reveal>
         </div>
       </section>
     </div>
