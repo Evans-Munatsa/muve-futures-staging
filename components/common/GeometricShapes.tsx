@@ -50,7 +50,7 @@ export const OrangeTriangle: React.FC<{
     style={{ transform: `rotate(${rotation}deg)` }}
     aria-hidden="true"
   >
-    <polygon points="50,15 90,85 10,85" fill="#f05a28" />
+    <polygon points="50,15 90,85 10,85" fill="#F05B25" />
   </svg>
 );
 

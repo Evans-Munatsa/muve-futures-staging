@@ -1,242 +1,120 @@
-"use client";
-// import { useState, useRef, useEffect, useMemo } from "react";
-import { useState, useRef, useEffect } from "react";
-import { Logo } from './Logo';
-import { Search, Menu, X, Phone, Mail, ChevronDown} from 'lucide-react';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Search, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DesktopNavLink } from '@/components/common/navbar/DesktopNavLink';
+import { MobileNavMenu } from '@/components/common/navbar/MobileNavMenu';
 import { PageId } from '@/app/types';
-import { NAV_LINKS_CONFIG, SITE_CONFIG, NavLinkConfig } from '@/constants';
+import { NAV_LINKS_CONFIG, REFERRAL_HREF } from '@/constants';
+
+const DROPDOWN_CLOSE_DELAY_MS = 180;
+
+// The logo sits between these two groups on desktop (it doubles as the Home link).
+const LEFT_NAV = NAV_LINKS_CONFIG.filter((link) => link.id === 'services' || link.id === 'who-we-support');
+const RIGHT_NAV = NAV_LINKS_CONFIG.filter((link) => link.id === 'resources' || link.id === 'contact');
 
 interface NavbarProps {
   currentPage: PageId;
-  onNavigate: (page: PageId, sectionId?: string) => void;
-  onOpenReferral: () => void;
   onOpenSearch: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
-  currentPage,
-  onNavigate,
-  onOpenReferral,
-  onOpenSearch,
-}) => {
+export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<PageId | null>(null);
-  const [expandedMobile, setExpandedMobile] = useState<Record<string, boolean>>({});
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const navContainerRef = useRef<HTMLDivElement | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
 
-  // Close dropdown on outside click
+  // Close any open dropdown on outside click.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        navContainerRef.current &&
-        !navContainerRef.current.contains(event.target as Node)
-      ) {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    };
   }, []);
 
-  const handleMouseEnter = (id: PageId) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  const openDropdown = (id: PageId) => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     setActiveDropdown(id);
   };
 
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setActiveDropdown(null);
-    }, 180);
+  const scheduleCloseDropdown = () => {
+    closeTimeoutRef.current = setTimeout(() => setActiveDropdown(null), DROPDOWN_CLOSE_DELAY_MS);
   };
 
-  const handleNavClick = (page: PageId, sectionId?: string) => {
-    onNavigate(page, sectionId);
+  const closeMenus = () => {
     setActiveDropdown(null);
     setMobileMenuOpen(false);
   };
 
-  const toggleMobileAccordion = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpandedMobile((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const navLinks = NAV_LINKS_CONFIG;
-  const leftNav = navLinks.slice(0, 3); // Home, About Us, Services
-  const rightNav = navLinks.slice(3); // Who We Support, Resource, Contact
-
-  const renderDropdownMenu = (link: NavLinkConfig, align: 'left' | 'right' = 'left') => {
-    if (!link.dropdown) return null;
-    const isOpen = activeDropdown === link.id;
-    if (!isOpen) return null;
-
-    return (
-      <div
-        id={`dropdown-menu-${link.id}`}
-        onMouseEnter={() => handleMouseEnter(link.id)}
-        onMouseLeave={handleMouseLeave}
-        className={`absolute top-[calc(100%+8px)] ${
-          align === 'right' ? 'right-0' : 'left-0'
-        } w-80 sm:w-[200px] bg-[#F05B25] p-2 z-50 animate-in fade-in-0 zoom-in-95 duration-150`}
-      >
-        
-
-        {/* Dropdown Items List targeting exact sections */}
-        <div className="py-1.5 space-y-1">
-          {link.dropdown.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.sectionId}
-                type="button"
-                id={`dropdown-item-${item.sectionId}`}
-                onClick={() => handleNavClick(link.id, item.sectionId)}
-                className="w-full text-left p-2.5 rounded-xl hover:bg-neutral-50 transition-colors flex items-start gap-3 group/item cursor-pointer"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-xs font-bold text-[#fff] group-hover/item:text-[#f05a28] transition-colors truncate">
-                      {item.label}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
+  const renderDesktopLinks = (links: typeof NAV_LINKS_CONFIG, align: 'left' | 'right') =>
+    links.map((link) => (
+      <DesktopNavLink
+        key={link.id}
+        link={link}
+        align={align}
+        isActive={currentPage === link.id}
+        isOpen={activeDropdown === link.id}
+        onOpen={() => openDropdown(link.id)}
+        onScheduleClose={scheduleCloseDropdown}
+        onNavigate={closeMenus}
+      />
+    ));
 
   return (
-    <header
-      ref={navContainerRef}
-      className="w-full bg-[#A5CD39] text-white sticky top-0 z-40">
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-22 flex items-center justify-between">
-        {/* Desktop Left Nav: Home, About Us, Services (with exact section dropdown) */}
-        <nav className="hidden lg:flex items-center space-x-1.5 text-sm font-semibold tracking-wide">
-          {leftNav.map((link) => {
-            const isActive = currentPage === link.id;
-            const hasDropdown = !!link.dropdown;
-            const isMenuOpen = activeDropdown === link.id;
-
-            return (
-              <div
-                key={link.id}
-                className="relative"
-                onMouseEnter={() => hasDropdown && handleMouseEnter(link.id)}
-                onMouseLeave={hasDropdown ? handleMouseLeave : undefined}
-              >
-                <div className="inline-flex items-center">
-                  <button
-                    type="button"
-                    id={`nav-${link.id}`}
-                    onClick={() => handleNavClick(link.id)}
-                    className={`px-3.5 py-2 rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
-                      isActive
-                        ? 'bg-white text-[#F05B25] shadow-xs font-bold'
-                        : 'text-white hover:bg-[#F05B25]'
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                    {hasDropdown && (
-                      <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isMenuOpen ? 'rotate-180 text-[#f05a28]' : 'opacity-80'
-                        }`}
-                      />
-                    )}
-                  </button>
-                </div>
-
-                {hasDropdown && renderDropdownMenu(link, 'left')}
-              </div>
-            );
-          })}
+    // Sticky on mobile. On desktop the header matches the design frames (305 design
+    // units tall, see app/globals.css) and scrolls away with the page.
+    <header ref={headerRef} className="sticky top-0 z-40 w-full bg-brand-green text-white lg:static">
+      <div className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:relative lg:block lg:u-h-305 lg:u-w-1920 lg:px-0">
+        <nav aria-label="Primary" className="hidden items-center lg:absolute lg:u-left-255 lg:u-top-160 lg:flex lg:u-gap-65">
+          {renderDesktopLinks(LEFT_NAV, 'left')}
         </nav>
 
-        {/* Center Brand Logo */}
-        <div className="flex-1 lg:flex-none flex justify-start lg:justify-center">
-          <a href="/">
-              <img
-                src="/logo.svg"
-                width={160}
-                height={60}
-                alt="Muve Healthcare"
-              />
-            </a>
+        <div className="flex flex-1 justify-start lg:absolute lg:u-left-820 lg:u-top-107">
+          <Link href="/" onClick={closeMenus} aria-label="Muve Futures home">
+            <Image
+              src="/logo.svg"
+              width={281}
+              height={135}
+              alt="Muve Futures"
+              priority
+              className="h-12 w-auto lg:h-auto lg:u-w-280"
+            />
+          </Link>
         </div>
 
-        {/* Desktop Right Nav: Who We Support, Resource, Contact (all with exact section dropdowns), Search & Referral CTA */}
-        <div className="hidden lg:flex items-center space-x-1.5 text-sm font-semibold">
-          {rightNav.map((link) => {
-            const isActive = currentPage === link.id;
-            const hasDropdown = !!link.dropdown;
-            const isMenuOpen = activeDropdown === link.id;
+        <div className="hidden items-center lg:absolute lg:u-left-1264 lg:u-top-156 lg:flex lg:u-h-42 lg:u-gap-66">
+          <nav aria-label="Secondary" className="flex items-center lg:u-gap-67">
+            {renderDesktopLinks(RIGHT_NAV, 'right')}
+          </nav>
 
-            return (
-              <div
-                key={link.id}
-                className="relative"
-                onMouseEnter={() => hasDropdown && handleMouseEnter(link.id)}
-                onMouseLeave={hasDropdown ? handleMouseLeave : undefined}
-              >
-                <div className="inline-flex items-center">
-                  <button
-                    type="button"
-                    id={`nav-${link.id}`}
-                    onClick={() => handleNavClick(link.id)}
-                    className={`px-3.5 py-2 rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
-                      isActive
-                        ? 'bg-white text-[#F05B25] shadow-xs font-bold'
-                        : 'text-white hover:bg-[#F05B25]'
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                    {hasDropdown && (
-                      <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                          isMenuOpen ? 'rotate-180 text-[#f05a28]' : 'opacity-80'
-                        }`}
-                      />
-                    )}
-                  </button>
-                </div>
-
-                {hasDropdown && renderDropdownMenu(link, 'right')}
-              </div>
-            );
-          })}
-
-          {/* Search Button Pill */}
           <button
+            type="button"
             id="btn-search"
             onClick={onOpenSearch}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-white/80 text-white hover:bg-white/15 transition-colors cursor-pointer text-xs font-bold ml-1.5"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white text-brand-navy transition hover:shadow-md lg:u-h-42 lg:u-w-87"
             aria-label="Search site"
             title="Search site"
           >
-            <span className="opacity-70 text-xs">—</span>
-            <Search className="w-3.5 h-3.5" />
+            <span className="font-bold leading-none lg:u-text-18" aria-hidden="true">
+              …
+            </span>
+            <Search className="stroke-[3] lg:u-h-22 lg:u-w-22" />
           </button>
-
-          {/* Quick CTA using Shadcn Button */}
-          <Button
-            id="nav-quick-referral"
-            variant="coral"
-            size="sm"
-            onClick={onOpenReferral}
-            className="ml-2 font-bold shadow-md"
-          >
-            Make a Referral
-          </Button>
         </div>
 
-        {/* Mobile Action Controls */}
+        {/* Mobile action controls */}
         <div className="flex lg:hidden items-center space-x-2">
           <button
+            type="button"
             id="btn-mobile-search"
             onClick={onOpenSearch}
             className="p-2 rounded-full border border-white/80 text-white hover:bg-white/15 transition cursor-pointer"
@@ -245,103 +123,27 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Search className="w-4 h-4" />
           </button>
 
-          <Button
-            id="btn-mobile-referral-quick"
-            variant="coral"
-            size="sm"
-            onClick={onOpenReferral}
-            className="text-xs px-3 h-8"
-          >
-            Referral
+          <Button asChild variant="orange" size="sm" className="h-8 px-3 text-xs">
+            <Link id="btn-mobile-referral-quick" href={REFERRAL_HREF} onClick={closeMenus}>
+              Referral
+            </Link>
           </Button>
 
           <button
+            type="button"
             id="btn-mobile-menu-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setMobileMenuOpen((open) => !open)}
             className="p-2 rounded-xl text-white hover:bg-white/15 transition cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-white"
             aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Nav Drawer with Accordions for exact section targets */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#72a930] border-t border-white/20 px-5 py-5 space-y-4 animate-in slide-in-from-top-3 duration-200 shadow-xl max-h-[80vh] overflow-y-auto">
-          <div className="flex flex-col space-y-1 font-bold text-base">
-            {navLinks.map((link) => {
-              const isActive = currentPage === link.id;
-              const hasDropdown = !!link.dropdown;
-              const isExpanded = !!expandedMobile[link.id];
-
-              return (
-                <div key={link.id} className="flex flex-col">
-                  <div
-                    className={`flex items-center justify-between rounded-xl transition ${
-                      isActive ? 'bg-white text-[#092233]' : 'text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      id={`mobile-nav-${link.id}`}
-                      onClick={() => handleNavClick(link.id)}
-                      className="flex-1 text-left py-3 px-3.5 font-extrabold flex items-center gap-2 cursor-pointer"
-                    >
-                      <span>{link.label}</span>
-                    </button>
-
-                    {hasDropdown && (
-                      <button
-                        type="button"
-                        id={`mobile-toggle-${link.id}`}
-                        onClick={(e) => toggleMobileAccordion(link.id, e)}
-                        className={`p-3 rounded-xl transition cursor-pointer ${
-                          isActive
-                            ? 'text-[#092233] hover:bg-neutral-100'
-                            : 'text-white hover:bg-[#F05B25]'
-                        }`}
-                        aria-label={`Toggle ${link.label} sections`}
-                      >
-                        <ChevronDown
-                          className={`w-4 h-4 transition-transform duration-200 ${
-                            isExpanded ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Mobile Sub-items */}
-                  {hasDropdown && isExpanded && (
-                    <div className="pl-3 pr-1 py-2 my-1 space-y-1 bg-black/10 rounded-xl">
-                      {link.dropdown?.map((subItem) => {
-                        const Icon = subItem.icon;
-                        return (
-                          <button
-                            key={subItem.sectionId}
-                            type="button"
-                            id={`mobile-subitem-${subItem.sectionId}`}
-                            onClick={() => handleNavClick(link.id, subItem.sectionId)}
-                            className="w-full text-left p-2.5 rounded-lg text-white/95 hover:bg-white/20 transition flex items-center justify-between text-xs font-semibold cursor-pointer"
-                          >
-                            <div className="flex items-center gap-2">
-                              {/* <Icon className="w-3.5 h-3.5 text-white/80" /> */}
-                              <span>{subItem.label}</span>
-                            </div>
-                            {/* <ChevronRight className="w-3.5 h-3.5 opacity-60" /> */}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-        </div>
-      )}
+      {mobileMenuOpen && <MobileNavMenu currentPage={currentPage} onNavigate={closeMenus} />}
     </header>
   );
-};
+}

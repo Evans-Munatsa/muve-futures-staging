@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { FAQS_DATA } from '@/app/data/content';
-import { Card } from '@/app/components/ui/card';
-import { Badge } from '@/app/components/ui/badge';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { FAQS_DATA } from '@/data/content';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ChevronDown } from 'lucide-react';
 
 export const ReferralFAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -25,7 +25,7 @@ export const ReferralFAQ: React.FC = () => {
           <Badge variant="navy" className="text-xs uppercase tracking-widest font-extrabold">
             FREQUENTLY ASKED QUESTIONS
           </Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#092233]">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-ink">
             Commissioning & Provision Answers
           </h2>
           <p className="text-sm sm:text-base text-neutral-600">
@@ -41,7 +41,7 @@ export const ReferralFAQ: React.FC = () => {
               onClick={() => setActiveTab(cat)}
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 activeTab === cat
-                  ? 'bg-[#092233] text-white shadow-sm'
+                  ? 'bg-brand-ink text-white shadow-sm'
                   : 'bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-100'
               }`}
             >
@@ -64,12 +64,12 @@ export const ReferralFAQ: React.FC = () => {
                   onClick={() => toggleFaq(idx)}
                   className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-hidden"
                 >
-                  <span className="font-bold text-base text-[#092233]">
+                  <span className="font-bold text-base text-brand-ink">
                     {faq.question}
                   </span>
                   <ChevronDown
                     className={`w-5 h-5 text-neutral-500 shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#f05a28]' : ''
+                      isOpen ? 'rotate-180 text-brand-orange' : ''
                     }`}
                   />
                 </button>

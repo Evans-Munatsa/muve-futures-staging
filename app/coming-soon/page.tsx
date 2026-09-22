@@ -1,19 +1,14 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Lexend } from 'next/font/google';
+import Link from 'next/link';
+import { REFERRAL_HREF } from '@/constants';
 
-const lexend = Lexend({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-});
-
-const GREEN = '#A6CE3B';
-const ORANGE = '#F05A28';
-const PINK = '#E986B6';
-const BLUE = '#9ADAE6';
-const CORAL = '#F5575C';
+const GREEN = '#A5CD39';
+const ORANGE = '#F05B25';
+const PINK = '#EC83B5';
+const BLUE = '#99D9E5';
+const CORAL = '#F75658';
 
 /* Background shapes, drawn on the same 1920x1080 grid as the design */
 const Shapes = () => (
@@ -55,7 +50,7 @@ const SocialLink = ({
     aria-label={label}
     target="_blank"
     rel="noopener noreferrer"
-    className="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A6CE3B]"
+    className="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A5CD39]"
   >
     <svg
       viewBox="0 0 24 24"
@@ -85,7 +80,7 @@ export default function ComingSoonPage() {
 
   return (
     <main
-      className={`${lexend.className} relative flex min-h-screen w-full flex-col items-center overflow-hidden px-6 pb-8 pt-[8vh] text-white`}
+      className={`font-lexend-deca relative flex min-h-screen w-full flex-col items-center overflow-hidden px-6 pb-8 pt-[8vh] text-white`}
       style={{ backgroundColor: GREEN }}
     >
       <Shapes />
@@ -119,7 +114,7 @@ export default function ComingSoonPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="h-full w-full rounded-full bg-white pl-6 pr-36 text-[17px] font-semibold text-[#333] placeholder:text-[#BDBDBD] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A6CE3B]"
+            className="h-full w-full rounded-full bg-white pl-6 pr-36 text-[17px] font-semibold text-[#333] placeholder:text-[#BDBDBD] focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A5CD39]"
           />
           <button
             type="submit"
@@ -155,18 +150,18 @@ export default function ComingSoonPage() {
         <div className="mt-[clamp(32px,8.5vh,92px)] flex flex-wrap items-center justify-center gap-[15px]">
           <a
             href="/prospectus.pdf"
-            className="rounded-full border-[3px] px-[22px] py-[9px] text-[clamp(1rem,1.4vw,1.6rem)] font-bold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A6CE3B]"
+            className="rounded-full border-[3px] px-[22px] py-[9px] text-[clamp(1rem,1.4vw,1.6rem)] font-bold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A5CD39]"
             style={{ backgroundColor: ORANGE, borderColor: ORANGE }}
           >
             View Our Prospectus
           </a>
-          <a
-            href="/referral"
-            className="rounded-full border-[3px] px-[22px] py-[9px] text-[clamp(1rem,1.4vw,1.6rem)] font-bold transition-colors hover:bg-[#F05A28] hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A6CE3B]"
+          <Link
+            href={REFERRAL_HREF}
+            className="rounded-full border-[3px] px-[22px] py-[9px] text-[clamp(1rem,1.4vw,1.6rem)] font-bold transition-colors hover:bg-brand-orange hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#A5CD39]"
             style={{ color: ORANGE, borderColor: ORANGE }}
           >
             Make a Referral
-          </a>
+          </Link>
         </div>
       </div>
     </main>

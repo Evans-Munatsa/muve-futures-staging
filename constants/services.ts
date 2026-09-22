@@ -1,9 +1,10 @@
-import { ServiceItem, FrameworkStage } from '../types';
+import { ServiceItem, FrameworkStage } from '@/app/types';
 
 export const SERVICES_DATA: ServiceItem[] = [
   {
     id: 'eotas',
-    name: 'EOTAS Provision',
+    slug: 'eotas',
+    name: 'EOTAS',
     description: 'Education Other Than At School (EOTAS) packages specifically tailored for learners who cannot attend formal school settings due to illness, exclusion, or complex special educational needs.',
     keyFeatures: ['Bespoke timetable aligned with Section 19 statutory duty', 'Delivered in home, community or hybrid environments', 'Full EHCP outcome tracking and statutory reporting'],
     category: 'Specialist 1:1',
@@ -12,6 +13,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: '52-week',
+    slug: '52-week-provision',
     name: '52 Week Provision',
     description: 'Year-round continuous educational and pastoral support ensuring emotional stability for learners with high anxiety, complex attachment needs, or during holiday vulnerability.',
     keyFeatures: ['Continuous engagement preventing holiday regression', 'Therapeutic mentoring and life skills development', 'Consistent key worker support throughout all 52 weeks'],
@@ -21,6 +23,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'alternative-provision',
+    slug: 'alternative-provision',
     name: 'Alternative Provision',
     description: 'Personalised, accredited and non-accredited learning pathways tailored for young people who require an alternative to mainstream schooling.',
     keyFeatures: ['Vocational and core academic subjects (GCSE & Functional Skills)', 'Trauma-informed, neuroaffirming staff team', 'Individualised pace and sensory-friendly learning spaces'],
@@ -30,7 +33,8 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'send-support',
-    name: 'SEND Specialist Support',
+    slug: 'send-support',
+    name: 'SEND Support',
     description: 'Specialised educational support for children and young people with Special Educational Needs and Disabilities (SEND), integrating sensory, cognitive, and communication adaptations.',
     keyFeatures: ['Autism, ADHD, Dyslexia, and sensory accommodations', 'Speech and language therapy integration', 'Collaboration with educational psychologists and local clinical networks'],
     category: 'Specialist 1:1',
@@ -39,6 +43,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'semh-support',
+    slug: 'semh-support',
     name: 'SEMH Support',
     description: 'Dedicated provision for young people navigating Social, Emotional and Mental Health needs, prioritizing emotional regulation and safety before academic pressure.',
     keyFeatures: ['Zones of regulation and restorative de-escalation strategies', '1:1 relational mentoring and emotional literacy', 'Safe, non-punitive trauma-informed learning approach'],
@@ -48,6 +53,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'ebsna-support',
+    slug: 'ebsna-support',
     name: 'EBSNA Support',
     description: 'Emotionally Based School Non-Attendance (EBSNA) intervention designed to gently re-engage learners paralyzed by school-related anxiety or traumatic school experiences.',
     keyFeatures: ['Paced, micro-step re-engagement plans with zero pressure', 'Home visits and trust-building low-demand sessions', 'Family systemic support and low-demand educational bridging'],
@@ -57,6 +63,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'one-to-one',
+    slug: 'one-to-one-education',
     name: 'One-to-One Education',
     description: 'Dedicated single-tutor and single-learner model focused entirely on the specific learning style, interests, and processing speed of the young person.',
     keyFeatures: ['Unconditional positive regard and individual pacing', 'Customised curriculum matched to the learner’s special interests', 'Safe, focused environment free from peer pressure'],
@@ -66,6 +73,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'community-learning',
+    slug: 'community-learning',
     name: 'Community Learning',
     description: 'Experiential and real-world education situated within local libraries, nature reserves, creative hubs, and community partner spaces.',
     keyFeatures: ['Real-world social interaction and community navigation', 'Outdoor learning, horticulture, and physical recreation', 'Practical life skills and independent travel practice'],
@@ -75,7 +83,8 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'online-learning',
-    name: 'Online Specialist Learning',
+    slug: 'online-learning',
+    name: 'Online Learning',
     description: 'Interactive, live 1:1 and small group digital learning with vetted specialist teachers, perfect for medically vulnerable or high-anxiety learners.',
     keyFeatures: ['Camera-optional, low-sensory virtual classrooms', 'Recorded lessons and accessible multi-modal materials', 'Live pastoral check-ins and safeguarding oversight'],
     category: 'Specialist 1:1',
@@ -84,7 +93,8 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'hybrid-learning',
-    name: 'Hybrid Learning Pathways',
+    slug: 'hybrid-learning',
+    name: 'Hybrid Learning',
     description: 'A balanced combination of virtual lessons, in-person mentoring, and community-based projects that adapts as the learner’s confidence develops.',
     keyFeatures: ['Graduated increase of in-person contact hours', 'Seamless digital curriculum continuity', 'Flexible timetable adjusting to energy and mental wellness'],
     category: 'Reintegration',
@@ -93,7 +103,8 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'reintegration',
-    name: 'Reintegration Roadmaps',
+    slug: 'reintegration-programmes',
+    name: 'Reintegration',
     description: 'Structured, supportive roadmaps helping learners return successfully to mainstream, special school settings, or vocational colleges when ready.',
     keyFeatures: ['Gradual timetable step-up and dual-registration support', 'Transition meetings and joint observations with destination staff', 'Post-transition follow-up and settling-in check-ins'],
     category: 'Reintegration',
@@ -102,7 +113,8 @@ export const SERVICES_DATA: ServiceItem[] = [
   },
   {
     id: 'transition-support',
-    name: 'Post-16 Transition & Prep',
+    slug: 'transition-support',
+    name: 'Transition Support',
     description: 'Guidance and preparation for crucial developmental milestones, including Post-16 pathways, independent living, supported internships, and adult life.',
     keyFeatures: ['Career guidance, CV preparation, and college taster visits', 'Budgeting, travel training, and self-advocacy skills', 'Multi-agency transition planning up to age 25'],
     category: 'Vocational',

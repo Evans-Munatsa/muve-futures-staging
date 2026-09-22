@@ -1,4 +1,4 @@
-import { CaseStudy } from '../types';
+import { CaseStudy } from '@/app/types';
 
 export const SUPPORT_NEEDS = [
   {

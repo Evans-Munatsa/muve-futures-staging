@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { ResourceArticle } from '@/app/types';
-import { Card } from '@/app/components/ui/card';
-import { Badge } from '@/app/components/ui/badge';
-import { Button } from '@/app/components/ui/button';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/app/components/ui/dialog';
-import { BookOpen, Clock, ArrowRight, User } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { BookOpen, Clock, ArrowRight } from 'lucide-react';
 
 interface GuidesLibraryProps {
   articles: ResourceArticle[];
@@ -18,10 +18,10 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span className="text-xs font-black uppercase tracking-widest text-[#f05a28]">
+            <span className="text-xs font-black uppercase tracking-widest text-brand-orange">
               EXPERT ARTICLES & TOOLKITS
             </span>
-            <h2 className="text-3xl font-extrabold text-[#092233]">
+            <h2 className="text-3xl font-extrabold text-brand-ink">
               Guidance & Practitioner Toolkits
             </h2>
           </div>
@@ -33,7 +33,7 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
         {articles.length === 0 ? (
           <Card className="p-12 text-center space-y-3 bg-white border-neutral-200">
             <BookOpen className="w-10 h-10 text-neutral-300 mx-auto" />
-            <h3 className="text-lg font-bold text-[#092233]">No articles found matching your query</h3>
+            <h3 className="text-lg font-bold text-brand-ink">No articles found matching your query</h3>
             <p className="text-sm text-neutral-500">
               Try adjusting your search terms or selecting a different category above.
             </p>
@@ -73,7 +73,7 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
                       <span>{art.publishedDate}</span>
                     </div>
 
-                    <h3 className="text-lg font-extrabold text-[#092233] group-hover:text-[#f05a28] transition-colors leading-snug">
+                    <h3 className="text-lg font-extrabold text-brand-ink group-hover:text-brand-orange transition-colors leading-snug">
                       {art.title}
                     </h3>
 
@@ -90,7 +90,7 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => setSelectedArticle(art)}
-                      className="text-xs font-bold text-[#f05a28] hover:text-[#d94e20] hover:bg-neutral-100 p-0 flex items-center gap-1"
+                      className="text-xs font-bold text-brand-orange hover:text-[#d94e20] hover:bg-neutral-100 p-0 flex items-center gap-1"
                     >
                       <span>Read Guide</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -128,7 +128,7 @@ export const GuidesLibrary: React.FC<GuidesLibraryProps> = ({ articles }) => {
                 </div>
 
                 <div className="p-6 overflow-y-auto space-y-4 text-neutral-700 text-sm leading-relaxed max-h-[50vh]">
-                  <p className="font-semibold text-base text-[#092233]">
+                  <p className="font-semibold text-base text-brand-ink">
                     {selectedArticle.summary}
                   </p>
                   <p>

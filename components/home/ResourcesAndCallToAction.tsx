@@ -1,102 +1,67 @@
-import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ReferralButton } from '@/components/common/ActionButtons';
+import { homeButton, homeType } from '@/components/home/homeStyles';
+import { cn } from '@/lib/utils';
 
-interface ResourcesAndCallToActionProps {
-  onVisitResources: () => void;
-  onOpenReferral: () => void;
-}
-
-export const ResourcesAndCallToAction: React.FC<ResourcesAndCallToActionProps> = ({
-  onVisitResources,
-  onOpenReferral,
-}) => {
+/* Frame y 7873–8463 (resources band) and 8463–9075 (closing call to action). */
+export function ResourcesAndCallToAction() {
   return (
-    <div className="w-full">
-      {/* Resources For Schools, Families and Professionals */}
-      <section id="resources-preview" className="relative pt-14 pb-40 overflow-hidden text-white">
-        {/* Background image */}
-        <img
-          src="/books.svg"
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (target.src !== '/hero-boy.jpg') {
-              target.src = '/hero-boy.jpg';
-            }
-          }}
-          alt="Cute smiling boy with Down syndrome playing with crayons and drawing happily at his art table"
-          className="absolute inset-0 w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-          loading="eager"
+    <>
+      <section id="resources-preview" className="relative overflow-hidden px-6 pt-12 pb-32 text-white lg:u-h-590 lg:p-0">
+        <Image
+          src="/images/home/books.webp"
+          alt="Colourful open books standing on their edges against an orange background"
+          fill
+          sizes="100vw"
+          className="object-cover"
         />
 
+        <h2 className={cn(homeType.heading, 'relative lg:absolute lg:u-left-389 lg:u-top-88')}>
+          Resources For Schools, Families
+          <br className="hidden sm:block" /> and Professionals
+        </h2>
 
-        {/* Content, layered above the image */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-10">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight max-w-2xl leading-tight">
-              Resources For Schools, Families and Professionals
-            </h2>
-
-            <div className="shrink-0">
-              <Button
-                id="btn-visit-resources"
-                variant="outline"
-                size="lg"
-                onClick={onVisitResources}
-                className="font-bold text-sm sm:text-base border-white hover:bg-white hover:text-[#e27a32]"
-              >
-                Visit Our Resources
-              </Button>
-            </div>
-          </div>
+        <div className="relative mt-6 lg:absolute lg:u-left-1218 lg:u-top-202 lg:mt-0">
+          <Button asChild variant="outline-white" className={cn(homeButton.outlineSm, 'lg:u-w-311')}>
+            <Link id="btn-visit-resources" href="/resources">
+              Visit Our Resources
+            </Link>
+          </Button>
         </div>
       </section>
 
-      {/* Call to Action: Every Young Person Deserves The Opportunity To Move Forward */}
-      <section className="bg-[#F05B25] py-16 lg:py-24 text-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Left Column: Stack of books with a shiny red apple on top */}
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full overflow-hidden  aspect-[4/4]">
-                <img
-                  src="/applebook.svg"
-                  alt="Stack of educational books with a shiny red apple on top"
-                  className="w-full h-full object-cover object-center"
-                  referrerPolicy="no-referrer"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 pointer-events-none" />
-              </div>
-            </div>
+      <section className="relative bg-brand-orange px-6 pb-14 text-white lg:u-h-612 lg:p-0">
+        <div className="relative mx-auto aspect-[879/608] w-3/4 max-w-sm lg:absolute lg:-u-left-48 lg:u-top-26 lg:u-h-608 lg:u-w-879 lg:max-w-none">
+          <Image
+            src="/images/home/apple-books.webp"
+            alt="Stack of books with a red apple on top"
+            fill
+            sizes="(min-width: 1024px) 46vw, 75vw"
+            className="object-contain"
+          />
+        </div>
 
-            {/* Right Column: Heading, description, Make a Referral button */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
-                Every Young Person Deserves The Opportunity To Move Forward
-              </h2>
-
-              <p className="text-base sm:text-lg text-white/95 leading-relaxed font-medium max-w-xl mx-auto lg:mx-0">
-                Whether you’re ready to make a referral or simply want to discuss a learner’s needs, our team is here to help you find the right education pathway.
-              </p>
-
-              <div className="pt-2">
-                <Button
-                  id="cta-btn-referral-bottom"
-                  variant="outline"
-                  size="lg"
-                  onClick={onOpenReferral}
-                  className="font-bold text-base px-8 border-white hover:bg-white hover:text-[#f05a28] shadow-md"
-                >
-                  Make a Referral
-                </Button>
-              </div>
-            </div>
-
-          </div>
+        <div className="relative text-center lg:absolute lg:u-right-266 lg:u-top-84 lg:u-w-934 lg:text-right">
+          <h2 className={homeType.heading}>
+            Every Young Person
+            <br className="hidden sm:block" /> Deserves The Opportunity
+            <br className="hidden sm:block" /> To Move Forward
+          </h2>
+          <p className={cn(homeType.body, 'mt-4 lg:u-mt-22')}>
+            Whether you’re ready to make a referral or simply want to discuss a learner’s needs, our
+            team is here to help you find the right education pathway.
+          </p>
+          <ReferralButton
+            id="cta-btn-referral-bottom"
+            variant="outline-white"
+            className={cn(homeButton.outlineSm, 'mt-6 lg:u-mt-43 lg:u-w-311')}
+          >
+            Make a Referral
+          </ReferralButton>
         </div>
       </section>
-    </div>
+    </>
   );
-};
+}

@@ -1,74 +1,69 @@
-import React from 'react';
-import { SERVICES_DATA } from '@/data/content';
-import { ServiceItem } from '@/app/types';
+import Link from 'next/link';
+import { SERVICES_DATA } from '@/constants';
+import { homeType } from '@/components/home/homeStyles';
+import { cn } from '@/lib/utils';
 
-interface ServicesCircleProps {
-  onSelectService: (service: ServiceItem) => void;
-}
+// The design lays the pills out 2-3-2-3-2 inside the circle.
+const ROW_SIZES = [2, 3, 2, 3, 2];
+const ROWS = ROW_SIZES.map((count, i) => {
+  const start = ROW_SIZES.slice(0, i).reduce((sum, n) => sum + n, 0);
+  return SERVICES_DATA.slice(start, start + count);
+});
 
-export const ServicesCircle: React.FC<ServicesCircleProps> = ({ onSelectService }) => {
+/* Frame y 3676–5153; section coordinates = frame y − 3676. */
+export function ServicesCircle() {
   return (
-    <section id="services" className="relative bg-[#A5CD39] py-20 lg:py-32 overflow-hidden">
-      
-      {/* Decorative Large White Semi-Circle on Left */}
-      <div 
-        className="absolute -left-28 top-1/2 -translate-y-1/2 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full bg-white z-0 pointer-events-none" 
-        aria-hidden="true" 
-      />
+    <section id="services" className="relative overflow-hidden bg-brand-green px-6 py-16 lg:u-h-1477 lg:overflow-visible lg:p-0">
+      <svg className="absolute inset-0 hidden h-full w-full overflow-visible lg:block" viewBox="0 0 1920 1477" aria-hidden="true">
+        <circle cx="960" cy="715" r="660" fill="#F05B25" />
+        <circle cx="-58" cy="334" r="334" fill="#fff" />
+        <circle cx="1850" cy="1214" r="230" fill="#99D9E5" />
+        <polygon points="1793.4,307.7 1486.3,403.8 1556.6,89.8" fill="#EC83B5" />
+        <polygon points="1882.3,607.2 1782.2,612.2 1828,523.1" fill="#F05B25" />
+        <polygon points="281.1,834 253.1,737.9 350.4,761.7" fill="#fff" />
+        <polygon points="410.8,1268.3 133.3,1336.6 212.9,1062.2" fill="#F05B25" />
+        <polygon points="1600.6,1317.1 1601.6,1183.4 1721.5,1260" fill="#fff" />
+      </svg>
 
-      {/* Decorative Cyan Circle on Bottom-Right */}
-      <div 
-        className="absolute -right-20 -bottom-16 w-56 h-56 sm:w-72 sm:h-72 rounded-full bg-[#70bcf6] z-0 pointer-events-none" 
-        aria-hidden="true" 
-      />
+      {/* Pink triangle that overlaps the top of the framework card below */}
+      <svg className="pointer-events-none absolute inset-0 z-20 hidden h-full w-full overflow-visible lg:block" viewBox="0 0 1920 1477" aria-hidden="true">
+        <polygon points="1136.6,1411.2 1176,1613.7 980.9,1546.5" fill="#EC83B5" />
+      </svg>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex justify-center">
-        
-        {/* The Signature Orange/Coral Circular Container */}
-        <div className="relative w-full max-w-3xl aspect-square md:aspect-auto md:min-h-[720px] rounded-full bg-[#f05a28] p-8 sm:p-14 md:p-16 flex flex-col items-center justify-center text-center text-white">
-          
-          <div className="max-w-2xl mx-auto space-y-6 flex flex-col items-center">
-            
-            {/* Header */}
-            <div>
-              <span className="text-xs sm:text-sm font-extrabold tracking-widest uppercase text-white/90">
-                OUR SERVICES
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2 leading-tight tracking-tight">
-                Education That Adapts Around The Learner
-              </h2>
-            </div>
+      {/* On mobile the orange circle becomes a rounded panel */}
+      <div className="relative rounded-[3rem] bg-brand-orange px-5 py-12 text-center text-white lg:absolute lg:inset-x-0 lg:u-top-238 lg:rounded-none lg:bg-transparent lg:p-0">
+        <p className={homeType.eyebrow}>Our Services</p>
+        <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-10')}>
+          Education That Adapts
+          <br className="hidden sm:block" /> Around The Learner
+        </h2>
 
-            {/* Sub-label */}
-            <p className="text-base sm:text-lg font-semibold text-white/95">
-              Our services include
-            </p>
+        <p className="mt-6 text-base font-bold lg:u-mt-64 lg:u-text-36 lg:leading-[1.2] lg:tracking-[-0.02em]">Our services include</p>
 
-            {/* Service Pills Badges Grid */}
-            <div className="w-full flex flex-wrap justify-center items-center gap-2.5 sm:gap-3.5 max-w-xl py-2">
-              {SERVICES_DATA.map((service) => (
-                <button
-                  key={service.id}
-                  id={`btn-service-${service.id}`}
-                  onClick={() => onSelectService(service)}
-                  className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border-2 border-white text-white font-bold text-xs sm:text-sm tracking-wide bg-transparent hover:bg-white hover:text-[#f05a28] transition-all transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs focus:outline-hidden focus:ring-2 focus:ring-white"
-                  title={`Click to explore ${service.name}`}
-                >
-                  {service.name}
-                </button>
-              ))}
-            </div>
+        <ul className="mt-5 flex flex-col items-center gap-2.5 lg:u-mt-64 lg:u-gap-33">
+          {ROWS.map((row, i) => (
+            <li key={i}>
+              <ul className="flex flex-wrap justify-center gap-2.5 lg:flex-nowrap lg:u-gap-33">
+                {row.map((service) => (
+                  <li key={service.id}>
+                    <Link
+                      href={`/services/${service.slug}`}
+                      id={`btn-service-${service.id}`}
+                      className="flex items-center justify-center rounded-full border-2 border-white px-4 py-1.5 text-xs font-bold text-white transition hover:bg-white hover:text-brand-orange lg:u-h-51 lg:u-w-330 lg:u-border-6 lg:p-0 lg:u-text-24"
+                    >
+                      {service.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
 
-            {/* Bottom Tagline */}
-            <p className="text-base sm:text-lg font-bold text-white tracking-tight pt-3">
-              Every pathway is personalised around the learner.
-            </p>
-
-          </div>
-
-        </div>
-
+        <p className="mx-auto mt-8 max-w-xs text-base font-bold leading-[1.3] lg:u-mt-62 lg:u-max-w-560 lg:u-text-36 lg:tracking-[-0.02em]">
+          Every pathway is personalised around the learner.
+        </p>
       </div>
     </section>
   );
-};
+}

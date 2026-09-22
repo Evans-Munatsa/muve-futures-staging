@@ -1,4 +1,4 @@
-import { PolicyDocument, FAQItem, ResourceArticle } from '../types';
+import { PolicyDocument, FAQItem, ResourceArticle } from '@/app/types';
 
 export const RESOURCE_ARTICLES: ResourceArticle[] = [
   {

@@ -1,223 +1,134 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { FRAMEWORK_STAGES } from '@/data/content';
-import { FrameworkStage } from '@/types';
+import { FRAMEWORK_STAGES } from '@/constants';
+import { FrameworkStage } from '@/app/types';
 import { Button } from '@/components/ui/button';
+import { BookIntroButton, ReferralButton } from '@/components/common/ActionButtons';
+import { homeButton, homeType } from '@/components/home/homeStyles';
+import { cn } from '@/lib/utils';
 
-interface FourStageApproachProps {
-  onDiscoverMore: (stage: FrameworkStage) => void;
-  onBookIntro: () => void;
-  onOpenReferral: () => void;
-}
+const inkOutline =
+  'border-brand-ink text-brand-ink hover:bg-brand-ink hover:text-white active:scale-100';
 
-/* Brand colours
-   green  #A5CD39   orange #F05A28   navy #092233
-   pink   #EA86B8   cyan   #9ADAE6   light green #D8EC92 */
-
-/* Small outlined pill button, reused three times */
-const outlineButton =
-  'h-auto rounded-full border-[1.5px] border-[#092233] bg-transparent px-3 py-1 ' +
-  'text-[10px] font-bold text-[#092233] shadow-none transition-colors ' +
-  'hover:bg-[#092233] hover:text-white sm:px-6 sm:py-2 sm:text-sm';
-
-/* Round orange arrow buttons for the stage slider */
 const arrowButton =
-  'flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full ' +
-  'bg-[#F05A28] text-white transition-transform hover:scale-105 active:scale-95 ' +
-  'sm:h-10 sm:w-10';
+  'flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-brand-orange text-white transition-transform hover:scale-105 lg:u-h-56 lg:u-w-56';
 
-export const FourStageApproach: React.FC<FourStageApproachProps> = ({
-  onDiscoverMore,
-  onBookIntro,
-  onOpenReferral,
-}) => {
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const activeStage = FRAMEWORK_STAGES[currentIdx];
-
-  const handlePrev = () =>
-    setCurrentIdx((prev) => (prev === 0 ? FRAMEWORK_STAGES.length - 1 : prev - 1));
-
-  const handleNext = () =>
-    setCurrentIdx((prev) => (prev === FRAMEWORK_STAGES.length - 1 ? 0 : prev + 1));
+/*
+ * Frame y 5153–7873: the framework card, the classroom photo, the notebook and
+ * the referral block. Section coordinates = frame y − 5153.
+ */
+export function FourStageApproach({ onDiscoverMore }: { onDiscoverMore: (stage: FrameworkStage) => void }) {
+  const [index, setIndex] = useState(0);
+  const stage = FRAMEWORK_STAGES[index];
+  const step = (delta: number) =>
+    setIndex((i) => (i + delta + FRAMEWORK_STAGES.length) % FRAMEWORK_STAGES.length);
 
   return (
-    <section
-      id="framework"
-      className="relative overflow-hidden bg-[#A5CD39] pt-4 pb-5 sm:pt-8 sm:pb-16"
-    >
-      {/* ───────── Decorative shapes ───────── */}
+    <section id="framework" className="relative bg-brand-green pt-4 pb-16 lg:u-h-2720 lg:p-0">
+      {/* Referral shapes, behind the notebook */}
+      <svg className="absolute inset-0 hidden h-full w-full overflow-visible lg:block" viewBox="0 0 1920 2720" aria-hidden="true">
+        <circle cx="112" cy="2277" r="230" fill="#99D9E5" />
+      </svg>
 
-      {/* Light-blue circle, top-right corner */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-12 -right-4 h-14 w-14 rounded-full bg-[#9ADAE6] sm:-top-24 sm:-right-8 sm:h-28 sm:w-28"
-      />
-
-      {/* Light-blue circle, bottom-left */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-11 -left-7 h-24 w-24 rounded-full bg-[#9ADAE6] sm:bottom-24 sm:-left-14 sm:h-48 sm:w-48"
-      />
-
-      {/* White triangle, bottom-left */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-5 left-3 z-10 h-7 w-6 bg-white [clip-path:polygon(0_100%,100%_0,100%_100%)] sm:bottom-10 sm:left-6 sm:h-14 sm:w-12"
-      />
-
-      {/* Large pink triangle, bottom-right */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-2 bottom-16 h-14 w-16 bg-[#EA86B8] [clip-path:polygon(0_0,100%_35%,15%_100%)] sm:right-6 sm:bottom-32 sm:h-28 sm:w-32"
-      />
-
-      {/* ───────── White framework card ───────── */}
-      <div className="relative z-20 mx-auto w-[79%] max-w-4xl pt-10">
-        <div className="rounded-tr-[2.5rem] bg-white px-5 pt-4 pb-4 sm:rounded-tr-[4rem] sm:px-10 sm:pt-8 sm:pb-8">
-          {/* Header row */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="max-w-[58%] sm:max-w-none">
-              <span className="block text-[10px] font-extrabold uppercase tracking-widest text-[#F05A28] sm:text-sm">
-                Our Framework
-              </span>
-
-              <h2 className="mt-1 text-[1.375rem] font-extrabold leading-[1.15] tracking-tight text-[#092233] sm:mt-2 sm:text-4xl lg:text-5xl">
-                The Four Stage Approach
-              </h2>
-
-              <p className="mt-2 text-[10px] font-medium text-[#092233] sm:text-base">
-                Every programme follows a structured approach
-              </p>
-            </div>
-
-            <Button
-              id="btn-discover-approach"
-              variant="outline"
-              onClick={() => onDiscoverMore(activeStage)}
-              className={`${outlineButton} whitespace-nowrap`}
-            >
-              Discover Our Approach
-            </Button>
-          </div>
-
-          {/* Stage slider bar */}
-          <div className="mt-2 flex h-10 items-center justify-between rounded-full bg-[#D8EC92] px-1 sm:mt-6 sm:h-16 sm:px-3">
-            <button
-              id="stage-slider-prev"
-              onClick={handlePrev}
-              aria-label="Previous Stage"
-              className={arrowButton}
-            >
-              <ChevronLeft className="h-4 w-4 stroke-[3] sm:h-6 sm:w-6" />
-            </button>
-
-            <p className="flex-1 px-2 text-center text-[11px] font-semibold text-[#092233] sm:text-lg lg:text-xl">
-              {activeStage.headline}
-            </p>
-
-            <button
-              id="stage-slider-next"
-              onClick={handleNext}
-              aria-label="Next Stage"
-              className={arrowButton}
-            >
-              <ChevronRight className="h-4 w-4 stroke-[3] sm:h-6 sm:w-6" />
-            </button>
-          </div>
+      {/* White framework card, over the top of the photo */}
+      <div className="relative z-10 mx-6 rounded-tr-[2.5rem] bg-white px-6 py-8 text-brand-ink lg:absolute lg:u-left-200 lg:top-0 lg:u-h-600 lg:u-w-1520 lg:mx-0 lg:u-rounded-tr-80 lg:p-0">
+        <div className="lg:absolute lg:u-left-79 lg:u-top-58">
+          <p className={cn(homeType.eyebrow, 'text-brand-orange')}>Our Framework</p>
+          <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-14')}>
+            The Four
+            <br className="hidden sm:block" /> Stage Approach
+          </h2>
+          <p className={cn(homeType.body, 'mt-3 lg:u-mt-30')}>Every programme follows a structured approach</p>
         </div>
 
-        {/* Pink triangle overlapping the top edge of the card */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-3 left-[52%] aspect-[41/43] w-[12.5%] bg-[#EA86B8] [clip-path:polygon(0_86%,83%_0,100%_100%)] sm:-top-6"
-        />
+        <div className="mt-5 lg:absolute lg:u-left-1053 lg:u-top-69 lg:mt-0">
+          <Button
+            id="btn-discover-approach"
+            variant="outline"
+            onClick={() => onDiscoverMore(stage)}
+            className={cn(homeButton.outlineSm, inkOutline, 'lg:u-w-375 lg:u-h-52')}
+          >
+            Discover Our Approach
+          </Button>
+        </div>
 
-        {/* Small dark-green triangle, right side of the card */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[34%] left-[82%] aspect-square w-[6%] bg-[#8CC63F] [clip-path:polygon(0_0,100%_10%,35%_100%)]"
-        />
-      </div>
-
-      {/* ───────── Photo banner ───────── */}
-      <div className="relative -mt-2 max-h-[36rem] w-full">
-        <img
-          src="/three-young-girls.svg"
-          alt="Three young children joyfully engaged in collaborative learning around a classroom table"
-          className="h-full w-full object-cover object-center"
-          referrerPolicy="no-referrer"
-          loading="lazy"
-        />
-      </div>
-
-      {/* ───────── Notebook ───────── */}
-      <div className="relative z-10 mx-auto -mt-7 w-[61%] max-w-3xl sm:-mt-16">
-        <div className="relative flex aspect-[252/145] flex-col items-center justify-center py-[5%] pr-[5%] pl-[10%] text-center">
-          <img
-            src="/notebook.svg"
-            alt=""
-            className="pointer-events-none absolute inset-0 z-0 h-full w-full object-fill"
-          />
-
-          <div className="relative z-10 space-y-2 sm:space-y-4">
-            <span className="block text-[10px] font-extrabold uppercase tracking-widest text-[#092233] sm:text-sm">
-              Partnerships
-            </span>
-
-            <h3 className="text-lg font-extrabold leading-tight tracking-tight text-[#092233] sm:text-3xl">
-              Working Together Around Every Learner
-            </h3>
-
-            <p className="mx-auto max-w-[80%] text-[10px] leading-relaxed text-neutral-700 sm:text-base">
-              Positive outcomes are achieved through collaboration. We work closely
-              with schools, Local Authorities, commissioners, families and
-              professionals to create joined-up education pathways that place the
-              learner at the centre of every decision.
-            </p>
-
-            <Button
-              id="btn-book-intro"
-              variant="outline"
-              onClick={onBookIntro}
-              className={outlineButton}
-            >
-              Book an Intro Call
-            </Button>
-          </div>
+        {/* Stage slider */}
+        <div className="relative mt-6 flex items-center gap-3 rounded-[1.5rem] bg-brand-lime py-4 pr-3 pl-3 lg:absolute lg:u-left-78 lg:u-top-373 lg:u-h-157 lg:u-w-1370 lg:mt-0 lg:gap-0 lg:bg-transparent lg:p-0">
+          <div aria-hidden="true" className="absolute inset-y-0 hidden rounded-[2rem] bg-brand-lime lg:block lg:u-left-28 lg:u-w-1314" />
+          <button type="button" id="stage-slider-prev" onClick={() => step(-1)} aria-label="Previous stage" className={cn(arrowButton, 'relative')}>
+            <ChevronLeft className="h-5 w-5 stroke-[3]" />
+          </button>
+          <p aria-live="polite" className="relative flex-1 text-sm font-medium lg:u-pl-35 lg:u-text-36">
+            {stage.headline}
+          </p>
+          <button type="button" id="stage-slider-next" onClick={() => step(1)} aria-label="Next stage" className={cn(arrowButton, 'relative')}>
+            <ChevronRight className="h-5 w-5 stroke-[3]" />
+          </button>
         </div>
       </div>
 
-      {/* ───────── Referral ───────── */}
-      <div
-        id="referral"
-        className="relative z-10 mx-auto mt-12 w-[65%] max-w-3xl space-y-2 text-center text-white sm:mt-24 sm:space-y-5"
-      >
-        <span className="block text-[10px] font-black uppercase tracking-widest sm:text-sm">
-          Referral
-        </span>
+      {/* Classroom photo */}
+      <div className="relative -mt-6 aspect-[1920/1046] w-full lg:absolute lg:u-top-424 lg:mt-0">
+        <Image
+          src="/images/home/framework-photo.webp"
+          alt="Three young children engaged in learning together around a classroom table"
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
 
-        <h2 className="text-xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-          A Simple Referral Journey
-        </h2>
+      {/* Notebook */}
+      <div className="relative z-10 mx-auto -mt-10 aspect-[1275/941] w-[92%] lg:absolute lg:u-left-313 lg:u-top-1277 lg:u-h-941 lg:u-w-1275 lg:mt-0">
+        <Image src="/images/home/notebook.webp" alt="" fill sizes="(min-width: 1024px) 66vw, 92vw" className="object-contain" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-[14%] text-center text-brand-ink lg:justify-start lg:u-pt-210 lg:px-0">
+          <p className={homeType.eyebrow}>Partnerships</p>
+          <h3 className={cn('mt-1 text-lg font-bold leading-[1.22] tracking-[-0.02em] sm:text-3xl lg:u-mt-22 lg:u-text-72')}>
+            Working Together
+            <br className="hidden sm:block" /> Around Every Learner
+          </h3>
+          <p className={cn('mt-2 hidden text-xs leading-[1.35] sm:block sm:text-sm lg:u-mt-60 lg:u-w-840 lg:u-text-24')}>
+            Positive outcomes are achieved through collaboration. We work closely with schools,
+            Local Authorities, commissioners, families and professionals to create joined-up
+            education pathways that place the learner at the centre of every decision.
+          </p>
+          <BookIntroButton
+            id="btn-book-intro"
+            variant="outline"
+            className={cn(homeButton.outlineSm, inkOutline, 'mt-3 h-8 text-xs lg:u-mt-50 lg:u-w-249')}
+          >
+            Book an Intro
+          </BookIntroButton>
+        </div>
+      </div>
 
-        <p className="text-[10px] leading-snug sm:text-lg sm:leading-relaxed">
-          Making a referral is straightforward. We begin with a conversation,
-          understand the learner’s needs and desired outcomes, recommend the most
-          appropriate pathway and provide regular communication throughout the
-          programme.
+      {/* Referral */}
+      <div id="referral" className="relative z-10 mt-12 px-6 text-center text-white lg:absolute lg:inset-x-0 lg:u-top-2265 lg:mt-0 lg:p-0">
+        <p className={homeType.eyebrow}>Referral</p>
+        <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-10')}>A Simple Referral Journey</h2>
+        <p className={cn(homeType.body, 'mx-auto mt-4 max-w-2xl lg:u-mt-29 lg:u-w-1260 lg:max-w-none')}>
+          Making a referral is straightforward. We begin with a conversation, understand the
+          learner’s needs and desired outcomes, recommend the most appropriate pathway and provide
+          regular communication throughout the programme.
         </p>
-
-        <Button
+        <ReferralButton
           id="journey-btn-referral-bottom"
-          variant="outline"
-          onClick={onOpenReferral}
-          className={`${outlineButton} bg-white px-4 sm:px-8`}
+          variant="outline-white"
+          className={cn(homeButton.outlineSm, 'mt-6 lg:u-mt-45 lg:u-w-311')}
         >
           Make a Referral
-        </Button>
+        </ReferralButton>
       </div>
+
+      {/* Shapes in front: green triangle on the card, referral triangles */}
+      <svg className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full overflow-visible lg:block" viewBox="0 0 1920 2720" aria-hidden="true">
+        <polygon points="1475.1,297 1447.1,200.9 1544.4,224.7" fill="#A5CD39" />
+        <polygon points="36.8,2549.7 144.6,2470.6 154.8,2612.6" fill="#fff" />
+        <polygon points="1879.1,2275.4 1572,2371.5 1642.3,2057.5" fill="#EC83B5" />
+      </svg>
     </section>
   );
-};
+}

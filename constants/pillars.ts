@@ -1,11 +1,11 @@
-import { PillarItem } from '../types';
+import { PillarItem } from '@/app/types';
 
 export const PILLARS_DATA: PillarItem[] = [
   {
     id: 'personalised',
     title: 'Personalised',
     subtitle: 'Every learner is unique, so every curriculum is custom-built.',
-    image: '/personalised.svg',
+    image: '/images/home/pillar-personalised.webp',
     tag: 'Personalised',
     description: 'We discard rigid one-size-fits-all curricula. Instead, learning pathways are co-designed around the young person’s passions, sensory thresholds, and pace.',
     points: [
@@ -18,8 +18,8 @@ export const PILLARS_DATA: PillarItem[] = [
     id: 'relationship-based',
     title: 'Relationship Based',
     subtitle: 'Education begins with trust, connection, and unconditional positive regard.',
-    image: '/relationship-based.svg',
-    tag: 'Relation Based',
+    image: '/images/home/pillar-relationship-based.webp',
+    tag: 'Relationship Based',
     description: 'Academic learning is impossible without emotional regulation and psychological safety. Our mentors establish deep rapport before introducing tasks.',
     points: [
       'Consistent 1:1 trusted key worker dedicated to the learner',
@@ -31,7 +31,7 @@ export const PILLARS_DATA: PillarItem[] = [
     id: 'flexible',
     title: 'Flexible',
     subtitle: 'Adapting timetable, location, and teaching style to learner well-being.',
-    image: '/flexible.svg',
+    image: '/images/home/pillar-flexible.webp',
     tag: 'Flexible',
     description: 'Provisions adapt dynamically in real-time. Whether delivered in the home, community hub, or virtual classroom, we meet learners wherever they are.',
     points: [
@@ -44,7 +44,7 @@ export const PILLARS_DATA: PillarItem[] = [
     id: 'outcome-focused',
     title: 'Outcome Focused',
     subtitle: 'Clear, measurable steps toward confidence, qualifications, and independence.',
-    image: '/outcome-focused.svg',
+    image: '/images/home/pillar-outcome-focused.webp',
     tag: 'Outcome Focused',
     description: 'Every session links to purposeful progression — whether that is reintegration into school, GCSEs/Functional Skills, or Post-16 independence.',
     points: [

@@ -1,6 +1,6 @@
 import React from 'react';
-import { WhiteTriangle, PinkPolygon, CyanCircle } from '@/app/components/common/GeometricShapes';
-import { Input } from '@/app/components/ui/input';
+import { WhiteTriangle, PinkPolygon, CyanCircle } from '@/components/common/GeometricShapes';
+import { Input } from '@/components/ui/input';
 import { BookOpen, Search } from 'lucide-react';
 
 interface ResourcesHeroProps {
@@ -19,7 +19,7 @@ export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
   categories,
 }) => {
   return (
-    <section className="relative bg-[#e27a32] pt-12 pb-16 lg:pt-16 lg:pb-24 overflow-hidden text-white">
+    <section className="relative bg-brand-orange pt-12 pb-16 lg:pt-16 lg:pb-24 overflow-hidden text-white">
       <div className="absolute top-6 right-12 z-10">
         <PinkPolygon size={68} rotation={18} />
       </div>
@@ -55,7 +55,7 @@ export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search guides, policies, keywords (e.g. EBSNA, EHCP, attendance)..."
-              className="bg-white text-[#092233] placeholder:text-neutral-400 pl-12 pr-4 py-3.5 h-auto text-sm sm:text-base rounded-full border-none shadow-lg focus-visible:ring-2 focus-visible:ring-white"
+              className="bg-white text-brand-ink placeholder:text-neutral-400 pl-12 pr-4 py-3.5 h-auto text-sm sm:text-base rounded-full border-none shadow-lg focus-visible:ring-2 focus-visible:ring-white"
             />
           </div>
         </div>
@@ -68,7 +68,7 @@ export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
               onClick={() => onSelectCategory(cat)}
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 activeCategory === cat
-                  ? 'bg-white text-[#e27a32] shadow-md scale-105'
+                  ? 'bg-white text-brand-orange shadow-md scale-105'
                   : 'bg-white/20 text-white hover:bg-white/30'
               }`}
             >

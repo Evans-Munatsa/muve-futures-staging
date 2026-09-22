@@ -1,13 +1,75 @@
 @import "tailwindcss";
 
-/* Define the font variable for Tailwind v4 utility engine */
+/*
+ * Brand font. `--font-lexend-deca-local` is set by next/font in app/layout.tsx;
+ * `inline` makes `font-lexend-deca` (and the default `font-sans`) resolve it
+ * on the element itself. Lexend Deca is the only typeface on the site.
+ */
+@theme inline {
+  --font-lexend-deca: var(--font-lexend-deca-local), 'Lexend Deca', sans-serif;
+  --font-sans: var(--font-lexend-deca-local), 'Lexend Deca', sans-serif;
+}
+
 @theme {
-  --font-brand: 'Fredoka', cursive, sans-serif;
-  --font-sans: var(--font-lexend-deca), sans-serif;
+  /* Brand palette, sampled from public/design/Muve Futures Website.svg */
+  --color-brand-green: #A5CD39;
+  --color-brand-orange: #F05B25;
+  --color-brand-ink: #113A27;
+  --color-brand-pink: #EC83B5;
+  --color-brand-cyan: #99D9E5;
+  --color-brand-lime: #DCEFAB;
+  --color-brand-navy: #24345E;
+  --color-brand-coral: #F75658;
+}
+
+/*
+ * Design units. The Figma frames are 1920px wide; `--u` is one design pixel at
+ * the current viewport, so `u-w-354` is 354px in the design at any width (capped
+ * at 1920). Used from `lg` up to reproduce the design's layout exactly; smaller
+ * screens use normal responsive classes.
+ */
+@utility u-w-* { width: calc(var(--u) * --value(number)); }
+@utility u-h-* { height: calc(var(--u) * --value(number)); }
+@utility u-min-h-* { min-height: calc(var(--u) * --value(number)); }
+@utility u-max-w-* { max-width: calc(var(--u) * --value(number)); }
+@utility u-top-* { top: calc(var(--u) * --value(number)); }
+@utility -u-top-* { top: calc(var(--u) * --value(number) * -1); }
+@utility u-left-* { left: calc(var(--u) * --value(number)); }
+@utility -u-left-* { left: calc(var(--u) * --value(number) * -1); }
+@utility u-right-* { right: calc(var(--u) * --value(number)); }
+@utility -u-right-* { right: calc(var(--u) * --value(number) * -1); }
+@utility u-bottom-* { bottom: calc(var(--u) * --value(number)); }
+@utility -u-bottom-* { bottom: calc(var(--u) * --value(number) * -1); }
+@utility u-mt-* { margin-top: calc(var(--u) * --value(number)); }
+@utility -u-mt-* { margin-top: calc(var(--u) * --value(number) * -1); }
+@utility u-mb-* { margin-bottom: calc(var(--u) * --value(number)); }
+@utility u-ml-* { margin-left: calc(var(--u) * --value(number)); }
+@utility u-pt-* { padding-top: calc(var(--u) * --value(number)); }
+@utility u-pb-* { padding-bottom: calc(var(--u) * --value(number)); }
+@utility u-pl-* { padding-left: calc(var(--u) * --value(number)); }
+@utility u-pr-* { padding-right: calc(var(--u) * --value(number)); }
+@utility u-px-* { padding-inline: calc(var(--u) * --value(number)); }
+@utility u-py-* { padding-block: calc(var(--u) * --value(number)); }
+@utility u-gap-* { gap: calc(var(--u) * --value(number)); }
+@utility u-gap-x-* { column-gap: calc(var(--u) * --value(number)); }
+@utility u-gap-y-* { row-gap: calc(var(--u) * --value(number)); }
+@utility u-text-* { font-size: calc(var(--u) * --value(number)); }
+@utility u-border-* { border-width: calc(var(--u) * --value(number)); }
+@utility u-rounded-tl-* { border-top-left-radius: calc(var(--u) * --value(number)); }
+@utility u-rounded-tr-* { border-top-right-radius: calc(var(--u) * --value(number)); }
+
+/* Hide the native scrollbar while keeping the element scrollable (used by carousels). */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @layer base {
   :root {
+    /* One design pixel (see the u-* utilities above). */
+    --u: calc(min(100vw, 1920px) / 1920);
     --background: 0 0% 100%;
     --foreground: 203 70% 12%;
     --card: 0 0% 100%;
@@ -34,10 +96,16 @@
     scroll-behavior: smooth;
   }
   
+  /* Form controls don't inherit the page font by default in every browser. */
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+  }
+
   body {
-    /* Set Lexend Deca as the sole layout font configuration */
-    font-family: var(--font-lexend-deca), sans-serif;
-    color: #092233;
+    color: #113A27;
     background-color: #A5CD39;
     overflow-x: hidden;
   }

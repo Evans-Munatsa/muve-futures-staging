@@ -4,14 +4,12 @@ export type PageId =
   | 'services'
   | 'who-we-support'
   | 'resources'
-  | 'contact'
-  | 'referral'
-  | 'coming-soon'
-  | 'not-found'
-  | 'server-error';
+  | 'contact';
 
 export interface ServiceItem {
   id: string;
+  /** Slug of the dedicated page at /services/[slug]. */
+  slug: string;
   name: string;
   description: string;
   keyFeatures: string[];
@@ -93,8 +91,16 @@ export interface FAQItem {
   category: 'Commissioning' | 'SEND Support' | 'Attendance & EBSNA' | 'Costs & Funding';
 }
 
+/** Categories offered by the referral form. */
+export type ReferrerType =
+  | 'Local Authority'
+  | 'School / Academy'
+  | 'Parent / Carer'
+  | 'Social Worker / Healthcare'
+  | 'Other';
+
 export interface ReferralFormData {
-  referrerType: 'Local Authority' | 'School / Academy' | 'Parent / Carer' | 'Social Worker / Healthcare' | 'Other';
+  referrerType: ReferrerType;
   referrerName: string;
   referrerEmail: string;
   referrerPhone: string;

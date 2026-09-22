@@ -1,24 +1,25 @@
 import React, { useState, useMemo } from 'react';
 import { Search, ArrowRight, BookOpen, Layers } from 'lucide-react';
-import { SERVICES_DATA, FAQ_ITEMS, POLICY_DOCUMENTS } from '../../data/content';
-import { ServiceItem, PageId } from '@/app/types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Input } from '../ui/input';
-// import { Badge } from '@/app/components/ui/badge';
-import{ Badge } from "../ui/badge"
+import { SERVICES_DATA, FAQ_ITEMS, POLICY_DOCUMENTS } from '@/data/content';
+import { PageId } from '@/app/types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+// import { Badge } from '@/components/ui/badge';
+import{ Badge } from "@/components/ui/badge"
 
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectService: (service: ServiceItem) => void;
   onNavigate: (page: PageId) => void;
+  /** Opens a service's dedicated page. */
+  onOpenService: (slug: string) => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
   isOpen,
   onClose,
-  onSelectService,
   onNavigate,
+  onOpenService,
 }) => {
   const [query, setQuery] = useState('');
 
@@ -50,7 +51,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-2xl p-0 overflow-hidden">
         <DialogHeader className="p-4 pb-0">
-          <DialogTitle className="text-lg font-bold text-[#092233]">Search Muve Futures Hub</DialogTitle>
+          <DialogTitle className="text-lg font-bold text-brand-ink">Search Muve Futures Hub</DialogTitle>
         </DialogHeader>
 
         {/* Search Input Bar */}
@@ -72,7 +73,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           {/* Services Matches */}
           <div>
             <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
-              <Layers className="w-3.5 h-3.5 text-[#8cc63f]" />
+              <Layers className="w-3.5 h-3.5 text-brand-green" />
               <span>Alternative Provision Services</span>
             </div>
             {filteredServices.length > 0 ? (
@@ -82,13 +83,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     key={service.id}
                     onClick={() => {
                       onClose();
-                      onSelectService(service);
+                      onOpenService(service.slug);
                     }}
-                    className="p-3 rounded-xl border border-neutral-100 hover:border-[#8cc63f] hover:bg-[#8cc63f]/5 transition flex items-center justify-between cursor-pointer group"
+                    className="p-3 rounded-xl border border-neutral-100 hover:border-brand-green hover:bg-brand-green/5 transition flex items-center justify-between cursor-pointer group"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-sm text-[#092233] group-hover:text-[#8cc63f]">
+                        <h4 className="font-bold text-sm text-brand-ink group-hover:text-brand-green">
                           {service.name}
                         </h4>
                         {service.ageRange && (
@@ -101,7 +102,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                         {service.description}
                       </p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-neutral-300 group-hover:text-[#8cc63f] shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-neutral-300 group-hover:text-brand-green shrink-0" />
                   </div>
                 ))}
               </div>
@@ -113,7 +114,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           {/* Statutory Documents & Policies */}
           <div>
             <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
-              <BookOpen className="w-3.5 h-3.5 text-[#f05a28]" />
+              <BookOpen className="w-3.5 h-3.5 text-brand-orange" />
               <span>Policies & Commissioning Guidance</span>
             </div>
             <div className="space-y-2">
@@ -130,7 +131,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600">
                       {pol.category}
                     </span>
-                    <h4 className="font-bold text-sm text-[#092233]">
+                    <h4 className="font-bold text-sm text-brand-ink">
                       {pol.title}
                     </h4>
                   </div>
@@ -156,7 +157,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     }}
                     className="p-3 rounded-xl border border-neutral-100 bg-neutral-50/50 hover:bg-neutral-100 transition cursor-pointer"
                   >
-                    <p className="text-sm font-semibold text-[#092233]">{faq.question}</p>
+                    <p className="text-sm font-semibold text-brand-ink">{faq.question}</p>
                     <p className="text-xs text-neutral-600 mt-1 line-clamp-2">{faq.answer}</p>
                   </div>
                 ))}
@@ -169,13 +170,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         {/* Footer Quick Links */}
         <div className="bg-neutral-50 px-6 py-3 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
           <span>Explore pages:</span>
-          <div className="flex gap-3 font-semibold text-[#092233]">
+          <div className="flex gap-3 font-semibold text-brand-ink">
             <button
               onClick={() => {
                 onClose();
                 onNavigate('who-we-support');
               }}
-              className="hover:text-[#8cc63f] cursor-pointer"
+              className="hover:text-brand-green cursor-pointer"
             >
               Who We Support
             </button>
@@ -184,7 +185,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 onClose();
                 onNavigate('services');
               }}
-              className="hover:text-[#8cc63f] cursor-pointer"
+              className="hover:text-brand-green cursor-pointer"
             >
               Services
             </button>
@@ -193,7 +194,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 onClose();
                 onNavigate('contact');
               }}
-              className="hover:text-[#8cc63f] cursor-pointer"
+              className="hover:text-brand-green cursor-pointer"
             >
               Contact
             </button>
