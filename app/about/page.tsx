@@ -6,9 +6,9 @@ import {
   ScrollText,
   Crown,
   Award,
-  Linkedin,
-  Instagram,
-  Facebook,
+//   Linkedin,
+//   Instagram,
+//   Facebook,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -34,43 +34,13 @@ export default function AboutPage() {
 
   return (
     <main className="w-full bg-[#A5CD39]">
-      {/* ───────────────────── Header ───────────────────── */}
-      <header className="mx-auto flex w-[90%] max-w-6xl items-center justify-between py-6">
-        <nav className="hidden items-center gap-8 text-sm font-bold text-white md:flex">
-          <a href="/services" className="hover:opacity-80">
-            Services
-          </a>
-          <a href="/who-we-support" className="hover:opacity-80">
-            Who We Support
-          </a>
-        </nav>
-
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="Muve Futures Alternative Provision" className="h-14 w-auto" />
-
-        <div className="hidden items-center gap-8 text-sm font-bold text-white md:flex">
-          <a href="/resources" className="hover:opacity-80">
-            Resources
-          </a>
-          <a href="/contact" className="hover:opacity-80">
-            Contact
-          </a>
-          <button
-            type="button"
-            aria-label="Search"
-            className="flex h-9 w-16 items-center justify-center rounded-full bg-white/90 text-[#092233] transition hover:bg-white"
-          >
-            <Search className="h-4 w-4" />
-          </button>
-        </div>
-      </header>
 
       {/* ───────────────────── Hero ───────────────────── */}
       <section className="relative w-full overflow-hidden">
         <div className="relative aspect-[16/9] max-h-[45rem] w-full sm:aspect-[21/9]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/about-hero.jpg"
+            src="/background.svg"
             alt="A boy and a mother playing and drawing together in a bright playroom"
             className="h-full w-full object-cover"
           />
@@ -134,7 +104,7 @@ export default function AboutPage() {
             <div className="mx-auto w-[60%] max-w-xs sm:mx-0 sm:w-[26%]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/girl-portrait.jpg"
+                src="/girl.svg"
                 alt="Smiling girl with her arms crossed"
                 className="h-full w-full rounded-2xl object-cover"
               />
@@ -179,7 +149,7 @@ export default function AboutPage() {
       </section>
 
       {/* ───────────────────── Why Choose Us ───────────────────── */}
-      <section className="relative mx-auto w-[90%] max-w-6xl pb-24 sm:pb-32">
+      <section className="relative mx-auto w-[90%] max-w-6xl">
         <div className="flex flex-col sm:flex-row sm:items-start">
           <div className="sm:w-[55%]">
             <span className="text-xs font-extrabold uppercase tracking-widest text-white sm:text-sm">
@@ -209,7 +179,7 @@ export default function AboutPage() {
           <div className="relative mt-8 w-[70%] self-end sm:mt-0 sm:w-[42%]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/boy-thinking.jpg"
+              src="/boy.svg"
               alt="Smiling boy resting his chin on his hand"
               className="w-full rounded-2xl object-cover"
             />
@@ -236,116 +206,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ───────────────────── Footer ───────────────────── */}
-      <footer className="w-full pb-10 pt-10">
-        <div className="mx-auto w-[90%] max-w-6xl">
-          <form
-            onSubmit={handleSubscribe}
-            className="relative h-11 w-full max-w-xs"
-          >
-            <label htmlFor="footer-email" className="sr-only">
-              Email
-            </label>
-            <input
-              id="footer-email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="h-full w-full rounded-full bg-white pl-5 pr-28 text-sm font-medium text-[#333] placeholder:text-neutral-400 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="absolute right-0 top-0 h-full rounded-full bg-[#F05A28] px-5 text-sm font-bold text-white transition hover:bg-[#d94e20]"
-            >
-              Subscribe
-            </button>
-          </form>
-
-          <div className="mt-10 flex flex-col items-center gap-10 text-white sm:flex-row sm:items-start sm:justify-between">
-            <div className="text-sm leading-relaxed">
-              <p className="font-bold">UK Office</p>
-              <p>Suite 1</p>
-              <p>Aqueous II</p>
-              <p>Rocky Lane</p>
-              <p>Birmingham</p>
-              <p>B6 5RQ</p>
-            </div>
-
-            <div className="flex flex-col items-center text-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo.svg"
-                alt="Muve Futures Alternative Provision"
-                className="h-16 w-auto"
-              />
-              <p className="mt-4 text-xs">© 2026 Muve Futures</p>
-              <p className="text-xs">All Rights Reserved. Site by Marva Group.</p>
-            </div>
-
-            <div className="flex items-start gap-10">
-              <ul className="space-y-2 text-sm font-bold">
-                <li>
-                  <a href="/feedback" className="hover:opacity-80">
-                    Feedback &amp; Complaints
-                  </a>
-                </li>
-                <li>
-                  <a href="/modern-slavery" className="hover:opacity-80">
-                    Modern Slavery
-                  </a>
-                </li>
-                <li>
-                  <a href="/privacy" className="hover:opacity-80">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="/terms" className="hover:opacity-80">
-                    Terms + Conditions
-                  </a>
-                </li>
-                <li>
-                  <a href="/consents" className="hover:opacity-80">
-                    Revoke consents
-                  </a>
-                </li>
-              </ul>
-
-              <div className="flex flex-col gap-3">
-                <a
-                  href="https://www.linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#A5CD39] transition hover:opacity-90"
-                >
-                  <Linkedin className="h-4 w-4" />
-                </a>
-                <a
-                  href="https://www.instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#A5CD39] transition hover:opacity-90"
-                >
-                  <Instagram className="h-4 w-4" />
-                </a>
-                <a
-                  href="https://www.facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#A5CD39] transition hover:opacity-90"
-                >
-                  <Facebook className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

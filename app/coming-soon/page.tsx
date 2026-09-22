@@ -85,7 +85,7 @@ export default function ComingSoonPage() {
 
   return (
     <main
-      className={`${lexend.className} relative flex min-h-screen w-full flex-col items-center overflow-hidden px-6 pb-16 pt-[10vh] text-white`}
+      className={`${lexend.className} relative flex min-h-screen w-full flex-col items-center overflow-hidden px-6 pb-8 pt-[8vh] text-white`}
       style={{ backgroundColor: GREEN }}
     >
       <Shapes />
