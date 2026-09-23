@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import type { CardTone, CopyBlock, DetailBlock, SplitItem } from '@/constants';
 import { cn } from '@/lib/utils';
-import { Hop } from '@/components/motion/Hop';
 import { Reveal } from '@/components/motion/Reveal';
 
 const TONE: Record<CardTone, string> = {
@@ -44,9 +43,7 @@ function Card({ block }: { block: Extract<DetailBlock, { kind: 'card' }> }) {
     <div className={cn('relative', cutout && 'lg:pt-28')}>
       {cutout && (
         // On desktop the photo is as tall as card + top padding, so it always rises out of the card.
-        // It hops on hover.
-        <Hop
-          height={20}
+        <div
           className={cn(
             'relative z-10 mx-auto w-3/5 sm:w-2/5 lg:absolute lg:inset-y-0 lg:mx-0 lg:flex lg:w-[42%] lg:items-end',
             cutout.side === 'left' ? 'lg:left-[4%] lg:justify-start' : 'lg:right-[3%] lg:justify-end'
@@ -60,7 +57,7 @@ function Card({ block }: { block: Extract<DetailBlock, { kind: 'card' }> }) {
             sizes="(min-width: 1024px) 40vw, 60vw"
             className="h-auto w-full lg:h-full lg:w-auto lg:max-w-full lg:object-contain lg:object-bottom"
           />
-        </Hop>
+        </div>
       )}
 
       <div
@@ -192,7 +189,7 @@ function Cutout({ block }: { block: Extract<DetailBlock, { kind: 'cutout' }> }) 
   const { photo, size = 'lg' } = block;
   return (
     // Negative margin cancels the stack gap so the photo stands on the next block.
-    <Hop height={14} tilt={0} className={cn('relative z-10 mx-auto -mb-10 sm:-mb-14', size === 'lg' ? 'w-full sm:w-[92%]' : 'w-3/5 sm:w-[34%]')}>
+    <div className={cn('relative z-10 mx-auto -mb-10 sm:-mb-14', size === 'lg' ? 'w-full sm:w-[92%]' : 'w-3/5 sm:w-[34%]')}>
       <Image
         src={photo.src}
         alt={photo.alt}
@@ -201,7 +198,7 @@ function Cutout({ block }: { block: Extract<DetailBlock, { kind: 'cutout' }> }) 
         sizes={size === 'lg' ? '(min-width: 1152px) 1060px, 90vw' : '(min-width: 640px) 34vw, 60vw'}
         className="h-auto w-full"
       />
-    </Hop>
+    </div>
   );
 }
 

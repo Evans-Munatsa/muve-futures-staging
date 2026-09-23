@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { ReferralButton } from '@/components/common/ActionButtons';
 import { homeButton, homeType } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
-import { Hop } from '@/components/motion/Hop';
 import { Reveal } from '@/components/motion/Reveal';
 import { Lines } from '@/components/common/Lines';
 import type { HomeContent } from '@/lib/content/pages';
@@ -45,15 +44,13 @@ export function ResourcesAndCallToAction({
 
       <section className="relative bg-brand-orange px-6 pb-14 text-white lg:u-h-612 lg:p-0">
         <Reveal from="left" className="relative mx-auto aspect-[879/608] w-3/4 max-w-sm lg:absolute lg:-u-left-48 lg:u-top-26 lg:u-h-608 lg:u-w-879 lg:max-w-none">
-          <Hop className="relative h-full w-full" height={18} tilt={3}>
-            <Image
-              src="/images/home/apple-books.webp"
-              alt="Stack of books with a red apple on top"
-              fill
-              sizes="(min-width: 1024px) 46vw, 75vw"
-              className="object-contain"
-            />
-          </Hop>
+          <Image
+            src="/images/home/apple-books.webp"
+            alt="Stack of books with a red apple on top"
+            fill
+            sizes="(min-width: 1024px) 46vw, 75vw"
+            className="object-contain"
+          />
         </Reveal>
 
         <Reveal from="right" className="relative text-center lg:absolute lg:u-right-266 lg:u-top-84 lg:u-w-934 lg:text-right">

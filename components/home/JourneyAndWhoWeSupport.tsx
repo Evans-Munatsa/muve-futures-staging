@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { ReferralButton } from '@/components/common/ActionButtons';
 import { homeButton, homeType } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
-import { Hop } from '@/components/motion/Hop';
 import { Reveal } from '@/components/motion/Reveal';
 import { Lines } from '@/components/common/Lines';
 import type { HomeContent } from '@/lib/content/pages';
@@ -56,17 +55,15 @@ export function JourneyAndWhoWeSupport({
         </div>
       </Reveal>
 
-      {/* Cut-out photo standing on the card's bottom edge: rises out of the card, hops on hover */}
+      {/* Cut-out photo standing on the card's bottom edge: rises out of the card */}
       <Reveal from="up" delay={0.3} className="relative mx-auto mt-6 aspect-[698/927] w-2/3 max-w-xs lg:absolute lg:u-left-1132 lg:u-top-234 lg:u-h-927 lg:u-w-698 lg:mt-0 lg:max-w-none">
-        <Hop className="relative h-full w-full" height={24}>
-          <Image
-            src="/images/home/raising-arms.webp"
-            alt="Excited child in a yellow T-shirt smiling with both arms raised"
-            fill
-            sizes="(min-width: 1024px) 37vw, 66vw"
-            className="object-contain"
-          />
-        </Hop>
+        <Image
+          src="/images/home/raising-arms.webp"
+          alt="Excited child in a yellow T-shirt smiling with both arms raised"
+          fill
+          sizes="(min-width: 1024px) 37vw, 66vw"
+          className="object-contain"
+        />
       </Reveal>
     </section>
   );

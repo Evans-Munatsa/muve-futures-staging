@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { Award, Crown, ScrollText } from 'lucide-react';
-import { Hop } from '@/components/motion/Hop';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 import type { AboutContent } from '@/lib/content/pages';
 
@@ -38,16 +37,14 @@ export function WhyWeExist({ content }: { content: AboutContent['whyWeExist'] })
 
         {/* Cut-out photo, anchored to the bottom-left and bleeding just past the card */}
         <Reveal from="up" delay={0.3} className="absolute -bottom-1 left-[-2%] hidden w-[26%] lg:block">
-          <Hop height={18}>
-            <Image
-              src="/images/girl-arms-crossed.webp"
-              alt="Smiling girl with her arms crossed"
-              width={955}
-              height={1420}
-              sizes="(min-width: 1024px) 26vw, 0px"
-              className="h-auto w-full"
-            />
-          </Hop>
+          <Image
+            src="/images/girl-arms-crossed.webp"
+            alt="Smiling girl with her arms crossed"
+            width={955}
+            height={1420}
+            sizes="(min-width: 1024px) 26vw, 0px"
+            className="h-auto w-full"
+          />
         </Reveal>
       </Reveal>
     </section>

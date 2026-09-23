@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Hop } from '@/components/motion/Hop';
 import { Reveal } from '@/components/motion/Reveal';
 import { Lines } from '@/components/common/Lines';
 import type { AboutContent } from '@/lib/content/pages';
@@ -32,16 +31,14 @@ export function WhyChooseUs({ content }: { content: AboutContent['whyChooseUs'] 
 
         {/* Cut-out photo that stands on the pink CTA card below */}
         <Reveal from="up" delay={0.2} className="relative mx-auto w-[60%] sm:mx-0 sm:ml-auto sm:mr-[7%] sm:w-[28%]">
-          <Hop height={18} tilt={3}>
-            <Image
-              src="/images/boy-thinking.webp"
-              alt="Smiling boy resting his chin on his hand"
-              width={1356}
-              height={1626}
-              sizes="(min-width: 640px) 28vw, 60vw"
-              className="h-auto w-full"
-            />
-          </Hop>
+          <Image
+            src="/images/boy-thinking.webp"
+            alt="Smiling boy resting his chin on his hand"
+            width={1356}
+            height={1626}
+            sizes="(min-width: 640px) 28vw, 60vw"
+            className="h-auto w-full"
+          />
         </Reveal>
       </div>
     </section>
