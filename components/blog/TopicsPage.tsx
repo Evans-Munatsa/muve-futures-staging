@@ -26,8 +26,8 @@ export function TopicsPage({ content, posts, article, articleIsPage = false }: T
   const PageHeading = articleIsPage ? 'p' : 'h1';
 
   return (
-    <div className="w-full overflow-hidden bg-brand-green pb-20 sm:pb-28 lg:pb-0 lg:u-pb-280">
-      <Reveal onLoad className="relative z-20 mx-auto w-[90%] pt-12 pb-10 text-center sm:pt-20 sm:pb-14 lg:pb-0 lg:u-pt-105 lg:u-pb-82">
+    <div className="w-full overflow-hidden bg-brand-green pb-20 sm:pb-28 lg:u-pb-280">
+      <Reveal onLoad className="relative z-20 mx-auto w-[90%] pt-12 pb-10 text-center sm:pt-20 sm:pb-14 lg:u-pt-105 lg:u-pb-82">
         <PageHeading className="text-3xl font-bold leading-[1.19] tracking-tight text-white sm:text-5xl lg:u-text-95">
           <Lines text={content.hero.title} />
         </PageHeading>
@@ -43,7 +43,7 @@ export function TopicsPage({ content, posts, article, articleIsPage = false }: T
               className="scroll-mt-24 rounded-[2.5rem] bg-white px-6 py-10 sm:rounded-[4rem] sm:px-16 sm:py-14 lg:u-rounded-100 lg:u-pt-60 lg:u-pr-67 lg:u-pb-60 lg:u-pl-81"
             >
               <header className="flex flex-col-reverse gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-10">
-                <ArticleHeading className="max-w-2xl text-2xl font-bold leading-[1.17] tracking-tight text-brand-ink sm:text-4xl lg:max-w-none lg:u-max-w-800 lg:u-text-48">
+                <ArticleHeading className="max-w-2xl text-2xl font-bold leading-[1.17] tracking-tight text-brand-ink sm:text-4xl lg:u-max-w-800 lg:u-text-48">
                   {article.title}
                 </ArticleHeading>
                 <time dateTime={article.publishedAt} className="shrink-0 text-base font-bold text-brand-ink sm:text-2xl lg:u-text-30">

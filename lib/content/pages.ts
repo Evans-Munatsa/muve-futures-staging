@@ -274,6 +274,9 @@ export interface FormsContent {
   contact: FormHero;
   referral: FormHero;
   bookIntro: FormHero;
+  partnership: FormHero;
+  feedback: FormHero;
+  feedbackClosing: { title: string; body: string; cta: string };
 }
 
 export const DEFAULT_FORMS: FormsContent = {
@@ -283,16 +286,31 @@ export const DEFAULT_FORMS: FormsContent = {
     intro:
       "Whether you're a parent looking for guidance, a school seeking support or a professional exploring provision for a learner, our team is here to listen.",
   },
+  // Referral, partnership and feedback follow public/design; their intros sit above the form.
   referral: {
-    badge: 'Referral',
-    title: 'Make a Referral',
-    intro:
-      "Making a referral is straightforward. Tell us about the learner, and we'll get in touch to understand their needs and recommend the most appropriate pathway.",
+    badge: 'Make a Referral',
+    title: 'Let’s Discuss How We\nMay Be Able To Help',
+    intro: '',
   },
   bookIntro: {
     badge: 'Book an Intro',
     title: "Let's Start With A Conversation",
     intro: 'Book a short introduction with our team to talk about a learner, our services or working in partnership.',
+  },
+  partnership: {
+    badge: 'Partnerships',
+    title: 'Create Better Education\nPathways Through Partnership',
+    intro: 'Complete the form below and a member of our team will get in touch.',
+  },
+  feedback: {
+    badge: 'Feedback',
+    title: 'We Love Hearing\nFrom You',
+    intro: '',
+  },
+  feedbackClosing: {
+    title: 'Let’s Support More\nLearners Together',
+    body: 'Whether you need support for an individual learner or want to discuss longer-term provision, our team is here to help.',
+    cta: 'Book an Intro',
   },
 };
 
@@ -383,7 +401,7 @@ export const DEFAULT_RESOURCES: ResourcesContent = {
           ),
           resource('Parent feedback form', 'Tell us how we are doing. Your feedback helps us keep improving the support we offer children and families.', {
             linkLabel: 'Give Feedback',
-            linkUrl: '/contact',
+            linkUrl: '/feedback',
           }),
         ],
       },

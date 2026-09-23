@@ -246,12 +246,16 @@ export const whoWeSupportPageSchema: Field = object({
   closing: object({ title: heading(), body: body(), cta: text('Button') }, 'Closing call to action'),
 });
 
-const formHero = (label: string) => object({ badge: text('Badge'), title: text('Heading'), intro: body('Introduction') }, label);
+const formHero = (label: string, help?: string) =>
+  object({ badge: text('Badge'), title: heading(), intro: body('Introduction') }, label, help);
 
 export const formsSchema: Field = object({
   contact: formHero('Contact page'),
-  referral: formHero('Make a referral page'),
+  referral: formHero('Make a referral page', 'The introduction is optional and appears above the form.'),
   bookIntro: formHero('Book an intro page'),
+  partnership: formHero('Partnerships page', 'The introduction appears in bold above the form.'),
+  feedback: formHero('Feedback page', 'The introduction is optional and appears above the form.'),
+  feedbackClosing: object({ title: heading(), body: body(), cta: text('Button') }, 'Feedback page: call to action under the form'),
 });
 
 export const resourcesSchema: Field = object({

@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { DriftBox } from '@/components/motion/Drift';
 
 // Triangles are clip-paths on plain boxes so they scale with the viewport like the design.
-const TRIANGLE = {
+export const TRIANGLE = {
   // pointing right, as on the left edge of every detail hero
   right: '[clip-path:polygon(0_0,100%_50%,0_100%)]',
   // the large tilted triangle in the top-left of the service heroes
@@ -10,10 +10,11 @@ const TRIANGLE = {
   // the white triangle tucked under the orange circle
   notch: '[clip-path:polygon(100%_0,72%_100%,0_38%)]',
   up: '[clip-path:polygon(50%_0,100%_100%,0_100%)]',
+  left: '[clip-path:polygon(100%_0,100%_100%,0_50%)]',
   down: '[clip-path:polygon(0_0,100%_0,45%_100%)]',
 };
 
-const CIRCLE = 'rounded-full';
+export const CIRCLE = 'rounded-full';
 
 /**
  * Decorative shapes behind a detail-page hero. `service` pages put the orange

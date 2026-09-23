@@ -102,8 +102,9 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
     dropdown: [
       { label: 'Chat to Us', href: CONTACT_ENQUIRY_HREF },
       { label: 'Make a Referral', href: REFERRAL_HREF },
-      { label: 'Partnerships', href: CONTACT_ENQUIRY_HREF },
+      { label: 'Partnerships', href: '/partnerships' },
       { label: 'Book Introduction', href: BOOK_INTRO_HREF },
+      { label: 'Feedback', href: '/feedback' },
       { label: 'Careers', href: '/contact#locations-map' },
     ],
   },
