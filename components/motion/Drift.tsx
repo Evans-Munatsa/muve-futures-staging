@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useRef } from 'react';
 import {
   motion,
+  useInView,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -82,14 +83,18 @@ function useDriftOffsets(ref: React.RefObject<Element | null>, depth: number) {
   return { x, y };
 }
 
-/** Pop-in, float and hover/tap props shared by the SVG and HTML versions. */
-function floatProps({ depth, float, spin, delay, interactive }: Required<Omit<DriftProps, 'children'>>) {
+/**
+ * Pop-in, float and hover/tap props shared by the SVG and HTML versions.
+ * `shown`, when given, replaces the element's own in-view check (see DriftBox).
+ */
+function floatProps({ depth, float, spin, delay, interactive, shown }: Required<Omit<DriftProps, 'children'>> & { shown?: boolean }) {
+  const floating = float ? { y: [0, -depth * 0.6, 0], rotate: [0, spin, 0] } : {};
   return {
     // Pop in the first time the shape scrolls into view; float continuously.
     initial: { scale: 0, opacity: 0 },
-    whileInView: { scale: 1, opacity: 1 },
-    viewport: { once: true, amount: 0.1 },
-    animate: float ? { y: [0, -depth * 0.6, 0], rotate: [0, spin, 0] } : undefined,
+    ...(shown === undefined
+      ? { whileInView: { scale: 1, opacity: 1 }, viewport: { once: true, amount: 0.1 }, animate: float ? floating : undefined }
+      : { animate: shown ? { scale: 1, opacity: 1, ...floating } : { scale: 0, opacity: 0 } }),
     transition: {
       scale: { type: 'spring' as const, stiffness: 200, damping: 14, delay },
       opacity: { duration: 0.4, delay },
@@ -145,6 +150,10 @@ export function DriftBox({
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { x, y } = useDriftOffsets(ref, depth);
+  // Watch the full-size outer box: the inner one starts at scale 0, and a
+  // shape centred off-screen (a circle cut off at the edge) would never count
+  // as in view.
+  const shown = useInView(ref, { once: true, amount: 0.1 });
 
   if (reduce) {
     return (
@@ -162,7 +171,7 @@ export function DriftBox({
           pointerEvents: interactive ? 'auto' : 'none',
           cursor: interactive ? 'grab' : undefined,
         }}
-        {...floatProps({ depth, float, spin, delay, interactive })}
+        {...floatProps({ depth, float, spin, delay, interactive, shown })}
       />
     </motion.div>
   );

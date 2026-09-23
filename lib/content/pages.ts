@@ -274,6 +274,9 @@ export interface FormsContent {
   contact: FormHero;
   referral: FormHero;
   bookIntro: FormHero;
+  partnership: FormHero;
+  feedback: FormHero;
+  feedbackClosing: { title: string; body: string; cta: string };
 }
 
 export const DEFAULT_FORMS: FormsContent = {
@@ -283,59 +286,210 @@ export const DEFAULT_FORMS: FormsContent = {
     intro:
       "Whether you're a parent looking for guidance, a school seeking support or a professional exploring provision for a learner, our team is here to listen.",
   },
+  // Referral, partnership and feedback follow public/design; their intros sit above the form.
   referral: {
-    badge: 'Referral',
-    title: 'Make a Referral',
-    intro:
-      "Making a referral is straightforward. Tell us about the learner, and we'll get in touch to understand their needs and recommend the most appropriate pathway.",
+    badge: 'Make a Referral',
+    title: 'Let’s Discuss How We\nMay Be Able To Help',
+    intro: '',
   },
   bookIntro: {
     badge: 'Book an Intro',
     title: "Let's Start With A Conversation",
     intro: 'Book a short introduction with our team to talk about a learner, our services or working in partnership.',
   },
+  partnership: {
+    badge: 'Partnerships',
+    title: 'Create Better Education\nPathways Through Partnership',
+    intro: 'Complete the form below and a member of our team will get in touch.',
+  },
+  feedback: {
+    badge: 'Feedback',
+    title: 'We Love Hearing\nFrom You',
+    intro: '',
+  },
+  feedbackClosing: {
+    title: 'Let’s Support More\nLearners Together',
+    body: 'Whether you need support for an individual learner or want to discuss longer-term provision, our team is here to help.',
+    cta: 'Book an Intro',
+  },
 };
 
 // ── Resources ──────────────────────────────────────────────────────────────
 
-export interface ResourcesContent {
-  hero: { badge: string; title: string; intro: string; searchPlaceholder: string };
-  guides: { eyebrow: string; title: string };
-  policies: {
-    eyebrow: string;
-    title: string;
-    intro: string;
-    items: { title: string; category: string; lastUpdated: string; fileSize: string; description: string; fileUrl: string }[];
-  };
-  faqs: { eyebrow: string; title: string; intro: string; items: { question: string; answer: string; category: string }[] };
+export interface ResourceItem {
+  title: string;
+  /** Shown when the item is opened. A blank line starts a new paragraph. */
+  body: string;
+  /** Uploaded file; adds a Download button. */
+  fileUrl: string;
+  /** Optional link button, e.g. to a form or page. */
+  linkLabel: string;
+  linkUrl: string;
 }
+
+export interface ResourceGroup {
+  /** Also the label of the group's filter pill. */
+  name: string;
+  items: ResourceItem[];
+}
+
+export interface ResourcesContent {
+  hero: { title: string; intro: string; cta: string };
+  intro: { title: string; body: string };
+  library: { title: string; allLabel: string; groups: ResourceGroup[] };
+  closing: { title: string; body: string; cta: string };
+}
+
+const resource = (title: string, body: string, extra: Partial<ResourceItem> = {}): ResourceItem => ({
+  title,
+  body,
+  fileUrl: '',
+  linkLabel: '',
+  linkUrl: '',
+  ...extra,
+});
 
 export const DEFAULT_RESOURCES: ResourcesContent = {
   hero: {
-    badge: 'Knowledge Hub & Guidance Library',
-    title: 'Resources For Schools, Families and Local Authorities',
+    title: 'Practical Resources For\nBetter Educational Outcomes',
     intro:
-      'Expert insight, statutory policies, SENCO toolkits, and step-by-step guidance on navigating SEND, Section 19, and Emotionally Based School Non-Attendance (EBSNA).',
-    searchPlaceholder: 'Search guides, policies, keywords (e.g. EBSNA, EHCP, attendance)...',
+      'Our Resource Centre provides practical guidance, downloadable resources and useful information to help schools, professionals and families better understand Alternative Provision and personalised education.',
+    cta: 'Browse Resources',
   },
-  guides: { eyebrow: 'Expert Articles & Toolkits', title: 'Guidance & Practitioner Toolkits' },
-  policies: {
-    eyebrow: 'Governance & Transparency',
-    title: 'Statutory Policies & Compliance Documents',
-    intro: 'Download our verified policies updated for the 2025/2026 academic year in accordance with DfE statutory guidelines.',
-    items: POLICY_DOCUMENTS.map(({ title, category, lastUpdated, fileSize, description }) => ({
-      title,
-      category,
-      lastUpdated,
-      fileSize,
-      description,
-      fileUrl: '',
-    })),
+  intro: {
+    title: 'Information That\nSupports Better Decisions',
+    body: 'Explore resources covering Alternative Provision, SEND, SEMH, EBSNA, Reintegration, Transition Support and practical guidance for education professionals and families.',
   },
-  faqs: {
-    eyebrow: 'Frequently Asked Questions',
-    title: 'Commissioning & Provision Answers',
-    intro: 'Common questions from Headteachers, SENCOs, Local Authority caseworkers, and families.',
-    items: FAQ_ITEMS.map(({ question, answer, category }) => ({ question, answer, category })),
+  library: {
+    title: 'Resources',
+    allLabel: 'All Resources',
+    groups: [
+      {
+        name: 'Families',
+        items: [
+          resource(
+            'Parent and carer guide to MUVE Futures',
+            'Who we are, how we work with families and what support from MUVE Futures can look like for your child, from the first conversation through to their next step in education.'
+          ),
+          resource(
+            'Understanding Alternative Provision',
+            'Alternative Provision is education arranged for children who are not able to access mainstream school full time. It can be short or longer term, and is always planned around the individual learner.'
+          ),
+          resource(
+            'Understanding EOTAS',
+            'Education Otherwise Than At School (EOTAS) is a package of education arranged by the local authority, usually through an EHCP, when school is not the right setting for a child. We can explain how it works and how our provision fits within it.'
+          ),
+          resource(
+            'Questions to ask when choosing a provider',
+            'How will you get to know my child? How do you keep children safe? How will I hear about progress? What does a typical session look like? How do you plan for the next step back into education?'
+          ),
+          resource(
+            'Preparing your child for their first session',
+            'Talk through who they will meet and where. Share anything that helps them feel safe, such as interests, routines and triggers, with our team beforehand. Keep the first session short and low-pressure; confidence builds from there.'
+          ),
+          resource(
+            'What to expect from the referral process',
+            'Once a referral is received we arrange an introductory conversation, gather information from school and professionals, and agree a personalised plan together before sessions begin.'
+          ),
+          resource(
+            'Supporting a child experiencing EBSNA',
+            'Emotionally Based School Non-Attendance (EBSNA) describes difficulty attending school because of emotional distress. It may be linked to anxiety, sensory overwhelm, unmet SEND needs, bullying, trauma or difficulties within the school environment.'
+          ),
+          resource(
+            'How can I support a child experiencing EBSNA?',
+            'Emotionally Based School Non-Attendance is often linked to anxiety, overwhelm or unmet needs. It isn’t simply a child refusing to attend school.\n\nStart by listening without judgement and trying to understand what’s making education feel difficult. Avoid pressure, punishment or comparisons, as these can increase anxiety.\n\nWork with school on small, achievable steps, keep routines predictable and celebrate every bit of progress. If you would like to talk it through, our team is here to help.'
+          ),
+          resource('Parent feedback form', 'Tell us how we are doing. Your feedback helps us keep improving the support we offer children and families.', {
+            linkLabel: 'Give Feedback',
+            linkUrl: '/feedback',
+          }),
+        ],
+      },
+      {
+        name: 'Professionals',
+        items: [
+          resource(
+            'A guide to commissioning Alternative Provision',
+            'How schools and local authorities can commission a placement with us, what information we need and how we agree outcomes, reporting and review points.'
+          ),
+          resource(
+            'Attendance and progress reporting',
+            'Commissioners and schools receive session attendance, weekly progress summaries and termly outcome reports, so everyone involved can see how the learner is doing.'
+          ),
+          resource(
+            'Working in partnership with MUVE Futures',
+            'We work alongside SENCOs, virtual schools, social care and health professionals, sharing information and planning together around each learner.'
+          ),
+        ],
+      },
+      {
+        name: 'Referrals',
+        items: FAQ_ITEMS.map(({ question, answer }) => resource(question, answer)),
+      },
+      {
+        name: 'Services',
+        items: [
+          resource(
+            'An overview of our services',
+            'One-to-one tuition, small group learning, online and hybrid provision, SEND and SEMH support, reintegration and transition programmes, each planned around the learner.',
+            { linkLabel: 'View Services', linkUrl: '/services' }
+          ),
+        ],
+      },
+      {
+        name: 'Policies',
+        items: POLICY_DOCUMENTS.map(({ title, description, lastUpdated, fileSize }) =>
+          resource(title, `${description}\n\nLast reviewed ${lastUpdated} · ${fileSize}`)
+        ),
+      },
+      {
+        name: 'Easy Read',
+        items: [
+          resource(
+            'What is MUVE Futures? (Easy Read)',
+            'We help young people learn.\n\nWe learn in ways that suit you.\n\nWe listen to you and help you feel safe and ready to learn.'
+          ),
+        ],
+      },
+    ],
   },
+  closing: {
+    title: 'Let’s Build Better Futures Together',
+    body: 'Whether you’re looking for Alternative Provision, exploring partnership opportunities or seeking advice about a learner, we’d love to hear from you.',
+    cta: 'Book an Intro',
+  },
+};
+
+// ── Blog (Topics page) ─────────────────────────────────────────────────────
+
+export interface BlogTopic {
+  label: string;
+  /** A post is in the topic when its category or one of its tags contains one of these words. */
+  keywords: string[];
+}
+
+export interface BlogPageContent {
+  hero: { title: string };
+  topics: { allLabel: string; items: BlogTopic[] };
+  readMore: string;
+  showAll: string;
+}
+
+export const DEFAULT_BLOG_PAGE: BlogPageContent = {
+  hero: { title: 'Helpful guidance for every\nstage of the journey' },
+  topics: {
+    allLabel: 'All Topics',
+    items: [
+      { label: 'EBSNA', keywords: ['EBSNA', 'Attendance'] },
+      { label: 'ADHD + Autism', keywords: ['ADHD', 'Autism', 'Neurodivergence'] },
+      { label: 'SEMH', keywords: ['SEMH', 'Anxiety', 'Mental health'] },
+      { label: 'SEND + EHCP', keywords: ['SEND', 'EHCP', 'Section 19'] },
+      { label: 'Trauma Informed', keywords: ['Trauma'] },
+      { label: 'Outcomes', keywords: ['Outcomes', 'Reintegration', 'Transition'] },
+      { label: 'Families', keywords: ['Families', 'Parents', 'Parent Guides'] },
+      { label: 'Professionals', keywords: ['Professionals', 'SENCO', 'Local Authority', 'Commissioning'] },
+    ],
+  },
+  readMore: 'Read More',
+  showAll: 'Show All Posts',
 };

@@ -6,11 +6,16 @@ import remarkGfm from 'remark-gfm';
  * HTML by default, so post bodies can't inject scripts or markup.
  */
 
+/*
+ * Spacing follows the article in public/design/topics.svg: one blank line
+ * (1lh) between paragraphs, and a list sits straight under the line that
+ * introduces it.
+ */
 const components: Components = {
-  h2: ({ children }) => <h2 className="mt-10 text-2xl font-bold tracking-tight text-brand-ink sm:text-3xl">{children}</h2>,
-  h3: ({ children }) => <h3 className="mt-8 text-xl font-bold text-brand-ink sm:text-2xl">{children}</h3>,
-  h4: ({ children }) => <h4 className="mt-6 text-lg font-bold text-brand-ink">{children}</h4>,
-  p: ({ children }) => <p className="mt-5 leading-relaxed">{children}</p>,
+  h2: ({ children }) => <h2 className="mt-[1lh] text-[1.3em] font-bold leading-tight text-brand-ink">{children}</h2>,
+  h3: ({ children }) => <h3 className="mt-[1lh] text-[1.15em] font-bold text-brand-ink">{children}</h3>,
+  h4: ({ children }) => <h4 className="mt-[1lh] font-bold text-brand-ink">{children}</h4>,
+  p: ({ children }) => <p className="mt-[1lh] [h2+&]:mt-[0.4lh] [h3+&]:mt-[0.4lh] [h4+&]:mt-[0.4lh]">{children}</p>,
   a: ({ href = '', children }) => {
     const external = /^https?:\/\//.test(href);
     return (
@@ -23,8 +28,8 @@ const components: Components = {
       </a>
     );
   },
-  ul: ({ children }) => <ul className="mt-5 list-disc space-y-2 pl-6 marker:text-brand-orange">{children}</ul>,
-  ol: ({ children }) => <ol className="mt-5 list-decimal space-y-2 pl-6 marker:font-bold marker:text-brand-orange">{children}</ol>,
+  ul: ({ children }) => <ul className="list-disc pl-[1.5em] [&_ul]:mt-0">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-[1.5em] marker:font-bold [&_ol]:mt-0">{children}</ol>,
   blockquote: ({ children }) => (
     <blockquote className="mt-6 rounded-tr-[2rem] border-l-4 border-brand-orange bg-brand-lime px-6 py-4 text-brand-ink [&>p:first-child]:mt-0">
       {children}
@@ -48,7 +53,7 @@ const components: Components = {
 
 export function Markdown({ source }: { source: string }) {
   return (
-    <div className="text-base text-brand-ink sm:text-lg [&>*:first-child]:mt-0">
+    <div className="text-base leading-[1.25] text-brand-ink sm:text-lg lg:u-text-20 [&>*:first-child]:mt-0">
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {source}
       </ReactMarkdown>

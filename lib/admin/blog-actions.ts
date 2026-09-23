@@ -6,7 +6,11 @@ import { and, eq, ne } from 'drizzle-orm';
 import { db, schema } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth/dal';
 import { contentTag } from '@/lib/content/registry';
+import type { GalleryImage } from '@/lib/db/schema';
 import { SLUG_PATTERN } from '@/lib/slug';
+
+const MAX_GALLERY = 30;
+const IMAGE_SRC = /^(https:\/\/|\/)/;
 
 export interface PostInput {
   title: string;
@@ -17,6 +21,8 @@ export interface PostInput {
   tags: string[];
   coverImageUrl: string;
   coverImageAlt: string;
+  /** Photos in the carousel under the post, in order. */
+  gallery: GalleryImage[];
   authorName: string;
   status: 'draft' | 'published';
   /** yyyy-mm-dd or an ISO date; empty means "now" when publishing. */
@@ -33,7 +39,9 @@ function problems(input: PostInput): string[] {
   if (!SLUG.test(input.slug)) errors.push('The web address can only use lowercase letters, numbers and hyphens.');
   if (input.status !== 'draft' && input.status !== 'published') errors.push('Choose draft or published.');
   if (input.publishedAt && Number.isNaN(Date.parse(input.publishedAt))) errors.push('The publish date isn’t a valid date.');
-  if (input.coverImageUrl && !/^(https:\/\/|\/)/.test(input.coverImageUrl)) errors.push('The cover image must be an uploaded image or a site path.');
+  if (input.coverImageUrl && !IMAGE_SRC.test(input.coverImageUrl)) errors.push('The cover image must be an uploaded image or a site path.');
+  if (input.gallery.length > MAX_GALLERY) errors.push(`The gallery can hold up to ${MAX_GALLERY} photos.`);
+  if (input.gallery.some((image) => !IMAGE_SRC.test(image.src))) errors.push('Every gallery photo must be an uploaded image or a site path.');
   if (input.title.length > 200 || input.excerpt.length > 600) errors.push('The title or summary is too long.');
   return errors;
 }
@@ -46,6 +54,10 @@ export async function savePost(id: string | null, input: PostInput): Promise<Pos
     title: input.title.trim(),
     slug: input.slug.trim().toLowerCase(),
     tags: input.tags.map((t) => t.trim()).filter(Boolean).slice(0, 20),
+    // Only keep the two known fields, and drop rows left without a photo.
+    gallery: (Array.isArray(input.gallery) ? input.gallery : [])
+      .map((image) => ({ src: String(image?.src ?? '').trim(), alt: String(image?.alt ?? '').trim() }))
+      .filter((image) => image.src),
   };
   const errors = problems(data);
 
@@ -69,6 +81,7 @@ export async function savePost(id: string | null, input: PostInput): Promise<Pos
     tags: data.tags,
     coverImageUrl: data.coverImageUrl || null,
     coverImageAlt: data.coverImageAlt,
+    gallery: data.gallery,
     authorName: data.authorName.trim(),
     status: data.status,
     publishedAt,

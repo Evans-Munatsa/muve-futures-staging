@@ -2,247 +2,267 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Send } from 'lucide-react';
-import { ReferralFormData, ReferrerType } from '@/app/types';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { ChoiceChips, FormError, FormSection, FormSuccess } from '@/components/forms/FormParts';
+import {
+  Bubble,
+  ChoiceGroup,
+  Field,
+  FieldLabel,
+  SentMessage,
+  SubmitRow,
+  TextArea,
+  TextInput,
+  groupGap,
+  labelClass,
+  toggle,
+} from '@/components/forms/DesignForm';
+import { PersonFields, emptyPerson, type Person } from '@/components/forms/PersonFields';
+import { cn } from '@/lib/utils';
 
-const REFERRER_TYPES: readonly ReferrerType[] = [
-  'School / Academy',
-  'Local Authority',
-  'Parent / Carer',
-  'Social Worker / Healthcare',
-  'Other',
-];
-
-const AGE_GROUPS: readonly ReferralFormData['learnerAgeGroup'][] = [
-  '4-7 (KS1)',
-  '8-11 (KS2)',
-  '11-14 (KS3)',
-  '14-16 (KS4)',
-  '16-19 (Post-16)',
-  '19-25 (Young Adult)',
-];
-
-const URGENCY: readonly ReferralFormData['urgency'][] = ['Immediate (Within 48h)', 'Next Half-Term', 'Planned Intake'];
-
-const NEEDS = [
+const REFERRING_FOR = [
   'Alternative Provision',
-  'SEND Support',
-  'SEMH Support',
-  'EBSNA Support',
-  'One-to-One Education',
-  'Community Learning',
-  'Online Learning',
-  'Hybrid Learning',
-  'Reintegration',
-  'Transition Support',
-  'EOTAS',
-  '52 Week Provision',
-  'Medical Needs',
-  'Disrupted Education',
-  'Risk of Exclusion',
-];
+  'SEND support',
+  'SEMH support',
+  'EBSNA / school attendance',
+  '1:1 support',
+  'Online / hybrid learning',
+  'Not sure yet',
+  'Other',
+] as const;
 
-function emptyForm(preselectedService?: string): ReferralFormData {
-  return {
-    referrerType: 'School / Academy',
-    referrerName: '',
-    referrerEmail: '',
-    referrerPhone: '',
-    organisationName: '',
-    learnerAgeGroup: '11-14 (KS3)',
-    primaryNeeds: preselectedService ? [preselectedService] : [],
-    currentSetting: '',
-    hasEhcp: false,
-    fundingSource: '',
-    urgency: 'Planned Intake',
-    notes: '',
-  };
+const WHEN = ['Immediately / urgent', 'Within the next 4 weeks', 'Planned / future support', 'Other'] as const;
+const CONTACT_METHODS = ['Phone', 'Email', 'Meeting / assessment discussion'] as const;
+const YES_NO = ['No', 'Yes'] as const;
+
+type ReferringFor = (typeof REFERRING_FOR)[number];
+
+interface ReferralData {
+  referrer: Person;
+  organisation: string;
+  role: string;
+  relationship: string;
+  happyToBeContacted: string;
+  individual: Person;
+  individualAware: boolean;
+  bestInterests: boolean;
+  referralNote: string;
+  referringFor: ReferringFor[];
+  referringForOther: string;
+  when: string;
+  whenOther: string;
+  aboutYoungPerson: string;
+  additionalInfo: string;
+  consentToShare: boolean;
+  understandsUse: boolean;
+  contactMethod: string;
 }
 
+/** Matches a service passed in from a service page (?service=…) to an option. */
+function fromService(service?: string): Pick<ReferralData, 'referringFor' | 'referringForOther'> {
+  if (!service) return { referringFor: [], referringForOther: '' };
+  const s = service.toLowerCase();
+  const match: ReferringFor | undefined =
+    s.includes('alternative provision') ? 'Alternative Provision'
+    : s.includes('send') ? 'SEND support'
+    : s.includes('semh') ? 'SEMH support'
+    : s.includes('ebsna') || s.includes('attendance') ? 'EBSNA / school attendance'
+    : s.includes('one-to-one') || s.includes('1:1') ? '1:1 support'
+    : s.includes('online') || s.includes('hybrid') ? 'Online / hybrid learning'
+    : undefined;
+  return match ? { referringFor: [match], referringForOther: '' } : { referringFor: ['Other'], referringForOther: service };
+}
+
+const emptyForm = (service?: string): ReferralData => ({
+  referrer: emptyPerson(),
+  organisation: '',
+  role: '',
+  relationship: '',
+  happyToBeContacted: '',
+  individual: emptyPerson(),
+  individualAware: false,
+  bestInterests: false,
+  referralNote: '',
+  ...fromService(service),
+  when: '',
+  whenOther: '',
+  aboutYoungPerson: '',
+  additionalInfo: '',
+  consentToShare: false,
+  understandsUse: false,
+  contactMethod: '',
+});
+
+function Section({ title, children, first = false }: { title: string; children: React.ReactNode; first?: boolean }) {
+  return (
+    <section className={first ? undefined : 'mt-14 lg:u-mt-90'}>
+      <h2 className="mb-6 text-lg font-bold text-brand-ink lg:u-mb-30 lg:u-text-23">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+/** "Specify" box that goes with an "Other" choice. */
+function Specify({ value, onChange, active, onActivate }: { value: string; onChange: (v: string) => void; active: boolean; onActivate: () => void }) {
+  return (
+    <TextInput
+      aria-label="Please specify"
+      placeholder="Specify"
+      className="w-full sm:w-auto sm:flex-1"
+      value={value}
+      required={active}
+      onFocus={() => !active && onActivate()}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  );
+}
+
+/** The referral form (public/design/Screenshot 2026-09-23 151041.png). */
 export function ReferralForm({ preselectedService }: { preselectedService?: string }) {
-  const [form, setForm] = useState<ReferralFormData>(() => emptyForm(preselectedService));
-  const [submittedRef, setSubmittedRef] = useState<string | null>(null);
+  const [form, setForm] = useState<ReferralData>(() => emptyForm(preselectedService));
+  const [reference, setReference] = useState<string | null>(null);
   const [error, setError] = useState('');
-
-  // A service passed in from a link that isn't in the standard list still gets a chip.
-  const needs = preselectedService && !NEEDS.includes(preselectedService) ? [preselectedService, ...NEEDS] : NEEDS;
-
-  const update = <K extends keyof ReferralFormData>(key: K, value: ReferralFormData[K]) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
-
-  const toggleNeed = (need: string) =>
-    setForm((prev) => ({
-      ...prev,
-      primaryNeeds: prev.primaryNeeds.includes(need)
-        ? prev.primaryNeeds.filter((n) => n !== need)
-        : [...prev.primaryNeeds, need],
-    }));
+  const set = <K extends keyof ReferralData>(key: K, value: ReferralData[K]) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!form.referrerName || !form.referrerEmail || !form.organisationName) {
-      setError('Please complete all required fields marked with *.');
+    // Browsers can't require "at least one" of a group of checkboxes.
+    if (form.referringFor.length === 0) {
+      setError('Please choose at least one type of support you are referring for.');
       return;
     }
     setError('');
     // TODO: send `form` to the referrals inbox / CRM.
-    setSubmittedRef(`MF-${Math.floor(100000 + Math.random() * 900000)}`);
+    setReference(`MF-${Math.floor(100000 + Math.random() * 900000)}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (submittedRef) {
+  if (reference) {
     return (
-      <FormSuccess
-        title="Referral Received"
-        action={
-          <Button asChild variant="orange" size="pill">
-            <Link href="/">Return to the website</Link>
-          </Button>
-        }
-      >
+      <SentMessage title="Referral Received">
         <p>
-          Thank you, <strong>{form.referrerName}</strong>. Your referral reference is:
+          Thank you, <strong>{form.referrer.firstName}</strong>. Your referral reference is:
         </p>
-        <p className="inline-block rounded-xl bg-brand-lime px-5 py-2 text-xl font-bold tracking-wider">
-          {submittedRef}
-        </p>
-        <p>
-          A member of our team will be in touch within 24 hours to talk through the learner&apos;s
-          needs and arrange an initial conversation.
-        </p>
-      </FormSuccess>
+        <p className="inline-block rounded-xl bg-brand-lime px-5 py-2 text-xl font-bold tracking-wider">{reference}</p>
+        <p>A member of our team will be in touch to talk through the young person’s needs and agree next steps.</p>
+      </SentMessage>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10">
-      <FormError message={error} />
-
-      <FormSection title="1. About you">
-        <ChoiceChips
-          label="I am referring as"
-          options={REFERRER_TYPES}
-          value={form.referrerType}
-          onToggle={(type) => update('referrerType', type)}
-        />
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="ref-name">Your name *</Label>
-            <Input
-              id="ref-name"
-              required
-              autoComplete="name"
-              value={form.referrerName}
-              onChange={(e) => update('referrerName', e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="ref-org">School / organisation *</Label>
-            <Input
-              id="ref-org"
-              required
-              autoComplete="organization"
-              value={form.organisationName}
-              onChange={(e) => update('organisationName', e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="ref-email">Email address *</Label>
-            <Input
-              id="ref-email"
-              type="email"
-              required
-              autoComplete="email"
-              value={form.referrerEmail}
-              onChange={(e) => update('referrerEmail', e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="ref-phone">Phone number</Label>
-            <Input
-              id="ref-phone"
-              type="tel"
-              autoComplete="tel"
-              value={form.referrerPhone}
-              onChange={(e) => update('referrerPhone', e.target.value)}
-            />
-          </div>
-        </div>
-      </FormSection>
-
-      <FormSection title="2. About the learner">
-        <ChoiceChips
-          label="Age / key stage"
-          options={AGE_GROUPS}
-          value={form.learnerAgeGroup}
-          onToggle={(age) => update('learnerAgeGroup', age)}
-        />
-
-        <ChoiceChips
-          label="Needs and support you're interested in (select all that apply)"
-          options={needs}
-          value={form.primaryNeeds}
-          onToggle={toggleNeed}
-        />
-
-        <div className="space-y-2">
-          <Label htmlFor="ref-setting">Current education setting</Label>
-          <Input
-            id="ref-setting"
-            value={form.currentSetting}
-            onChange={(e) => update('currentSetting', e.target.value)}
-            placeholder="e.g. Year 9, mainstream secondary, part-time timetable"
+    <form onSubmit={handleSubmit}>
+      <Section title="1. Referrer Details" first>
+        <PersonFields value={form.referrer} onChange={(referrer) => set('referrer', referrer)} />
+        <div className={cn('grid gap-6 lg:grid-cols-2 lg:u-gap-x-28 lg:u-gap-y-26', groupGap)}>
+          <Field label="Organisation*" required autoComplete="organization" placeholder="Name Organisation" value={form.organisation} onChange={(e) => set('organisation', e.target.value)} />
+          <Field label="Role (if applicable)" autoComplete="organization-title" value={form.role} onChange={(e) => set('role', e.target.value)} />
+          <Field label="Relationship to Referee*" required placeholder="e.g. Teacher, SENCO, parent" value={form.relationship} onChange={(e) => set('relationship', e.target.value)} />
+          <ChoiceGroup
+            legend="I am happy to be contacted regarding this referral?"
+            options={YES_NO}
+            value={form.happyToBeContacted as (typeof YES_NO)[number]}
+            onChange={(v) => set('happyToBeContacted', v)}
+            required
           />
         </div>
+      </Section>
 
-        <div className="flex items-center gap-3">
-          <Checkbox id="ref-ehcp" checked={form.hasEhcp} onCheckedChange={(v) => update('hasEhcp', !!v)} />
-          <Label htmlFor="ref-ehcp" className="cursor-pointer">
-            The learner has an EHCP (in place or in draft)
-          </Label>
-        </div>
-      </FormSection>
+      <Section title="2. Individual Details">
+        <PersonFields value={form.individual} onChange={(individual) => set('individual', individual)} preferredName />
+        <fieldset className={groupGap}>
+          <legend className={cn(labelClass, 'mb-2 lg:u-mb-10')}>Referral Note</legend>
+          <div className="flex flex-wrap items-center gap-x-10 gap-y-3 lg:u-gap-x-60">
+            <Bubble label="The individual is aware of this referral" checked={form.individualAware} onChange={(v) => set('individualAware', v)} />
+            <Bubble label="Referral made in the individual’s best interests" checked={form.bestInterests} onChange={(v) => set('bestInterests', v)} />
+          </div>
+          <TextArea aria-label="Referral note" short className="mt-4 lg:u-mt-20" value={form.referralNote} onChange={(e) => set('referralNote', e.target.value)} />
+        </fieldset>
+      </Section>
 
-      <FormSection title="3. What you'd like to happen">
-        <ChoiceChips
-          label="How soon is support needed?"
-          options={URGENCY}
-          value={form.urgency}
-          onToggle={(urgency) => update('urgency', urgency)}
-        />
-
-        <div className="space-y-2">
-          <Label htmlFor="ref-notes">About the learner&apos;s circumstances and goals</Label>
-          <Textarea
-            id="ref-notes"
-            rows={5}
-            value={form.notes}
-            onChange={(e) => update('notes', e.target.value)}
-            placeholder="Attendance, what has and hasn't worked, interests, and the outcomes you're hoping for."
+      <Section title="3. Support Being Requested">
+        <ChoiceGroup
+          legend="I am referring for (tick all that apply)*"
+          options={REFERRING_FOR}
+          value={form.referringFor}
+          onChange={(option) => set('referringFor', toggle(form.referringFor, option))}
+          // Rows as in the design: four options, three, then "Other" with its Specify box.
+          breakAfter={[3, 6]}
+          optionsClassName="lg:u-gap-x-64 lg:u-gap-y-18"
+        >
+          <Specify
+            value={form.referringForOther}
+            active={form.referringFor.includes('Other')}
+            onActivate={() => set('referringFor', [...form.referringFor, 'Other'])}
+            onChange={(v) => set('referringForOther', v)}
           />
-        </div>
-      </FormSection>
+        </ChoiceGroup>
 
-      <div className="flex flex-col gap-4 border-t-2 border-brand-green pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-relaxed sm:max-w-sm">
-          We handle referral information in line with UK GDPR. See our{' '}
-          <Link href="/privacy-policy" className="font-bold underline">
-            Privacy Policy
-          </Link>
-          .
-        </p>
-        <Button type="submit" variant="orange" size="pill" className="gap-2">
-          <Send className="h-4 w-4" aria-hidden="true" />
-          Submit Referral
-        </Button>
-      </div>
+        <ChoiceGroup
+          className={groupGap}
+          legend="When is support required?*"
+          options={WHEN}
+          value={form.when as (typeof WHEN)[number]}
+          onChange={(v) => set('when', v)}
+          required
+          breakAfter={[2]}
+          optionsClassName="lg:u-gap-x-64 lg:u-gap-y-18"
+        >
+          <Specify value={form.whenOther} active={form.when === 'Other'} onActivate={() => set('when', 'Other')} onChange={(v) => set('whenOther', v)} />
+        </ChoiceGroup>
+
+        <div className={groupGap}>
+          <FieldLabel htmlFor="referral-about">Tell us briefly about the young person and what support they need*</FieldLabel>
+          <TextArea id="referral-about" required short value={form.aboutYoungPerson} onChange={(e) => set('aboutYoungPerson', e.target.value)} />
+        </div>
+      </Section>
+
+      <Section title="4. Additional Information">
+        <FieldLabel htmlFor="referral-additional">Is there anything else you feel is important for us to know?</FieldLabel>
+        <TextArea id="referral-additional" short value={form.additionalInfo} onChange={(e) => set('additionalInfo', e.target.value)} />
+      </Section>
+
+      <Section title="5. Consent & Data Protection">
+        <fieldset>
+          <legend className={cn(labelClass, 'mb-2 lg:u-mb-10')}>Declaration*</legend>
+          <div className="flex flex-col items-start gap-3 lg:u-gap-y-14">
+            <Bubble
+              bubbleFirst
+              required
+              label="I confirm that I have consent (or appropriate authority) to share this information."
+              checked={form.consentToShare}
+              onChange={(v) => set('consentToShare', v)}
+            />
+            <Bubble
+              bubbleFirst
+              required
+              label="I understand this information will be used to assess suitability and contact relevant parties."
+              checked={form.understandsUse}
+              onChange={(v) => set('understandsUse', v)}
+            />
+          </div>
+        </fieldset>
+
+        <div className={groupGap}>
+          <p className={cn(labelClass, 'mb-2 lg:u-mb-10')}>Privacy notice</p>
+          <p className="text-sm leading-relaxed text-brand-ink lg:u-text-19">
+            We will only use the information provided to respond to this referral and assess appropriate support. Information will be stored securely and
+            handled in line with applicable data protection legislation. See our{' '}
+            <Link href="/privacy-policy" className="font-bold underline">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        </div>
+      </Section>
+
+      <Section title="6. Preferred Next Steps">
+        <ChoiceGroup
+          legend="Preferred contact method"
+          options={CONTACT_METHODS}
+          value={form.contactMethod as (typeof CONTACT_METHODS)[number]}
+          onChange={(v) => set('contactMethod', v)}
+        />
+      </Section>
+
+      <SubmitRow thanks="Thank you for starting a conversation with us!" error={error} />
     </form>
   );
 }

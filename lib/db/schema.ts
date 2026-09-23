@@ -27,7 +27,12 @@ export const content = pgTable('content', {
   updatedBy: uuid('updated_by').references(() => adminUsers.id, { onDelete: 'set null' }),
 });
 
-export const postStatus = pgEnum('post_status', ['draft', 'published']);
+export interface GalleryImage {
+  src: string;
+  alt: string;
+}
+
+export const postStatus =pgEnum('post_status', ['draft', 'published']);
 
 export const blogPosts = pgTable('blog_posts', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -40,6 +45,8 @@ export const blogPosts = pgTable('blog_posts', {
   tags: text('tags').array().notNull().default([]),
   coverImageUrl: text('cover_image_url'),
   coverImageAlt: text('cover_image_alt').notNull().default(''),
+  /** Photos shown in the carousel under the post. */
+  gallery: jsonb('gallery').$type<GalleryImage[]>().notNull().default([]),
   authorName: text('author_name').notNull().default(''),
   status: postStatus('status').notNull().default('draft'),
   publishedAt: timestamp('published_at', { withTimezone: true }),

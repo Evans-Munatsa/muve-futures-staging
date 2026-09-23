@@ -26,6 +26,8 @@ function getActivePage(pathname: string): PageId {
     // The form pages are reached from the Contact menu.
     case 'referral':
     case 'book-an-intro':
+    case 'partnerships':
+    case 'feedback':
       return 'contact';
     case 'services':
     case 'who-we-support':

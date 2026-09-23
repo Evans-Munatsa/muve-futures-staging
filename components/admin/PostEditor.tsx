@@ -7,7 +7,7 @@ import { ArrowLeft, Check, ExternalLink, Loader2 } from 'lucide-react';
 import { deletePost, savePost, type PostInput, type PostResult } from '@/lib/admin/blog-actions';
 import { slugify } from '@/lib/slug';
 import { Markdown } from '@/components/blog/Markdown';
-import { ImageUrlInput, inputClass } from './MediaInputs';
+import { GalleryInput, ImageUrlInput, inputClass } from './MediaInputs';
 import { ConfirmButton } from './ConfirmButton';
 import { cn } from '@/lib/utils';
 
@@ -173,6 +173,14 @@ export function PostEditor({ id, initial }: { id: string | null; initial: PostIn
               Description (alt text)
               <input className={cn(inputClass, 'mt-1')} value={post.coverImageAlt} onChange={(e) => update('coverImageAlt', e.target.value)} />
             </label>
+          </div>
+
+          <div className="rounded-xl border border-neutral-200 bg-white p-4">
+            <span className={label}>Gallery</span>
+            <span className="block text-xs text-neutral-500">Photos in the carousel under the post. Visitors can open them full size.</span>
+            <div className="mt-3">
+              <GalleryInput value={post.gallery} onChange={(v) => update('gallery', v)} />
+            </div>
           </div>
 
           <div className="space-y-4 rounded-xl border border-neutral-200 bg-white p-4">

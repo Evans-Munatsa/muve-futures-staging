@@ -90,9 +90,9 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
     // The design has no top-level About link; it lives in this menu instead.
     dropdown: [
       { label: 'About', href: '/about' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Topics', href: '/resources#guides-library' },
-      { label: 'Downloads', href: '/resources#policy-downloads' },
+      // Topics is the blog.
+      { label: 'Topics', href: '/blog' },
+      { label: 'Downloads', href: '/resources#resource-library' },
     ],
   },
   {
@@ -102,8 +102,9 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
     dropdown: [
       { label: 'Chat to Us', href: CONTACT_ENQUIRY_HREF },
       { label: 'Make a Referral', href: REFERRAL_HREF },
-      { label: 'Partnerships', href: CONTACT_ENQUIRY_HREF },
+      { label: 'Partnerships', href: '/partnerships' },
       { label: 'Book Introduction', href: BOOK_INTRO_HREF },
+      { label: 'Feedback', href: '/feedback' },
       { label: 'Careers', href: '/contact#locations-map' },
     ],
   },

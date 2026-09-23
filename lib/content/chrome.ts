@@ -31,8 +31,13 @@ export async function getSiteChrome(): Promise<SiteChrome> {
     legalLinks: legal.map((page) => ({ slug: page.slug, label: page.label, href: `/${page.slug}` })),
     search: {
       services: services.map((s) => ({ slug: s.slug, title: s.title, description: s.description })),
-      faqs: resources.faqs.items.map(({ question, answer }) => ({ question, answer })),
-      policies: resources.policies.items.map(({ title, category, description }) => ({ title, category, description })),
+      // The Referrals group reads as questions and answers; everything else is listed as a resource.
+      faqs: resources.library.groups
+        .filter((group) => group.name === 'Referrals')
+        .flatMap((group) => group.items.map(({ title, body }) => ({ question: title, answer: body }))),
+      policies: resources.library.groups
+        .filter((group) => group.name !== 'Referrals')
+        .flatMap((group) => group.items.map(({ title, body }) => ({ title, category: group.name, description: body }))),
     },
   };
 }

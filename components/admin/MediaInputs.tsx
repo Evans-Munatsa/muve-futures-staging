@@ -146,6 +146,93 @@ export function PhotoInput({ value, onChange }: { value: Photo; onChange: (value
   );
 }
 
+interface GalleryImageValue {
+  src: string;
+  alt: string;
+}
+
+/** An ordered list of photos, e.g. a blog post's gallery. */
+export function GalleryInput({ value, onChange }: { value: GalleryImageValue[]; onChange: (value: GalleryImageValue[]) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  const set = (index: number, image: GalleryImageValue) => onChange(value.map((item, i) => (i === index ? image : item)));
+  const move = (index: number, by: -1 | 1) => {
+    const next = [...value];
+    [next[index], next[index + by]] = [next[index + by], next[index]];
+    onChange(next);
+  };
+
+  // Several photos at once, added to the end in the order chosen.
+  const uploadMany = async (files: FileList | null) => {
+    if (!files?.length) return;
+    setBusy(true);
+    setError('');
+    try {
+      const urls: string[] = [];
+      for (const file of Array.from(files)) urls.push(await uploadFile(file, 'image'));
+      onChange([...value, ...urls.map((src) => ({ src, alt: '' }))]);
+    } catch (e) {
+      setError(uploadError(e));
+    } finally {
+      setBusy(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      {value.length === 0 && <p className="text-xs text-neutral-500">No photos yet. The carousel is hidden until you add some.</p>}
+
+      <ol className="space-y-3">
+        {value.map((image, i) => (
+          <li key={i} className="space-y-2 rounded-lg border border-neutral-200 p-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-neutral-500">
+              <span>Photo {i + 1}</span>
+              <span className="flex gap-1">
+                <button type="button" className={smallButton} disabled={i === 0} onClick={() => move(i, -1)} aria-label={`Move photo ${i + 1} up`}>
+                  ↑
+                </button>
+                <button type="button" className={smallButton} disabled={i === value.length - 1} onClick={() => move(i, 1)} aria-label={`Move photo ${i + 1} down`}>
+                  ↓
+                </button>
+                <button type="button" className={smallButton} onClick={() => onChange(value.filter((_, j) => j !== i))} aria-label={`Remove photo ${i + 1}`}>
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </span>
+            </div>
+            <ImagePicker src={image.src} onChange={(src) => set(i, { ...image, src })} />
+            <label className="block text-xs font-semibold text-neutral-600">
+              Description (alt text)
+              <input type="text" className={cn(inputClass, 'mt-1')} value={image.alt} onChange={(e) => set(i, { ...image, alt: e.target.value })} />
+            </label>
+          </li>
+        ))}
+      </ol>
+
+      <div className="flex flex-wrap gap-2">
+        <button type="button" className={smallButton} disabled={busy} onClick={() => fileRef.current?.click()}>
+          {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+          {busy ? 'Uploading…' : 'Upload photos'}
+        </button>
+        <button type="button" className={smallButton} onClick={() => onChange([...value, { src: '', alt: '' }])}>
+          <Images className="h-3.5 w-3.5" /> Add from site photos / URL
+        </button>
+      </div>
+      {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
+      <input
+        ref={fileRef}
+        type="file"
+        multiple
+        accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+        className="hidden"
+        onChange={(e) => uploadMany(e.target.files)}
+      />
+    </div>
+  );
+}
+
 /** An uploaded document such as a policy PDF. */
 export function FileInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
