@@ -7,6 +7,7 @@ import { AUDIENCES, LEGAL_PAGES, SERVICE_OFFERINGS, type Audience, type LegalPag
 import type { Field } from './fields';
 import {
   DEFAULT_ABOUT,
+  DEFAULT_BLOG_PAGE,
   DEFAULT_FORMS,
   DEFAULT_HOME,
   DEFAULT_RESOURCES,
@@ -14,6 +15,7 @@ import {
   DEFAULT_SETTINGS,
   DEFAULT_WHO_WE_SUPPORT_PAGE,
   type AboutContent,
+  type BlogPageContent,
   type FormsContent,
   type HomeContent,
   type ResourcesContent,
@@ -24,6 +26,7 @@ import {
 import {
   aboutSchema,
   audienceSchema,
+  blogPageSchema,
   formsSchema,
   homeSchema,
   legalSchema,
@@ -51,6 +54,7 @@ export interface SingleTypes {
   'who-we-support-page': WhoWeSupportPageContent;
   forms: FormsContent;
   resources: ResourcesContent;
+  'blog-page': BlogPageContent;
 }
 
 export type SingleKey = keyof SingleTypes;
@@ -88,10 +92,17 @@ export const SINGLES: { [K in SingleKey]: SingleDef<SingleTypes[K]> } = {
   },
   resources: {
     label: 'Resources page',
-    description: 'Intro, policy downloads and FAQs. Guides come from the blog.',
+    description: 'Intro, the resource library (families, professionals, referrals, policies…) and the closing call to action.',
     schema: resourcesSchema,
     defaults: DEFAULT_RESOURCES,
     path: '/resources',
+  },
+  'blog-page': {
+    label: 'Topics page (blog)',
+    description: 'The /blog heading and topic filters. Posts themselves are written under Blog.',
+    schema: blogPageSchema,
+    defaults: DEFAULT_BLOG_PAGE,
+    path: '/blog',
   },
 };
 

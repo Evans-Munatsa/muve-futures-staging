@@ -255,37 +255,54 @@ export const formsSchema: Field = object({
 });
 
 export const resourcesSchema: Field = object({
-  hero: object({ badge: text('Badge'), title: heading('Page heading'), intro: body('Introduction'), searchPlaceholder: text('Search box placeholder') }, 'Top of the page'),
-  guides: object({ eyebrow: text('Eyebrow'), title: text('Heading') }, 'Guides (latest blog posts)'),
-  policies: object(
+  hero: object({ title: heading('Page heading'), intro: body('Introduction'), cta: text('Button') }, 'Top of the page'),
+  intro: object({ title: heading(), body: body() }, 'Introduction beside the orange line'),
+  library: object(
     {
-      eyebrow: text('Eyebrow'),
       title: text('Heading'),
-      intro: body('Introduction'),
-      items: list(
-        'Documents',
+      allLabel: text('“Show everything” filter label'),
+      groups: list(
+        'Groups',
         object({
-          title: text('Title'),
-          category: text('Category'),
-          lastUpdated: text('Last reviewed'),
-          fileSize: text('Format / size', { placeholder: '1.4 MB PDF' }),
-          description: textarea('Description', { rows: 2 }),
-          fileUrl: file('File', 'Upload the PDF people download.'),
+          name: text('Group name', { help: 'Also the label of its filter button.' }),
+          items: list(
+            'Resources',
+            object({
+              title: text('Title'),
+              body: textarea('Text shown when opened', { rows: 4, help: 'Leave a blank line to start a new paragraph.' }),
+              fileUrl: file('File', 'Upload a file to add a Download button.'),
+              linkLabel: text('Link button label (optional)'),
+              linkUrl: text('Link button address', { placeholder: '/contact' }),
+            }),
+            { itemTitle: 'title' }
+          ),
         }),
-        { itemTitle: 'title' }
+        { itemTitle: 'name' }
       ),
     },
-    'Policy downloads'
+    'Resource library'
   ),
-  faqs: object(
+  closing: object({ title: heading(), body: body(), cta: text('Button') }, 'Pink call to action'),
+});
+
+export const blogPageSchema: Field = object({
+  hero: object({ title: heading('Page heading') }, 'Top of the page'),
+  topics: object(
     {
-      eyebrow: text('Eyebrow'),
-      title: text('Heading'),
-      intro: body('Introduction'),
-      items: list('Questions', object({ question: text('Question'), answer: textarea('Answer', { rows: 3 }), category: text('Category') }), {
-        itemTitle: 'question',
-      }),
+      allLabel: text('“Show everything” filter label'),
+      items: list(
+        'Topics',
+        object({
+          label: text('Label'),
+          keywords: list('Matching words', text('Word'), {
+            help: 'A post appears under this topic when its category or one of its tags contains one of these words.',
+          }),
+        }),
+        { itemTitle: 'label' }
+      ),
     },
-    'Frequently asked questions'
+    'Topic filters'
   ),
+  readMore: text('Card button label'),
+  showAll: text('“Show all posts” button label'),
 });

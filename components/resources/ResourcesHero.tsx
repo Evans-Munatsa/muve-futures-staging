@@ -1,85 +1,53 @@
-import React from 'react';
-import { WhiteTriangle, PinkPolygon, CyanCircle } from '@/components/common/GeometricShapes';
-import { Input } from '@/components/ui/input';
-import { BookOpen, Search } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
+import { Lines } from '@/components/common/Lines';
 import type { ResourcesContent } from '@/lib/content/pages';
 
-interface ResourcesHeroProps {
-  content: ResourcesContent['hero'];
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  activeCategory: string;
-  onSelectCategory: (category: string) => void;
-  categories: string[];
-}
-
-export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
-  content,
-  searchQuery,
-  onSearchChange,
-  activeCategory,
-  onSelectCategory,
-  categories,
-}) => {
+/** Full-width books photo under a green wash, with the page heading over it. */
+export function ResourcesHero({ content }: { content: ResourcesContent['hero'] }) {
   return (
-    <section className="relative bg-brand-orange pt-12 pb-16 lg:pt-16 lg:pb-24 overflow-hidden text-white">
-      <div className="absolute top-6 right-12 z-10">
-        <PinkPolygon size={68} rotation={18} />
-      </div>
-      <div className="absolute bottom-6 left-10 z-10">
-        <WhiteTriangle size={38} rotation={-25} />
-      </div>
-      <div className="absolute -bottom-14 -right-14 z-0">
-        <CyanCircle size={150} />
-      </div>
+    <section className="relative w-full overflow-hidden">
+      <div className="relative flex min-h-[32rem] w-full items-center justify-center sm:aspect-[1920/767] sm:min-h-0 sm:max-h-[48rem]">
+        <Reveal onLoad from="fade" className="absolute inset-0">
+          <Image
+            src="/images/resources-books.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </Reveal>
+        {/* green wash over the photo, blending into the page colour at both edges */}
+        <div className="absolute inset-0 bg-brand-green/50" />
+        <div className="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-t from-transparent to-brand-green" />
+        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-brand-green" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
-        <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-xs px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase">
-            <BookOpen className="w-4 h-4 text-white" />
-            <span>{content.badge}</span>
-          </div>
+        <Stagger
+          onLoad
+          stagger={0.18}
+          delay={0.2}
+          className="relative z-10 flex flex-col items-center px-6 py-16 text-center text-white"
+        >
+          <StaggerItem>
+            <h1 className="max-w-6xl text-3xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-7xl">
+              <Lines text={content.title} />
+            </h1>
+          </StaggerItem>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12]">
-            {content.title}
-          </h1>
+          <StaggerItem>
+            <p className="mt-6 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-lg">{content.intro}</p>
+          </StaggerItem>
 
-          <p className="text-base sm:text-lg lg:text-xl font-medium text-white/95 leading-relaxed">
-            {content.intro}
-          </p>
-        </div>
-
-        {/* Live Search Input using Shadcn */}
-        <div className="max-w-xl">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 pointer-events-none" />
-            <Input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={content.searchPlaceholder}
-              className="bg-white text-brand-ink placeholder:text-neutral-400 pl-12 pr-4 py-3.5 h-auto text-sm sm:text-base rounded-full border-none shadow-lg focus-visible:ring-2 focus-visible:ring-white"
-            />
-          </div>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-white/20">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => onSelectCategory(cat)}
-              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                activeCategory === cat
-                  ? 'bg-white text-brand-orange shadow-md scale-105'
-                  : 'bg-white/20 text-white hover:bg-white/30'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+          <StaggerItem from="pop">
+            <Button asChild variant="orange" size="pill" className="mt-8 text-base">
+              <Link href="#resource-library">{content.cta}</Link>
+            </Button>
+          </StaggerItem>
+        </Stagger>
       </div>
     </section>
   );
-};
+}

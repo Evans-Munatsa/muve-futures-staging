@@ -18,6 +18,7 @@ export default async function NewPostPage() {
         tags: [],
         coverImageUrl: '',
         coverImageAlt: '',
+        gallery: [],
         authorName: admin.name,
         status: 'draft',
         publishedAt: '',

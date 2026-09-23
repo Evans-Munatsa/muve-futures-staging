@@ -45,6 +45,7 @@ async function main() {
         tags: post.tags,
         coverImageUrl: post.coverImageUrl,
         coverImageAlt: post.coverImageAlt,
+        gallery: post.gallery,
         authorName: post.authorName,
         status: 'published' as const,
         publishedAt: new Date(post.publishedAt),

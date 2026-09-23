@@ -20,6 +20,9 @@
   --color-brand-lime: #DCEFAB;
   --color-brand-navy: #24345E;
   --color-brand-coral: #F75658;
+  /* From public/design/resources.svg and topics.svg */
+  --color-brand-leaf: #A7DE50;
+  --color-brand-teal: #024553;
 }
 
 /*
@@ -55,6 +58,8 @@
 @utility u-gap-y-* { row-gap: calc(var(--u) * --value(number)); }
 @utility u-text-* { font-size: calc(var(--u) * --value(number)); }
 @utility u-border-* { border-width: calc(var(--u) * --value(number)); }
+@utility u-min-w-* { min-width: calc(var(--u) * --value(number)); }
+@utility u-rounded-* { border-radius: calc(var(--u) * --value(number)); }
 @utility u-rounded-tl-* { border-top-left-radius: calc(var(--u) * --value(number)); }
 @utility u-rounded-tr-* { border-top-right-radius: calc(var(--u) * --value(number)); }
 
@@ -63,6 +68,23 @@
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Rounded pink-on-lime scrollbar, as on the open resource panels in the design. */
+@utility scrollbar-brand {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-brand-pink) var(--color-brand-lime);
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 9999px;
+    background: var(--color-brand-lime);
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: var(--color-brand-pink);
   }
 }
 

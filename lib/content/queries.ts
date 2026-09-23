@@ -32,6 +32,12 @@ async function safely<T>(what: string, run: () => Promise<T>, fallback: T): Prom
   }
 }
 
+/**
+ * Part of the singles' and blog posts' cache keys. Bump it when a content type changes shape
+ * so cached copies in the old shape aren't served (they outlive deploys).
+ */
+const SHAPE_VERSION = '2';
+
 /** A single page's content (e.g. `home`), merged over its defaults. */
 export function getSingle<K extends SingleKey>(key: K): Promise<SingleTypes[K]> {
   const defaults = SINGLES[key].defaults;
@@ -45,7 +51,7 @@ export function getSingle<K extends SingleKey>(key: K): Promise<SingleTypes[K]> 
         },
         defaults
       ),
-    ['content', key],
+    ['content', key, SHAPE_VERSION],
     { tags: [contentTag.single(key)] }
   )();
 }
@@ -102,6 +108,7 @@ const toPublic = (post: typeof schema.blogPosts.$inferSelect): PublicPost => ({
   tags: post.tags,
   coverImageUrl: post.coverImageUrl,
   coverImageAlt: post.coverImageAlt,
+  gallery: post.gallery ?? [],
   authorName: post.authorName,
   publishedAt: (post.publishedAt ?? post.createdAt).toISOString(),
 });
@@ -122,10 +129,13 @@ export function getPublishedPosts(): Promise<PublicPost[]> {
         },
         DEFAULT_POSTS
       ),
-    ['blog', 'published'],
+    ['blog', 'published', SHAPE_VERSION],
     // Also revalidate hourly so scheduled posts appear without a save.
     { tags: [contentTag.blog], revalidate: 3600 }
-  )();
+  )().then((posts) =>
+    // A copy cached before a field existed can outlive a deploy; fill the gaps.
+    posts.map((post) => ({ ...post, gallery: Array.isArray(post.gallery) ? post.gallery : [] }))
+  );
 }
 
 export async function getPublishedPost(slug: string): Promise<PublicPost | undefined> {

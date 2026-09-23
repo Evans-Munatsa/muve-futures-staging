@@ -28,6 +28,7 @@ export default async function EditPostPage({ params }: PageProps<'/admin/blog/[i
         tags: post.tags,
         coverImageUrl: post.coverImageUrl ?? '',
         coverImageAlt: post.coverImageAlt,
+        gallery: post.gallery,
         authorName: post.authorName,
         status: post.status,
         publishedAt: post.publishedAt ? post.publishedAt.toISOString().slice(0, 10) : '',
