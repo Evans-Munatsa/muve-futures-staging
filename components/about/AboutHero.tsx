@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { BookIntroButton } from '@/components/common/ActionButtons';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
+import { Lines } from '@/components/common/Lines';
+import type { AboutContent } from '@/lib/content/pages';
 
-export function AboutHero() {
+export function AboutHero({ content }: { content: AboutContent['hero'] }) {
   return (
     <section className="relative w-full overflow-hidden">
       <div className="relative aspect-[4/3] max-h-[48rem] w-full sm:aspect-[1920/767]">
@@ -28,23 +30,19 @@ export function AboutHero() {
         >
           <StaggerItem>
             <h1 className="max-w-4xl text-3xl font-bold leading-[1.15] tracking-tight sm:text-5xl lg:text-7xl">
-              More Than
-              <br />
-              Alternative Provision
+              <Lines text={content.title} breakClassName='' />
             </h1>
           </StaggerItem>
 
           <StaggerItem>
             <p className="mt-5 max-w-3xl text-sm leading-relaxed sm:text-base lg:text-lg">
-              MUVE Futures provides personalised education that helps children and young people
-              reconnect with learning, build confidence and prepare for positive futures. We believe
-              education should adapt to the learner, not the learner to education.
+              {content.intro}
             </p>
           </StaggerItem>
 
           <StaggerItem from="pop">
             <BookIntroButton id="hero-btn-book-intro" className="mt-8">
-              Book an Intro
+              {content.cta}
             </BookIntroButton>
           </StaggerItem>
         </Stagger>

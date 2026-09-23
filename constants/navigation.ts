@@ -90,6 +90,7 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
     // The design has no top-level About link; it lives in this menu instead.
     dropdown: [
       { label: 'About', href: '/about' },
+      { label: 'Blog', href: '/blog' },
       { label: 'Topics', href: '/resources#guides-library' },
       { label: 'Downloads', href: '/resources#policy-downloads' },
     ],

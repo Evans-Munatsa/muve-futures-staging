@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { FRAMEWORK_STAGES } from '@/constants';
 import { FrameworkStage } from '@/app/types';
 import { Button } from '@/components/ui/button';
 import { BookIntroButton, ReferralButton } from '@/components/common/ActionButtons';
@@ -12,6 +11,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { Drift } from '@/components/motion/Drift';
 import { Reveal } from '@/components/motion/Reveal';
+import { Lines } from '@/components/common/Lines';
+import type { HomeContent } from '@/lib/content/pages';
 
 const inkOutline =
   'border-brand-ink text-brand-ink hover:bg-brand-ink hover:text-white active:scale-100';
@@ -23,14 +24,25 @@ const arrowButton =
  * Frame y 5153–7873: the framework card, the classroom photo, the notebook and
  * the referral block. Section coordinates = frame y − 5153.
  */
-export function FourStageApproach({ onDiscoverMore }: { onDiscoverMore: (stage: FrameworkStage) => void }) {
+export function FourStageApproach({
+  framework,
+  partnerships,
+  referral,
+  onDiscoverMore,
+}: {
+  framework: HomeContent['framework'];
+  partnerships: HomeContent['partnerships'];
+  referral: HomeContent['referral'];
+  onDiscoverMore: (stage: FrameworkStage) => void;
+}) {
+  const stages = framework.stages;
   const [index, setIndex] = useState(0);
   // Direction of the last step, so the headline slides the right way.
   const [direction, setDirection] = useState(1);
-  const stage = FRAMEWORK_STAGES[index];
+  const stage = stages[index % Math.max(stages.length, 1)];
   const step = (delta: number) => {
     setDirection(delta);
-    setIndex((i) => (i + delta + FRAMEWORK_STAGES.length) % FRAMEWORK_STAGES.length);
+    setIndex((i) => (i + delta + stages.length) % Math.max(stages.length, 1));
   };
 
   return (
@@ -45,22 +57,21 @@ export function FourStageApproach({ onDiscoverMore }: { onDiscoverMore: (stage: 
       {/* White framework card, over the top of the photo */}
       <Reveal className="relative z-10 mx-6 rounded-tr-[2.5rem] bg-white px-6 py-8 text-brand-ink lg:absolute lg:u-left-200 lg:top-0 lg:u-h-600 lg:u-w-1520 lg:mx-0 lg:u-rounded-tr-80 lg:p-0">
         <div className="lg:absolute lg:u-left-79 lg:u-top-58">
-          <p className={cn(homeType.eyebrow, 'text-brand-orange')}>Our Framework</p>
+          <p className={cn(homeType.eyebrow, 'text-brand-orange')}>{framework.eyebrow}</p>
           <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-14')}>
-            The Four
-            <br className="hidden sm:block" /> Stage Approach
+            <Lines text={framework.title} />
           </h2>
-          <p className={cn(homeType.body, 'mt-3 lg:u-mt-30')}>Every programme follows a structured approach</p>
+          <p className={cn(homeType.body, 'mt-3 lg:u-mt-30')}>{framework.intro}</p>
         </div>
 
         <div className="mt-5 lg:absolute lg:u-left-1053 lg:u-top-69 lg:mt-0">
           <Button
             id="btn-discover-approach"
             variant="outline"
-            onClick={() => onDiscoverMore(stage)}
+            onClick={() => stage && onDiscoverMore(stage)}
             className={cn(homeButton.outlineSm, inkOutline, 'lg:u-w-375 lg:u-h-52')}
           >
-            Discover Our Approach
+            {framework.cta}
           </Button>
         </div>
 
@@ -87,7 +98,7 @@ export function FourStageApproach({ onDiscoverMore }: { onDiscoverMore: (stage: 
                 transition={{ type: 'spring', stiffness: 320, damping: 30 }}
                 className="text-sm font-medium lg:u-text-36"
               >
-                {stage.headline}
+                {stage?.headline}
               </motion.p>
             </AnimatePresence>
           </div>
@@ -112,41 +123,38 @@ export function FourStageApproach({ onDiscoverMore }: { onDiscoverMore: (stage: 
       <Reveal from="pop" className="relative z-10 mx-auto -mt-10 aspect-[1275/941] w-[92%] lg:absolute lg:u-left-313 lg:u-top-1277 lg:u-h-941 lg:u-w-1275 lg:mt-0">
         <Image src="/images/home/notebook.webp" alt="" fill sizes="(min-width: 1024px) 66vw, 92vw" className="object-contain" />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-[14%] text-center text-brand-ink lg:justify-start lg:u-pt-210 lg:px-0">
-          <p className={homeType.eyebrow}>Partnerships</p>
+          <p className={homeType.eyebrow}>{partnerships.eyebrow}</p>
           <h3 className={cn('mt-1 text-lg font-bold leading-[1.22] tracking-[-0.02em] sm:text-3xl lg:u-mt-22 lg:u-text-72')}>
-            Working Together
-            <br className="hidden sm:block" /> Around Every Learner
+            <Lines text={partnerships.title} />
           </h3>
           <p className={cn('mt-2 hidden text-xs leading-[1.35] sm:block sm:text-sm lg:u-mt-60 lg:u-w-840 lg:u-text-24')}>
-            Positive outcomes are achieved through collaboration. We work closely with schools,
-            Local Authorities, commissioners, families and professionals to create joined-up
-            education pathways that place the learner at the centre of every decision.
+            {partnerships.body}
           </p>
           <BookIntroButton
             id="btn-book-intro"
             variant="outline"
             className={cn(homeButton.outlineSm, inkOutline, 'mt-3 h-8 text-xs lg:u-mt-50 lg:u-w-249')}
           >
-            Book an Intro
+            {partnerships.cta}
           </BookIntroButton>
         </div>
       </Reveal>
 
       {/* Referral */}
       <Reveal id="referral" className="relative z-10 mt-12 px-6 text-center text-white lg:absolute lg:inset-x-0 lg:u-top-2265 lg:mt-0 lg:p-0">
-        <p className={homeType.eyebrow}>Referral</p>
-        <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-10')}>A Simple Referral Journey</h2>
+        <p className={homeType.eyebrow}>{referral.eyebrow}</p>
+        <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-10')}>
+          <Lines text={referral.title} />
+        </h2>
         <p className={cn(homeType.body, 'mx-auto mt-4 max-w-2xl lg:u-mt-29 lg:u-w-1260 lg:max-w-none')}>
-          Making a referral is straightforward. We begin with a conversation, understand the
-          learner’s needs and desired outcomes, recommend the most appropriate pathway and provide
-          regular communication throughout the programme.
+          {referral.body}
         </p>
         <ReferralButton
           id="journey-btn-referral-bottom"
           variant="outline-white"
           className={cn(homeButton.outlineSm, 'mt-6 lg:u-mt-45 lg:u-w-311')}
         >
-          Make a Referral
+          {referral.cta}
         </ReferralButton>
       </Reveal>
 

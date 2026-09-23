@@ -2,22 +2,27 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { FormPage } from '@/components/forms/FormPage';
-import { LEGAL_LINKS, LEGAL_PAGES, getLegalPage } from '@/constants';
+import { getCollection, getCollectionItem, getSingle } from '@/lib/content/queries';
 
-// Only the governance pages listed in constants/legal.ts exist at the top level; anything else 404s.
+// Only the governance pages (edited in the dashboard) exist at the top level; anything else 404s.
 export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return LEGAL_PAGES.map((page) => ({ legal: page.slug }));
+export async function generateStaticParams() {
+  const pages = await getCollection('legal');
+  return pages.map((page) => ({ legal: page.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<'/[legal]'>): Promise<Metadata> {
-  const page = getLegalPage((await params).legal);
+  const page = await getCollectionItem('legal', (await params).legal);
   return page ? { title: page.title, description: page.intro } : {};
 }
 
 export default async function LegalPage({ params }: PageProps<'/[legal]'>) {
-  const page = getLegalPage((await params).legal);
+  const [page, pages, settings] = await Promise.all([
+    getCollectionItem('legal', (await params).legal),
+    getCollection('legal'),
+    getSingle('settings'),
+  ]);
   if (!page) notFound();
 
   return (
@@ -29,10 +34,10 @@ export default async function LegalPage({ params }: PageProps<'/[legal]'>) {
         <nav aria-label="Governance pages" className="rounded-tl-[2.5rem] bg-brand-cyan px-7 py-8 text-brand-ink">
           <h2 className="text-xl font-bold">Governance</h2>
           <ul className="mt-3 space-y-1.5 text-sm">
-            {LEGAL_LINKS.map((link) => (
+            {pages.map((link) => (
               <li key={link.slug}>
                 <Link
-                  href={link.href}
+                  href={`/${link.slug}`}
                   aria-current={link.slug === page.slug ? 'page' : undefined}
                   className="font-semibold hover:underline aria-[current=page]:font-bold aria-[current=page]:text-brand-orange"
                 >
@@ -50,7 +55,7 @@ export default async function LegalPage({ params }: PageProps<'/[legal]'>) {
             <h2 className="border-b-2 border-brand-green pb-2 text-xl font-bold sm:text-2xl">{section.heading}</h2>
             <div className="mt-4 space-y-4 text-sm leading-relaxed sm:text-base">
               {section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              {section.list && (
+              {section.list && section.list.length > 0 && (
                 <ul className="space-y-2">
                   {section.list.map((item) => (
                     <li key={item} className="flex gap-3">
@@ -71,7 +76,7 @@ export default async function LegalPage({ params }: PageProps<'/[legal]'>) {
             <a href={`mailto:${page.contactEmail}`} className="font-bold underline">
               {page.contactEmail}
             </a>{' '}
-            or write to us at Suite 1, Aqueous II, Rocky Lane, Birmingham, B6 5RQ.
+            or write to us at {settings.address.lines.join(', ')}.
           </p>
         </section>
       </div>

@@ -2,8 +2,10 @@ import React from 'react';
 import { WhiteTriangle, PinkPolygon, CyanCircle } from '@/components/common/GeometricShapes';
 import { Input } from '@/components/ui/input';
 import { BookOpen, Search } from 'lucide-react';
+import type { ResourcesContent } from '@/lib/content/pages';
 
 interface ResourcesHeroProps {
+  content: ResourcesContent['hero'];
   searchQuery: string;
   onSearchChange: (query: string) => void;
   activeCategory: string;
@@ -12,6 +14,7 @@ interface ResourcesHeroProps {
 }
 
 export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
+  content,
   searchQuery,
   onSearchChange,
   activeCategory,
@@ -34,15 +37,15 @@ export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-xs px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase">
             <BookOpen className="w-4 h-4 text-white" />
-            <span>Knowledge Hub & Guidance Library</span>
+            <span>{content.badge}</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12]">
-            Resources For Schools, Families and Local Authorities
+            {content.title}
           </h1>
 
           <p className="text-base sm:text-lg lg:text-xl font-medium text-white/95 leading-relaxed">
-            Expert insight, statutory policies, SENCO toolkits, and step-by-step guidance on navigating SEND, Section 19, and Emotionally Based School Non-Attendance (EBSNA).
+            {content.intro}
           </p>
         </div>
 
@@ -54,7 +57,7 @@ export const ResourcesHero: React.FC<ResourcesHeroProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search guides, policies, keywords (e.g. EBSNA, EHCP, attendance)..."
+              placeholder={content.searchPlaceholder}
               className="bg-white text-brand-ink placeholder:text-neutral-400 pl-12 pr-4 py-3.5 h-auto text-sm sm:text-base rounded-full border-none shadow-lg focus-visible:ring-2 focus-visible:ring-white"
             />
           </div>

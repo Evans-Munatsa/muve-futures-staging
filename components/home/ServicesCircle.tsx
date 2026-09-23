@@ -1,19 +1,21 @@
 import Link from 'next/link';
-import { SERVICES_DATA } from '@/constants';
+import type { HomeContent } from '@/lib/content/pages';
+import { Lines } from '@/components/common/Lines';
 import { homeType } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
 import { Drift } from '@/components/motion/Drift';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
 
-// The design lays the pills out 2-3-2-3-2 inside the circle.
-const ROW_SIZES = [2, 3, 2, 3, 2];
-const ROWS = ROW_SIZES.map((count, i) => {
-  const start = ROW_SIZES.slice(0, i).reduce((sum, n) => sum + n, 0);
-  return SERVICES_DATA.slice(start, start + count);
-});
+/** The design lays the pills out in rows of 2 and 3 (2-3-2-3-2 for twelve). */
+function toRows<T>(items: T[]): T[][] {
+  const rows: T[][] = [];
+  for (let i = 0, size = 2; i < items.length; i += size, size = size === 2 ? 3 : 2) rows.push(items.slice(i, i + size));
+  return rows;
+}
 
 /* Frame y 3676–5153; section coordinates = frame y − 3676. */
-export function ServicesCircle() {
+export function ServicesCircle({ content }: { content: HomeContent['services'] }) {
+  const rows = toRows(content.pills);
   return (
     <section id="services" className="relative overflow-hidden bg-brand-green px-6 py-16 lg:u-h-1477 lg:overflow-visible lg:p-0">
       <svg className="pointer-events-none absolute inset-0 hidden h-full w-full overflow-visible lg:block" viewBox="0 0 1920 1477" aria-hidden="true">
@@ -53,27 +55,25 @@ export function ServicesCircle() {
       {/* On mobile the orange circle becomes a rounded panel */}
       <div className="relative rounded-[3rem] bg-brand-orange px-5 py-12 text-center text-white lg:absolute lg:inset-x-0 lg:u-top-238 lg:rounded-none lg:bg-transparent lg:p-0">
         <Reveal delay={0.2}>
-          <p className={homeType.eyebrow}>Our Services</p>
+          <p className={homeType.eyebrow}>{content.eyebrow}</p>
           <h2 className={cn(homeType.heading, 'mt-2 lg:u-mt-10')}>
-            Education That Adapts
-            <br className="hidden sm:block" /> Around The Learner
+            <Lines text={content.title} />
           </h2>
 
-          <p className="mt-6 text-base font-bold lg:u-mt-64 lg:u-text-36 lg:leading-[1.2] lg:tracking-[-0.02em]">Our services include</p>
+          <p className="mt-6 text-base font-bold lg:u-mt-64 lg:u-text-36 lg:leading-[1.2] lg:tracking-[-0.02em]">{content.intro}</p>
         </Reveal>
 
         <ul className="mt-5 flex flex-col items-center gap-2.5 lg:u-mt-64 lg:u-gap-33">
-          {ROWS.map((row, i) => (
+          {rows.map((row, i) => (
             <li key={i}>
               <Stagger as="ul" stagger={0.08} delay={0.35 + i * 0.12} className="flex flex-wrap justify-center gap-2.5 lg:flex-nowrap lg:u-gap-33">
                 {row.map((service) => (
-                  <StaggerItem as="li" from="pop" key={service.id}>
+                  <StaggerItem as="li" from="pop" key={`${service.slug}-${service.label}`}>
                     <Link
                       href={`/services/${service.slug}`}
-                      id={`btn-service-${service.id}`}
                       className="flex items-center justify-center rounded-full border-2 border-white px-4 py-1.5 text-xs font-bold text-white transition duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-rotate-3 hover:scale-110 hover:bg-white hover:text-brand-orange active:scale-95 lg:u-h-51 lg:u-w-330 lg:u-border-6 lg:p-0 lg:u-text-24"
                     >
-                      {service.name}
+                      {service.label}
                     </Link>
                   </StaggerItem>
                 ))}
@@ -84,7 +84,7 @@ export function ServicesCircle() {
 
         <Reveal delay={0.4}>
         <p className="mx-auto mt-8 max-w-xs text-base font-bold leading-[1.3] lg:u-mt-62 lg:u-max-w-560 lg:u-text-36 lg:tracking-[-0.02em]">
-          Every pathway is personalised around the learner.
+          {content.closing}
         </p>
         </Reveal>
       </div>

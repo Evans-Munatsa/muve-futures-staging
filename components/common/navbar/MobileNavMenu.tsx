@@ -4,14 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { PageId } from '@/app/types';
-import { NAV_LINKS_CONFIG } from '@/constants';
+import type { NavLinkConfig } from '@/constants';
 
 interface MobileNavMenuProps {
   currentPage: PageId;
   onNavigate: () => void;
+  links: NavLinkConfig[];
 }
 
-export function MobileNavMenu({ currentPage, onNavigate }: MobileNavMenuProps) {
+export function MobileNavMenu({ currentPage, onNavigate, links }: MobileNavMenuProps) {
   const [expanded, setExpanded] = useState<Partial<Record<PageId, boolean>>>({});
 
   const toggle = (id: PageId) => setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -22,7 +23,7 @@ export function MobileNavMenu({ currentPage, onNavigate }: MobileNavMenuProps) {
       className="lg:hidden bg-brand-green border-t border-white/20 px-5 py-5 space-y-4 animate-in slide-in-from-top-3 duration-200 shadow-xl max-h-[80vh] overflow-y-auto"
     >
       <ul className="flex flex-col space-y-1 font-bold text-base">
-        {NAV_LINKS_CONFIG.map((link) => {
+        {links.map((link) => {
           const isActive = currentPage === link.id;
           const isExpanded = !!expanded[link.id];
 

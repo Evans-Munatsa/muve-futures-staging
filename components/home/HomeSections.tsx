@@ -8,8 +8,10 @@ import { FourStageApproach } from '@/components/home/FourStageApproach';
 import { ResourcesAndCallToAction } from '@/components/home/ResourcesAndCallToAction';
 import { useSiteActions } from '@/components/common/SiteActions';
 import { FrameworkStage } from '@/app/types';
+import type { HomeContent } from '@/lib/content/pages';
 
-export function HomeSections() {
+/** Home page sections; `content` is edited in the dashboard (Home page). */
+export function HomeSections({ content }: { content: HomeContent }) {
   const { openReferral, openInfo } = useSiteActions();
 
   const scrollToPillars = () =>
@@ -27,12 +29,17 @@ export function HomeSections() {
   // Sections are laid out in design units from `lg` up; see app/globals.css.
   return (
     <div className="flex w-full flex-col overflow-x-clip">
-      <HeroSection onLearnMore={scrollToPillars} />
-      <QuoteAndPillars onLearnMore={scrollToPillars} />
-      <JourneyAndWhoWeSupport />
-      <ServicesCircle />
-      <FourStageApproach onDiscoverMore={handleDiscoverStage} />
-      <ResourcesAndCallToAction />
+      <HeroSection content={content.hero} onLearnMore={scrollToPillars} />
+      <QuoteAndPillars quote={content.quote} pillars={content.pillars} onLearnMore={scrollToPillars} />
+      <JourneyAndWhoWeSupport journey={content.journey} whoWeSupport={content.whoWeSupport} />
+      <ServicesCircle content={content.services} />
+      <FourStageApproach
+        framework={content.framework}
+        partnerships={content.partnerships}
+        referral={content.referral}
+        onDiscoverMore={handleDiscoverStage}
+      />
+      <ResourcesAndCallToAction resources={content.resources} closing={content.closing} />
     </div>
   );
 }

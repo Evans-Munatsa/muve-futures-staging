@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { CONTACT_ENQUIRY_HREF } from '@/constants';
 import { PageHero } from '@/components/common/PageHero';
 import { ClosingCta } from '@/components/common/ClosingCta';
+import { Lines } from '@/components/common/Lines';
 import { WorkingTogether } from '@/components/who-we-support/WorkingTogether';
 import { AudienceCarousel } from '@/components/who-we-support/AudienceCarousel';
+import { getCollection, getSingle } from '@/lib/content/queries';
 
 export const metadata: Metadata = {
   title: 'Who We Support',
@@ -13,41 +15,37 @@ export const metadata: Metadata = {
     'MUVE Futures supports learners aged 4 to 25, working closely with families, schools, local authorities, commissioners and SEND professionals.',
 };
 
-export default function WhoWeSupportPage() {
+export default async function WhoWeSupportPage() {
+  const [content, audiences] = await Promise.all([getSingle('who-we-support-page'), getCollection('audience')]);
+  const { hero, workingTogether, closing } = content;
+
   return (
-    <div className="relative w-full overflow-hidden bg-[#A5CD39]">
+    <div className="relative w-full overflow-hidden bg-brand-green">
       <PageHero
-        badge="Who We Support"
-        title="Education Built Around the Learner"
+        badge={hero.badge}
+        title={<Lines text={hero.title} />}
         action={
           <Button asChild variant="orange" size="pill">
-            <Link href={CONTACT_ENQUIRY_HREF}>Talk to Our Team</Link>
+            <Link href={CONTACT_ENQUIRY_HREF}>{hero.cta}</Link>
           </Button>
         }
       >
-        <p className="mx-auto max-w-2xl">
-          Every child and young person deserves an education that recognises their strengths,
-          responds to their needs and gives them a meaningful way forward. MUVE Futures supports
-          learners aged 4 to 25 who may be struggling to access or remain in education. We also
-          work closely with the families, schools, professionals and organisations involved in
-          their journey.
-        </p>
+        <p className="mx-auto max-w-2xl">{hero.intro}</p>
       </PageHero>
 
-      <WorkingTogether />
+      <WorkingTogether content={workingTogether} />
 
-      <AudienceCarousel />
+      <AudienceCarousel audiences={audiences} />
 
       <ClosingCta
-        title="Let's find the right way forward"
+        title={<Lines text={closing.title} />}
         action={
           <Button asChild variant="orange" size="pill">
-            <Link href={CONTACT_ENQUIRY_HREF}>Speak with our team</Link>
+            <Link href={CONTACT_ENQUIRY_HREF}>{closing.cta}</Link>
           </Button>
         }
       >
-        Whether you&apos;re a parent looking for guidance, a school seeking support or a
-        professional exploring provision for a learner, our team is here to listen.
+        {closing.body}
       </ClosingCta>
     </div>
   );

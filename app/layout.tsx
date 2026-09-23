@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import { SITE_CONFIG } from '@/constants';
+import { getSingle } from '@/lib/content/queries';
 import './globals.css';
 
 // Every weight the design uses; with only Regular loaded the browser fakes bold.
@@ -16,13 +16,17 @@ const lexendDeca = localFont({
   variable: '--font-lexend-deca-local',
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: `${SITE_CONFIG.name} | ${SITE_CONFIG.tagline}`,
-    template: `%s | ${SITE_CONFIG.name}`,
-  },
-  description: SITE_CONFIG.description,
-};
+// Site name, tagline and description are edited in the dashboard (Site settings).
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSingle('settings');
+  return {
+    title: {
+      default: `${settings.siteName} | ${settings.tagline}`,
+      template: `%s | ${settings.siteName}`,
+    },
+    description: settings.description,
+  };
+}
 
 // Navbar/footer live in app/(site)/layout.tsx so that standalone pages
 // such as /coming-soon can opt out of them.

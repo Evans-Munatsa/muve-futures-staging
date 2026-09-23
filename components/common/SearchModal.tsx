@@ -1,11 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Search, ArrowRight, BookOpen, Layers } from 'lucide-react';
-import { SERVICES_DATA, FAQ_ITEMS, POLICY_DOCUMENTS } from '@/data/content';
 import { PageId } from '@/app/types';
+import type { SiteChrome } from '@/lib/content/chrome-types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-// import { Badge } from '@/components/ui/badge';
-import{ Badge } from "@/components/ui/badge"
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -13,6 +11,8 @@ interface SearchModalProps {
   onNavigate: (page: PageId) => void;
   /** Opens a service's dedicated page. */
   onOpenService: (slug: string) => void;
+  /** What can be searched: services, policies and FAQs from the CMS. */
+  index: SiteChrome['search'];
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
@@ -20,32 +20,33 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   onClose,
   onNavigate,
   onOpenService,
+  index,
 }) => {
   const [query, setQuery] = useState('');
 
   const filteredServices = useMemo(() => {
-    if (!query.trim()) return SERVICES_DATA.slice(0, 4);
+    if (!query.trim()) return index.services.slice(0, 4);
     const q = query.toLowerCase();
-    return SERVICES_DATA.filter(
-      (s) => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
+    return index.services.filter(
+      (s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, index]);
 
   const filteredPolicies = useMemo(() => {
-    if (!query.trim()) return POLICY_DOCUMENTS.slice(0, 3);
+    if (!query.trim()) return index.policies.slice(0, 3);
     const q = query.toLowerCase();
-    return POLICY_DOCUMENTS.filter(
+    return index.policies.filter(
       (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, index]);
 
   const filteredFaqs = useMemo(() => {
     if (!query.trim()) return [];
     const q = query.toLowerCase();
-    return FAQ_ITEMS.filter(
+    return index.faqs.filter(
       (f) => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, index]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -80,7 +81,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               <div className="space-y-2">
                 {filteredServices.map((service) => (
                   <div
-                    key={service.id}
+                    key={service.slug}
                     onClick={() => {
                       onClose();
                       onOpenService(service.slug);
@@ -90,13 +91,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     <div>
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold text-sm text-brand-ink group-hover:text-brand-green">
-                          {service.name}
+                          {service.title}
                         </h4>
-                        {service.ageRange && (
-                          <Badge variant="greenSoft" className="text-[10px] px-2 py-0.5">
-                            {service.ageRange}
-                          </Badge>
-                        )}
                       </div>
                       <p className="text-xs text-neutral-500 line-clamp-1 mt-0.5">
                         {service.description}
@@ -120,7 +116,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             <div className="space-y-2">
               {filteredPolicies.map((pol) => (
                 <div
-                  key={pol.id}
+                  key={pol.title}
                   onClick={() => {
                     onClose();
                     onNavigate('resources');
@@ -150,7 +146,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               <div className="space-y-2">
                 {filteredFaqs.map((faq) => (
                   <div
-                    key={faq.id}
+                    key={faq.question}
                     onClick={() => {
                       onClose();
                       onNavigate('resources');

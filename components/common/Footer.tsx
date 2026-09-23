@@ -6,11 +6,11 @@ import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SocialLinks } from '@/components/common/SocialLinks';
-import { LEGAL_LINKS } from '@/constants';
+import type { SiteChrome } from '@/lib/content/chrome-types';
 
 const SUBSCRIBED_RESET_MS = 4000;
 
-export function Footer() {
+export function Footer({ settings, legalLinks }: { settings: SiteChrome['settings']; legalLinks: SiteChrome['legalLinks'] }) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -73,24 +73,22 @@ export function Footer() {
             </form>
 
             <address className="mt-4 text-center not-italic leading-snug md:text-left lg:absolute lg:u-left-269 lg:u-top-188 lg:mt-0 lg:u-text-20 lg:leading-[1.2]">
-              <p className="font-bold">UK Office</p>
-              <p>Suite 1</p>
-              <p>Aqueous II</p>
-              <p>Rocky Lane</p>
-              <p>Birmingham</p>
-              <p>B6 5RQ</p>
+              <p className="font-bold">{settings.address.heading}</p>
+              {settings.address.lines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
             </address>
           </div>
 
           {/* Logo & copyright */}
           <div className="flex flex-col items-center text-center lg:absolute lg:inset-x-0 lg:u-top-104">
-            <Link href="/" aria-label="Muve Futures home">
-              <Image src="/logo.svg" width={281} height={135} alt="Muve Futures" className="h-auto w-44 lg:u-w-280" />
+            <Link href="/" aria-label={`${settings.siteName} home`}>
+              <Image src="/logo.svg" width={281} height={135} alt={settings.siteName} className="h-auto w-44 lg:u-w-280" />
             </Link>
             <p className="mt-5 text-sm font-bold leading-snug lg:u-mt-34 lg:u-text-20 lg:leading-[1.25]">
-              © {new Date().getFullYear()} Muve Futures
+              © {new Date().getFullYear()} {settings.siteName}
               <br />
-              All Rights Reserved. Site by Marva Group.
+              {settings.footerCredit}
             </p>
           </div>
 
@@ -98,7 +96,7 @@ export function Footer() {
           <div className="flex items-start justify-center gap-6 md:justify-end lg:contents">
             <nav aria-label="Legal" className="lg:absolute lg:u-left-1344 lg:u-top-168">
               <ul className="space-y-1 text-sm font-bold lg:space-y-0 lg:u-text-20 lg:leading-[1.6]">
-                {LEGAL_LINKS.map((link) => (
+                {legalLinks.map((link) => (
                   <li key={link.slug}>
                     <Link id={`link-${link.slug}`} href={link.href} className="hover:underline">
                       {link.label}
@@ -108,6 +106,7 @@ export function Footer() {
               </ul>
             </nav>
             <SocialLinks
+              socials={settings.socials}
               className="flex-col gap-2 lg:absolute lg:u-left-1621 lg:u-top-177 lg:u-gap-18"
               linkClassName="lg:u-h-37 lg:u-w-37"
             />
