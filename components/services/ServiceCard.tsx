@@ -1,10 +1,11 @@
+import { createElement } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Tilt } from '@/components/motion/Tilt';
 import { ServiceOffering } from '@/constants';
+import { serviceIcon } from '@/lib/content/icons';
 
 export function ServiceCard({ service }: { service: ServiceOffering }) {
-  const Icon = service.icon;
 
   return (
     <Tilt
@@ -14,7 +15,7 @@ export function ServiceCard({ service }: { service: ServiceOffering }) {
       className="flex w-full flex-col rounded-tr-[3rem] bg-brand-lime p-7 text-brand-ink sm:rounded-tr-[4rem] sm:p-8"
     >
       <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-orange text-white">
-        <Icon className="h-6 w-6 stroke-[1.5]" aria-hidden="true" />
+        {createElement(serviceIcon(service.iconName), { className: 'h-6 w-6 stroke-[1.5]', 'aria-hidden': true })}
       </span>
 
       <span className="mt-6 text-xs font-bold uppercase tracking-wide">{service.eyebrow}</span>

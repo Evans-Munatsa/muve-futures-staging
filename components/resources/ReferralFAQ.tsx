@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { FAQS_DATA } from '@/data/content';
+import React, { useMemo, useState } from 'react';
+import type { ResourcesContent } from '@/lib/content/pages';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronDown } from 'lucide-react';
 
-export const ReferralFAQ: React.FC = () => {
+export const ReferralFAQ: React.FC<{ content: ResourcesContent['faqs'] }> = ({ content }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeTab, setActiveTab] = useState<string>('All');
 
-  const categories = ['All', 'Referrals & Commissioning', 'Curriculum & Delivery', 'Safeguarding & Reporting'];
+  // Tabs come from the questions' own categories, so every tab has answers.
+  const categories = useMemo(
+    () => ['All', ...Array.from(new Set(content.items.map((f) => f.category).filter(Boolean)))],
+    [content.items]
+  );
 
-  const filteredFaqs = activeTab === 'All'
-    ? FAQS_DATA
-    : FAQS_DATA.filter((f) => f.category === activeTab);
+  const filteredFaqs = activeTab === 'All' ? content.items : content.items.filter((f) => f.category === activeTab);
 
   const toggleFaq = (idx: number) => {
     setOpenIndex((prev) => (prev === idx ? null : idx));
@@ -23,13 +25,13 @@ export const ReferralFAQ: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="text-center space-y-3">
           <Badge variant="navy" className="text-xs uppercase tracking-widest font-extrabold">
-            FREQUENTLY ASKED QUESTIONS
+            {content.eyebrow}
           </Badge>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-ink">
-            Commissioning & Provision Answers
+            {content.title}
           </h2>
           <p className="text-sm sm:text-base text-neutral-600">
-            Common questions from Headteachers, SENCOs, Local Authority caseworkers, and families.
+            {content.intro}
           </p>
         </div>
 
@@ -38,7 +40,10 @@ export const ReferralFAQ: React.FC = () => {
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveTab(cat)}
+              onClick={() => {
+                setActiveTab(cat);
+                setOpenIndex(0);
+              }}
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                 activeTab === cat
                   ? 'bg-brand-ink text-white shadow-sm'
@@ -56,7 +61,7 @@ export const ReferralFAQ: React.FC = () => {
             const isOpen = openIndex === idx;
             return (
               <Card
-                key={faq.id}
+                key={faq.question}
                 className="overflow-hidden border-neutral-200 bg-white transition-colors"
               >
                 <button

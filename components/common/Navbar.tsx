@@ -9,21 +9,25 @@ import { Button } from '@/components/ui/button';
 import { DesktopNavLink } from '@/components/common/navbar/DesktopNavLink';
 import { MobileNavMenu } from '@/components/common/navbar/MobileNavMenu';
 import { PageId } from '@/app/types';
-import { NAV_LINKS_CONFIG, REFERRAL_HREF } from '@/constants';
+import { REFERRAL_HREF, type NavLinkConfig } from '@/constants';
 import { cn } from '@/lib/utils';
 
 const DROPDOWN_CLOSE_DELAY_MS = 180;
 
 // The logo sits between these two groups on desktop (it doubles as the Home link).
-const LEFT_NAV = NAV_LINKS_CONFIG.filter((link) => link.id === 'services' || link.id === 'who-we-support');
-const RIGHT_NAV = NAV_LINKS_CONFIG.filter((link) => link.id === 'resources' || link.id === 'contact');
+const isLeft = (link: NavLinkConfig) => link.id === 'services' || link.id === 'who-we-support';
+const isRight = (link: NavLinkConfig) => link.id === 'resources' || link.id === 'contact';
 
 interface NavbarProps {
   currentPage: PageId;
   onOpenSearch: () => void;
+  /** Menu links; the Services and Who We Support dropdowns come from the CMS. */
+  links: NavLinkConfig[];
 }
 
-export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
+export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
+  const LEFT_NAV = links.filter(isLeft);
+  const RIGHT_NAV = links.filter(isRight);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<PageId | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -79,8 +83,8 @@ export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
     setMobileMenuOpen(false);
   };
 
-  const renderDesktopLinks = (links: typeof NAV_LINKS_CONFIG, align: 'left' | 'right', compact = false) =>
-    links.map((link) => (
+  const renderDesktopLinks = (group: NavLinkConfig[], align: 'left' | 'right', compact = false) =>
+    group.map((link) => (
       <DesktopNavLink
         key={link.id}
         link={link}
@@ -175,7 +179,7 @@ export function Navbar({ currentPage, onOpenSearch }: NavbarProps) {
         </div>
       </div>
 
-      {mobileMenuOpen && <MobileNavMenu currentPage={currentPage} onNavigate={closeMenus} />}
+      {mobileMenuOpen && <MobileNavMenu currentPage={currentPage} links={links} onNavigate={closeMenus} />}
 
       {/* Compact desktop bar, shown once the full header has scrolled away */}
       <AnimatePresence>

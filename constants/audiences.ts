@@ -10,6 +10,8 @@ export interface Audience {
   page: DetailPageContent;
   /** Colour of the large hero triangle on the detail page. */
   accent: 'pink' | 'cyan';
+  /** Position in lists; set from the dashboard. Defaults to the order below. */
+  order?: number;
 }
 
 // Card copy follows the audience carousel in the design; pages follow the

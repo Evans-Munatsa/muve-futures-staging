@@ -53,10 +53,10 @@ function Card({ block }: { block: Extract<DetailBlock, { kind: 'card' }> }) {
           )}
         >
           <Image
-            src={cutout.src}
-            alt={cutout.alt}
-            width={cutout.width}
-            height={cutout.height}
+            src={cutout.photo.src}
+            alt={cutout.photo.alt}
+            width={cutout.photo.width || 800}
+            height={cutout.photo.height || 1000}
             sizes="(min-width: 1024px) 40vw, 60vw"
             className="h-auto w-full lg:h-full lg:w-auto lg:max-w-full lg:object-contain lg:object-bottom"
           />

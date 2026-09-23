@@ -10,6 +10,7 @@ import { PointerProvider } from '@/components/motion/Drift';
 import { InfoModalContent, SiteActions, SiteActionsContext } from '@/components/common/SiteActions';
 import { PageId } from '@/app/types';
 import { BOOK_INTRO_HREF, referralHref } from '@/constants';
+import type { SiteChrome } from '@/lib/content/chrome-types';
 
 // Lazy-loaded: the dialog code is only downloaded the first time one is opened.
 const SearchModal = dynamic(() => import('@/components/common/SearchModal').then((m) => m.SearchModal));
@@ -20,6 +21,7 @@ function getActivePage(pathname: string): PageId {
   switch (segment) {
     // About sits in the Resources menu, so that tab is highlighted.
     case 'about':
+    case 'blog':
       return 'resources';
     // The form pages are reached from the Contact menu.
     case 'referral':
@@ -35,7 +37,7 @@ function getActivePage(pathname: string): PageId {
   }
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, chrome }: { children: React.ReactNode; chrome: SiteChrome }) {
   const router = useRouter();
   const pathname = usePathname();
   const currentPage = getActivePage(pathname);
@@ -74,11 +76,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <MotionConfig reducedMotion="user">
       <PointerProvider>
         <SiteActionsContext.Provider value={actions}>
-          <Navbar currentPage={currentPage} onOpenSearch={actions.openSearch} />
+          <Navbar currentPage={currentPage} links={chrome.navLinks} onOpenSearch={actions.openSearch} />
 
           <main className="flex w-full flex-1 flex-col">{children}</main>
 
-          <Footer />
+          <Footer settings={chrome.settings} legalLinks={chrome.legalLinks} />
 
           {searchUsed && (
             <SearchModal
@@ -86,6 +88,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               onClose={() => setSearchOpen(false)}
               onNavigate={handleNavigate}
               onOpenService={(slug) => router.push(`/services/${slug}`)}
+              index={chrome.search}
             />
           )}
 

@@ -5,45 +5,51 @@ import { ResourcesHero } from '@/components/resources/ResourcesHero';
 import { GuidesLibrary } from '@/components/resources/GuidesLibrary';
 import { PolicyDownloads } from '@/components/resources/PolicyDownloads';
 import { ReferralFAQ } from '@/components/resources/ReferralFAQ';
-import { RESOURCE_ARTICLES } from '@/constants';
 import { Reveal } from '@/components/motion/Reveal';
+import type { ResourcesContent as Content } from '@/lib/content/pages';
+import type { PublicPost } from '@/lib/content/posts';
 
-const CATEGORIES = ['All', 'EBSNA & Attendance', 'SEND Strategies', 'Local Authority & Section 19', 'Parent Guides'];
-
-export function ResourcesContent() {
+/** Resources page: search/filter over the blog posts, plus policies and FAQs from the CMS. */
+export function ResourcesContent({ content, posts }: { content: Content; posts: PublicPost[] }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const filteredArticles = useMemo(() => {
+  const categories = useMemo(
+    () => ['All', ...Array.from(new Set(posts.map((post) => post.category).filter(Boolean)))],
+    [posts]
+  );
+
+  const filteredPosts = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return RESOURCE_ARTICLES.filter((article) => {
-      const matchesCategory = activeCategory === 'All' || article.category === activeCategory;
+    return posts.filter((post) => {
+      const matchesCategory = activeCategory === 'All' || post.category === activeCategory;
       const matchesSearch =
         !q ||
-        article.title.toLowerCase().includes(q) ||
-        article.summary.toLowerCase().includes(q) ||
-        article.tags.some((tag) => tag.toLowerCase().includes(q));
+        post.title.toLowerCase().includes(q) ||
+        post.excerpt.toLowerCase().includes(q) ||
+        post.tags.some((tag) => tag.toLowerCase().includes(q));
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, activeCategory]);
+  }, [posts, searchQuery, activeCategory]);
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex w-full flex-col">
       <ResourcesHero
+        content={content.hero}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         activeCategory={activeCategory}
         onSelectCategory={setActiveCategory}
-        categories={CATEGORIES}
+        categories={categories}
       />
       <Reveal>
-        <GuidesLibrary articles={filteredArticles} />
+        <GuidesLibrary content={content.guides} posts={filteredPosts} />
       </Reveal>
       <Reveal>
-        <PolicyDownloads />
+        <PolicyDownloads content={content.policies} />
       </Reveal>
       <Reveal>
-        <ReferralFAQ />
+        <ReferralFAQ content={content.faqs} />
       </Reveal>
     </div>
   );

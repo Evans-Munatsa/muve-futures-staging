@@ -6,9 +6,17 @@ import { homeButton, homeType } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
 import { Hop } from '@/components/motion/Hop';
 import { Reveal } from '@/components/motion/Reveal';
+import { Lines } from '@/components/common/Lines';
+import type { HomeContent } from '@/lib/content/pages';
 
 /* Frame y 7873–8463 (resources band) and 8463–9075 (closing call to action). */
-export function ResourcesAndCallToAction() {
+export function ResourcesAndCallToAction({
+  resources,
+  closing,
+}: {
+  resources: HomeContent['resources'];
+  closing: HomeContent['closing'];
+}) {
   return (
     <>
       <section id="resources-preview" className="relative overflow-hidden px-6 pt-12 pb-32 text-white lg:u-h-590 lg:p-0">
@@ -22,15 +30,14 @@ export function ResourcesAndCallToAction() {
 
         <Reveal from="left" className="relative lg:absolute lg:u-left-389 lg:u-top-88">
           <h2 className={homeType.heading}>
-            Resources For Schools, Families
-            <br className="hidden sm:block" /> and Professionals
+            <Lines text={resources.title} />
           </h2>
         </Reveal>
 
         <Reveal from="pop" delay={0.3} className="relative mt-6 lg:absolute lg:u-left-1218 lg:u-top-202 lg:mt-0">
           <Button asChild variant="outline-white" className={cn(homeButton.outlineSm, 'lg:u-w-311')}>
             <Link id="btn-visit-resources" href="/resources">
-              Visit Our Resources
+              {resources.cta}
             </Link>
           </Button>
         </Reveal>
@@ -51,20 +58,17 @@ export function ResourcesAndCallToAction() {
 
         <Reveal from="right" className="relative text-center lg:absolute lg:u-right-266 lg:u-top-84 lg:u-w-934 lg:text-right">
           <h2 className={homeType.heading}>
-            Every Young Person
-            <br className="hidden sm:block" /> Deserves The Opportunity
-            <br className="hidden sm:block" /> To Move Forward
+            <Lines text={closing.title} />
           </h2>
           <p className={cn(homeType.body, 'mt-4 lg:u-mt-22')}>
-            Whether you’re ready to make a referral or simply want to discuss a learner’s needs, our
-            team is here to help you find the right education pathway.
+            {closing.body}
           </p>
           <ReferralButton
             id="cta-btn-referral-bottom"
             variant="outline-white"
             className={cn(homeButton.outlineSm, 'mt-6 lg:u-mt-43 lg:u-w-311')}
           >
-            Make a Referral
+            {closing.cta}
           </ReferralButton>
         </Reveal>
       </section>

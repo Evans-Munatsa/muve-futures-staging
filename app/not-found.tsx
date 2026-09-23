@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { HeroShapes } from '@/components/detail/Shapes';
-import { REFERRAL_HREF, SITE_CONFIG } from '@/constants';
+import { REFERRAL_HREF } from '@/constants';
+import { getSingle } from '@/lib/content/queries';
 
 export const metadata: Metadata = {
   title: 'Page not found',
@@ -16,7 +17,8 @@ const PATHWAYS = [
   { href: '/contact', label: 'Contact' },
 ];
 
-export default function NotFound() {
+export default async function NotFound() {
+  const { contact } = await getSingle('settings');
   return (
     <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-brand-green px-6 py-20 text-center text-white">
       <HeroShapes variant="service" accent="pink" />
@@ -60,8 +62,8 @@ export default function NotFound() {
 
         <p className="mt-10 text-sm">
           Need to talk to someone? Call{' '}
-          <a href={`tel:${SITE_CONFIG.contact.phoneFormatted.replace(/\s/g, '')}`} className="font-bold underline">
-            {SITE_CONFIG.contact.phone}
+          <a href={`tel:${contact.phoneInternational.replace(/\s/g, '')}`} className="font-bold underline">
+            {contact.phone}
           </a>
           .
         </p>

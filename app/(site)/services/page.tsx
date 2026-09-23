@@ -7,6 +7,8 @@ import { ReferralButton } from '@/components/common/ActionButtons';
 import { ServicesBackdrop } from '@/components/services/ServicesBackdrop';
 import { WhyChooseUs } from '@/components/services/WhyChooseUs';
 import { ServiceCarousel } from '@/components/services/ServiceCarousel';
+import { Lines } from '@/components/common/Lines';
+import { getCollection, getSingle } from '@/lib/content/queries';
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -14,7 +16,10 @@ export const metadata: Metadata = {
     'Alternative Provision, SEND, SEMH and EBSNA support, one-to-one, online and hybrid learning, reintegration and transition programmes — each personalised around the learner.',
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const [content, services] = await Promise.all([getSingle('services-page'), getCollection('service')]);
+  const { hero, whyChooseUs, closing } = content;
+
   return (
     <div className="relative w-full overflow-hidden bg-brand-green">
       {/* The backdrop shapes are positioned against this intro area. */}
@@ -23,36 +28,29 @@ export default function ServicesPage() {
 
         <PageHero
           className="max-w-5xl"
-          badge={<>Accredited &amp; Therapeutic Pathways</>}
-          title="Education That Adapts Around The Learner"
+          badge={hero.badge}
+          title={<Lines text={hero.title} />}
           action={
             <Button asChild variant="orange" size="pill">
-              <Link href="#our-services">Explore Our Services</Link>
+              <Link href="#our-services">{hero.cta}</Link>
             </Button>
           }
         >
           <p>
-            Our services include{' '}
-            <strong>
-              Alternative Provision, SEND Support, SEMH Support, EBSNA Support, One-to-One
-              Education, Community Learning, Online Learning, Hybrid Learning, Reintegration
-              Programmes, Transition Support, EOTAS &amp; 52 Week Provision.
-            </strong>{' '}
-            Every service can be personalised around the learner&apos;s individual circumstances.
+            {hero.introLead} <strong>{hero.introHighlight}</strong> {hero.introTail}
           </p>
         </PageHero>
 
-        <WhyChooseUs />
+        <WhyChooseUs content={whyChooseUs} />
       </div>
 
-      <ServiceCarousel />
+      <ServiceCarousel services={services.filter((service) => service.listed)} />
 
       <ClosingCta
-        title="Finding The Right Pathway Starts With A Conversation"
-        action={<ReferralButton id="pathway-btn-discuss-learner">Discuss a Learner</ReferralButton>}
+        title={<Lines text={closing.title} />}
+        action={<ReferralButton id="pathway-btn-discuss-learner">{closing.cta}</ReferralButton>}
       >
-        Every referral begins by understanding the learner. We&apos;ll help you identify the most
-        appropriate education pathway and work collaboratively to achieve positive outcomes.
+        {closing.body}
       </ClosingCta>
     </div>
   );

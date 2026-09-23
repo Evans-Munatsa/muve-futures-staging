@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { AsidePanel } from '@/components/forms/FormPage';
-import { BOOK_INTRO_HREF, REFERRAL_HREF, SITE_CONFIG } from '@/constants';
+import { BOOK_INTRO_HREF, REFERRAL_HREF } from '@/constants';
+import { getSingle } from '@/lib/content/queries';
 
 /** Side panels shared by the form pages: the other forms, and how to reach us. */
-export function ContactAside({ show }: { show: Array<'referral' | 'intro' | 'contact'> }) {
-  const { phone, phoneFormatted, email, enquiriesEmail } = SITE_CONFIG.contact;
+export async function ContactAside({ show }: { show: Array<'referral' | 'intro' | 'contact'> }) {
+  const { contact, address } = await getSingle('settings');
+  const { phone, phoneInternational, referralsEmail: email, enquiriesEmail } = contact;
 
   return (
     <>
@@ -29,7 +31,7 @@ export function ContactAside({ show }: { show: Array<'referral' | 'intro' | 'con
       {show.includes('contact') && (
         <AsidePanel title="Get in touch" tone="cyan">
           <p>
-            <a href={`tel:${phoneFormatted.replace(/\s/g, '')}`} className="font-bold hover:underline">
+            <a href={`tel:${phoneInternational.replace(/\s/g, '')}`} className="font-bold hover:underline">
               {phone}
             </a>
           </p>
@@ -46,11 +48,11 @@ export function ContactAside({ show }: { show: Array<'referral' | 'intro' | 'con
             </a>
           </p>
           <address className="pt-2 not-italic">
-            Suite 1, Aqueous II
-            <br />
-            Rocky Lane, Birmingham
-            <br />
-            B6 5RQ
+            {address.lines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </address>
         </AsidePanel>
       )}

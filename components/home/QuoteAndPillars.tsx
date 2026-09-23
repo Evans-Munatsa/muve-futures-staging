@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { CheckCircle2, RotateCcw } from 'lucide-react';
-import { PILLARS_DATA } from '@/constants';
+import type { HomeContent } from '@/lib/content/pages';
 import { Button } from '@/components/ui/button';
 import { homeButton } from '@/components/home/homeStyles';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,15 @@ const CARDS = [
   { left: 'lg:u-left-1365', corner: 'rounded-tl-[2.5rem] lg:u-rounded-tl-80' },
 ];
 
-export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
+export function QuoteAndPillars({
+  quote,
+  pillars,
+  onLearnMore,
+}: {
+  quote: HomeContent['quote'];
+  pillars: HomeContent['pillars'];
+  onLearnMore: () => void;
+}) {
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
   const toggle = (id: string) => setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
 
@@ -37,9 +45,7 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
 
       <Reveal className="relative text-center text-white lg:absolute lg:inset-x-0 lg:u-top-80">
         <p className="mx-auto max-w-3xl text-base font-bold leading-[1.3] sm:text-xl lg:u-max-w-1560 lg:u-text-28 lg:tracking-[-0.02em]">
-          “Every programme is designed around the individual learner rather than expecting every
-          learner to fit a standard model. We adapt education to meet each young person’s needs,
-          goals and preferred way of learning.”
+          {quote.text}
         </p>
       </Reveal>
 
@@ -49,21 +55,22 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
           onClick={onLearnMore}
           className={cn(homeButton.solid, 'bg-brand-green hover:brightness-95')}
         >
-          Learn More
+          {quote.cta}
         </Button>
       </Reveal>
 
       <Stagger as="ul" stagger={0.14} className="relative mx-auto mt-10 grid max-w-xl grid-cols-2 gap-4 lg:static lg:mt-0 lg:block lg:max-w-none">
-        {PILLARS_DATA.map((pillar, i) => {
-          const isFlipped = !!flipped[pillar.id];
+        {pillars.slice(0, CARDS.length).map((pillar, i) => {
+          const id = `${i}-${pillar.tag}`;
+          const isFlipped = !!flipped[id];
           const { left, corner } = CARDS[i];
 
           return (
             <StaggerItem
               as="li"
               from="up"
-              key={pillar.id}
-              id={`card-pillar-${pillar.id}`}
+              key={id}
+              id={`card-pillar-${i + 1}`}
               className={cn(
                 'relative aspect-[356/627] lg:absolute lg:u-top-318 lg:u-h-627 lg:u-w-356 lg:aspect-auto',
                 left
@@ -72,7 +79,7 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
               <Tilt className="h-full w-full [perspective:1000px]">
               <button
                 type="button"
-                onClick={() => toggle(pillar.id)}
+                onClick={() => toggle(id)}
                 aria-pressed={isFlipped}
                 aria-label={`${pillar.tag}: ${isFlipped ? 'show photo' : 'show details'}`}
                 className={cn(
@@ -100,7 +107,7 @@ export function QuoteAndPillars({ onLearnMore }: { onLearnMore: () => void }) {
                   <span className="text-base font-bold lg:u-text-30">{pillar.title}</span>
                   <span className="mt-2 text-xs font-semibold leading-snug lg:u-text-20">{pillar.subtitle}</span>
                   <span className="mt-3 space-y-2">
-                    {pillar.points?.map((point) => (
+                    {pillar.points.map((point) => (
                       <span key={point} className="flex items-start gap-2 text-xs leading-snug lg:u-text-18">
                         <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-orange" aria-hidden="true" />
                         {point}

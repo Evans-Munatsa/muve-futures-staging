@@ -4,6 +4,7 @@ import { ReferralButton } from '@/components/common/ActionButtons';
 import { homeButton } from '@/components/home/homeStyles';
 import { Drift } from '@/components/motion/Drift';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
+import type { HomeContent } from '@/lib/content/pages';
 
 /*
  * From `lg` up this section reproduces the design frame 1:1 using design units
@@ -11,7 +12,7 @@ import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
  * the hero spans y 305–1464 of the Home frame, so y here = frame y − 305.
  * Shape layers are click-through; each shape (Drift) takes its own hover/tap.
  */
-export function HeroSection({ onLearnMore }: { onLearnMore: () => void }) {
+export function HeroSection({ content, onLearnMore }: { content: HomeContent['hero']; onLearnMore: () => void }) {
   return (
     <section id="hero" className="relative bg-brand-green lg:u-h-1159">
       {/* Pink circle, behind the photo */}
@@ -60,24 +61,22 @@ export function HeroSection({ onLearnMore }: { onLearnMore: () => void }) {
       >
         <StaggerItem>
           <h1 className="text-3xl font-bold leading-[1.24] tracking-[-0.02em] sm:text-5xl lg:u-text-93">
-            Education That Starts With Understanding
+            {content.title}
           </h1>
         </StaggerItem>
 
         <StaggerItem>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-[1.33] sm:text-base lg:u-mt-64 lg:u-max-w-906 lg:u-text-24">
-            Personalised Alternative Provision for young people aged 4–25 with SEND, SEMH, EBSNA or
-            other barriers to learning. We create flexible programmes that rebuild confidence,
-            reconnect learners with education and prepare them for what comes next.
+            {content.intro}
           </p>
         </StaggerItem>
 
         <StaggerItem from="pop" className="mt-7 flex flex-wrap justify-center gap-3 lg:u-mt-63 lg:u-gap-30">
           <Button id="hero-btn-learn-more" variant="orange" onClick={onLearnMore} className={homeButton.solid}>
-            Learn More
+            {content.primaryCta}
           </Button>
           <ReferralButton id="hero-btn-referral" variant="outline-white" className={homeButton.outline}>
-            Make a Referral
+            {content.secondaryCta}
           </ReferralButton>
         </StaggerItem>
       </Stagger>

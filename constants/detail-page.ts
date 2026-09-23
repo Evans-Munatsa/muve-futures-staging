@@ -36,9 +36,9 @@ export type DetailBlock =
       align?: 'left' | 'center' | 'right';
       /** Which top corner gets the large curve (default: right). */
       corner?: 'tl' | 'tr';
-      cutout?: Photo & { side: 'left' | 'right' };
+      cutout?: { photo: Photo; side: 'left' | 'right' } | null;
       /** Photo band across the card, followed by a second section of copy. */
-      continuation?: { photo: Photo } & CopyBlock;
+      continuation?: ({ photo: Photo } & CopyBlock) | null;
     })
   /** Copy directly on the page background, optionally with an orange left rule. */
   | (CopyBlock & { kind: 'text'; align?: 'left' | 'center'; accent?: boolean; ink?: boolean })

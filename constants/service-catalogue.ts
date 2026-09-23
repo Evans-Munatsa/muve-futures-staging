@@ -1,25 +1,11 @@
-import type { LucideIcon } from 'lucide-react';
-import {
-  CalendarCheck,
-  Crown,
-  HeartHandshake,
-  ShieldCheck,
-  Laptop,
-  Lightbulb,
-  RotateCcw,
-  Send,
-  Shuffle,
-  UserRound,
-  Users,
-  Users2,
-} from 'lucide-react';
 import type { DetailPageContent } from './detail-page';
 import { PHOTOS } from './photos';
 
 /** A service offered on /services and detailed on /services/[slug]. */
 export interface ServiceOffering {
   slug: string;
-  icon: LucideIcon;
+  /** Name of the card icon, see lib/content/icons.ts. */
+  iconName: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -28,13 +14,15 @@ export interface ServiceOffering {
   page: DetailPageContent;
   /** `false` keeps the page live but out of the /services carousel (which follows the design's 10 cards). */
   listed?: boolean;
+  /** Position in lists; set from the dashboard. Defaults to the order below. */
+  order?: number;
 }
 
 // Order and card copy follow the services carousel in the design.
 export const SERVICE_OFFERINGS: ServiceOffering[] = [
   {
     slug: 'alternative-provision',
-    icon: Crown,
+    iconName: 'Crown',
     eyebrow: 'Personalised Pathways',
     title: 'Alternative Provision',
     description: 'Education shaped around learners who need a different approach to school.',
@@ -56,7 +44,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
           eyebrow: 'Who We Support',
           title: 'Supporting Learners With Complex Educational Needs',
           body: 'We support learners experiencing SEND, SEMH, EBSNA, medical needs, disrupted education, placement breakdown, reduced timetables, transition challenges and those at risk of exclusion.',
-          cutout: { ...PHOTOS.teenCelebrating, side: 'right' },
+          cutout: { photo: PHOTOS.teenCelebrating, side: 'right' },
         },
         {
           kind: 'text',
@@ -83,7 +71,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'one-to-one-education',
-    icon: Users,
+    iconName: 'Users',
     eyebrow: 'Individual Support',
     title: 'One-to-One Education',
     description: "Teaching tailored to one learner's strengths, needs and pace.",
@@ -105,7 +93,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
           eyebrow: 'Suitable For',
           title: 'Who Can Benefit?',
           body: 'One-to-one education may support learners experiencing SEND, SEMH, EBSNA, medical needs, anxiety around school, interrupted education, reintegration planning or transition between educational settings.',
-          cutout: { ...PHOTOS.threeChildren, side: 'left' },
+          cutout: { photo: PHOTOS.threeChildren, side: 'left' },
         },
         {
           kind: 'text',
@@ -126,7 +114,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'community-learning',
-    icon: Users2,
+    iconName: 'Users2',
     eyebrow: 'Learning Through Experience',
     title: 'Community Learning',
     description:
@@ -173,7 +161,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'online-learning',
-    icon: Laptop,
+    iconName: 'Laptop',
     eyebrow: 'Remote Delivery',
     title: 'Online Learning',
     description: 'Structured, interactive teaching for learners who benefit from learning remotely.',
@@ -217,7 +205,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'hybrid-learning',
-    icon: Shuffle,
+    iconName: 'Shuffle',
     eyebrow: 'Flexible Delivery',
     title: 'Hybrid Learning',
     description:
@@ -268,7 +256,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'reintegration-programmes',
-    icon: RotateCcw,
+    iconName: 'RotateCcw',
     eyebrow: 'Returning To Education',
     title: 'Reintegration Programmes',
     description: "A planned, gradual return to education built around each learner's readiness.",
@@ -310,7 +298,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'transition-support',
-    icon: Send,
+    iconName: 'Send',
     eyebrow: 'Preparing For Change',
     title: 'Transition Support',
     description: 'Practical support to help learners prepare for a new setting or stage of life.',
@@ -355,7 +343,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'eotas',
-    icon: Lightbulb,
+    iconName: 'Lightbulb',
     eyebrow: 'Education Outside School',
     title: 'EOTAS',
     description:
@@ -399,7 +387,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: '52-week-provision',
-    icon: CalendarCheck,
+    iconName: 'CalendarCheck',
     // The design has this eyebrow and SEND Support's swapped; corrected here.
     eyebrow: 'Year-Round Continuity',
     title: '52-Week Provision',
@@ -441,7 +429,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   },
   {
     slug: 'send-support',
-    icon: UserRound,
+    iconName: 'UserRound',
     eyebrow: 'Understanding Individual Needs',
     title: 'SEND Support',
     description: 'Education that begins by understanding how each learner experiences learning.',
@@ -464,7 +452,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
           eyebrow: 'Who We Support',
           title: 'Education That Starts With Understanding',
           body: 'We take time to understand how each learner communicates, engages and learns best. This helps us create a supportive learning experience that builds confidence and encourages progress.',
-          cutout: { ...PHOTOS.teenBoyPlaid, side: 'left' },
+          cutout: { photo: PHOTOS.teenBoyPlaid, side: 'left' },
         },
         {
           kind: 'split',
@@ -504,7 +492,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   {
     slug: 'semh-support',
     listed: false,
-    icon: HeartHandshake,
+    iconName: 'HeartHandshake',
     eyebrow: 'Relationship Based',
     title: 'SEMH Support',
     description: 'Nurturing provision for learners with social, emotional and mental health needs.',
@@ -526,7 +514,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
           eyebrow: 'Our Approach',
           title: 'Trusted Relationships, Consistent Support',
           body: 'Trauma-informed practice, a consistent key adult and a calm, predictable routine help learners build confidence, manage their emotions and re-engage with education at a pace that works for them.',
-          cutout: { ...PHOTOS.teenCelebrating, side: 'right' },
+          cutout: { photo: PHOTOS.teenCelebrating, side: 'right' },
         },
         {
           kind: 'text',
@@ -555,7 +543,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
   {
     slug: 'ebsna-support',
     listed: false,
-    icon: ShieldCheck,
+    iconName: 'ShieldCheck',
     eyebrow: 'Gradual Re-engagement',
     title: 'EBSNA Support',
     description: 'Supportive, low-pressure re-engagement for learners experiencing school avoidance.',
@@ -577,7 +565,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
           eyebrow: 'Our Approach',
           title: 'Small Steps, At The Right Pace',
           body: 'We start where the learner is, often at home or online, and build confidence through short, positive sessions before gradually increasing time, subjects and settings.',
-          cutout: { ...PHOTOS.teenBoyPlaid, side: 'left' },
+          cutout: { photo: PHOTOS.teenBoyPlaid, side: 'left' },
         },
         {
           kind: 'split',
