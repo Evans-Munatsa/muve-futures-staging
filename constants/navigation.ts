@@ -105,7 +105,7 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
       { label: 'Partnerships', href: '/partnerships' },
       { label: 'Book Introduction', href: BOOK_INTRO_HREF },
       { label: 'Feedback', href: '/feedback' },
-      { label: 'Careers', href: '/contact#locations-map' },
+      { label: 'Careers', href: '/contact#careers' },
     ],
   },
 ];
