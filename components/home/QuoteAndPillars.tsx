@@ -84,7 +84,7 @@ export function QuoteAndPillars({
                 aria-label={`${pillar.tag}: ${isFlipped ? 'show photo' : 'show details'}`}
                 className={cn(
                   'relative block h-full w-full cursor-pointer text-left transition-transform duration-700 [transform-style:preserve-3d]',
-                  isFlipped && '[transform:rotateY(180deg)]'
+                  // isFlipped && '[transform:rotateY(180deg)]'
                 )}
               >
                 {/* Front: photo with the pink tag overlapping its bottom edge */}
@@ -98,7 +98,7 @@ export function QuoteAndPillars({
                 </span>
 
                 {/* Back: the pillar in more detail */}
-                <span
+                {/* <span
                   className={cn(
                     'absolute inset-0 flex flex-col overflow-y-auto bg-white p-5 text-brand-ink [backface-visibility:hidden] [transform:rotateY(180deg)] lg:u-px-32 lg:u-py-36',
                     corner
@@ -117,7 +117,7 @@ export function QuoteAndPillars({
                   <span className="mt-auto flex items-center gap-1.5 pt-3 text-xs font-bold text-brand-orange lg:u-text-18">
                     <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" /> Flip back
                   </span>
-                </span>
+                </span> */}
               </button>
               </Tilt>
             </StaggerItem>
