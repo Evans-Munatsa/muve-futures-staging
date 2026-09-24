@@ -38,7 +38,8 @@ export default async function EditContentPage({ params }: PageProps<'/admin/cont
     const fallback = def.defaults[parsed.slug];
     // Items created in the dashboard only exist in the database.
     if (!row && !fallback) notFound();
-    initial = withDefaults(row?.data, fallback ?? row?.data);
+    // Collections with nothing built in (vacancies) fill gaps from their blank template.
+    initial = withDefaults(row?.data, fallback ?? def.blank?.() ?? row?.data);
     title = (initial as { title?: string }).title || parsed.slug;
     schemaDef = def.schema;
     publicPath = def.path(parsed.slug);

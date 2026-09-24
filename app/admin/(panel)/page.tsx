@@ -1,21 +1,35 @@
 import Link from 'next/link';
-import { count, desc, eq } from 'drizzle-orm';
-import { AlertTriangle, FileText, Newspaper, PenSquare, Users } from 'lucide-react';
+import { count, desc, eq, isNull } from 'drizzle-orm';
+import { AlertTriangle, Briefcase, FileText, Inbox, Newspaper, PenSquare, Users } from 'lucide-react';
 import { db, schema } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth/dal';
 
 export default async function AdminHome() {
   const admin = await requireAdmin();
-  const [[posts], [published], [admins], recent] = await Promise.all([
+  const [[posts], [published], [admins], [newApplications], [unreadMessages], recent] = await Promise.all([
     db().select({ n: count() }).from(schema.blogPosts),
     db().select({ n: count() }).from(schema.blogPosts).where(eq(schema.blogPosts.status, 'published')),
     db().select({ n: count() }).from(schema.adminUsers),
+    db().select({ n: count() }).from(schema.jobApplications).where(eq(schema.jobApplications.status, 'new')),
+    db().select({ n: count() }).from(schema.formSubmissions).where(isNull(schema.formSubmissions.readAt)),
     db().select({ key: schema.content.key, updatedAt: schema.content.updatedAt }).from(schema.content).orderBy(desc(schema.content.updatedAt)).limit(5),
   ]);
 
   const cards = [
+    {
+      href: '/admin/inbox',
+      label: 'Inbox',
+      detail: unreadMessages.n ? `${unreadMessages.n} unread message${unreadMessages.n === 1 ? '' : 's'}` : 'Messages from the website’s forms',
+      icon: Inbox,
+    },
     { href: '/admin/content', label: 'Website content', detail: 'Pages, services, audiences, legal', icon: FileText },
     { href: '/admin/blog', label: 'Blog', detail: `${published.n} published · ${posts.n - published.n} drafts`, icon: Newspaper },
+    {
+      href: '/admin/careers?status=new',
+      label: 'Careers',
+      detail: newApplications.n ? `${newApplications.n} new application${newApplications.n === 1 ? '' : 's'}` : 'Vacancies and applications',
+      icon: Briefcase,
+    },
     { href: '/admin/users', label: 'Admins', detail: `${admins.n} account${admins.n === 1 ? '' : 's'}`, icon: Users },
   ];
 
@@ -23,7 +37,7 @@ export default async function AdminHome() {
     <div className="space-y-8">
       <header>
         <h1 className="text-2xl font-bold sm:text-3xl">Hello, {admin.name.split(' ')[0]}</h1>
-        <p className="mt-1 text-sm text-neutral-500">Edit the website and publish blog posts. Changes go live as soon as you save.</p>
+        <p className="mt-1 text-sm text-neutral-500">Read messages from the website, edit its content and publish blog posts. Changes go live as soon as you save.</p>
       </header>
 
       {!process.env.BLOB_READ_WRITE_TOKEN && (
@@ -36,7 +50,7 @@ export default async function AdminHome() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map(({ href, label, detail, icon: Icon }) => (
           <Link key={href} href={href} className="rounded-xl border border-neutral-200 bg-white p-5 transition hover:border-brand-orange hover:shadow-md">
             <Icon className="h-6 w-6 text-brand-orange" aria-hidden="true" />

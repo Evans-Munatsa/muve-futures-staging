@@ -1,7 +1,9 @@
 'use client';
 
 import { useId, useState } from 'react';
+import { BotTrap, useFormSubmit } from '@/components/forms/BotTrap';
 import { ChoiceGroup, Field, FieldLabel, SentMessage, SubmitRow, TextArea, groupGap } from '@/components/forms/DesignForm';
+import { submitFeedback } from '@/lib/forms/submit';
 import { cn } from '@/lib/utils';
 
 const KINDS = ['Compliments', 'Complaints', 'Suggestion'] as const;
@@ -11,32 +13,36 @@ type Kind = (typeof KINDS)[number];
 
 const EMPTY = { kind: 'Compliments' as Kind, person: '', firstName: '', lastName: '', email: '', phone: '', message: '' };
 
-/** Compliments, complaints and suggestions (public/design/feedback.png). */
+/** Compliments, complaints and suggestions (public/design/feedback.png). Messages go to the dashboard Inbox. */
 export function FeedbackForm() {
   const kindName = useId();
   const [form, setForm] = useState(EMPTY);
-  const [sent, setSent] = useState(false);
+  const { pending, error, reference, submit } = useFormSubmit();
   const set = <K extends keyof typeof EMPTY>(key: K, value: (typeof EMPTY)[K]) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: send `form` to the feedback inbox.
-    setSent(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    submit(e.currentTarget, (meta) => submitFeedback(form, meta));
   };
 
-  if (sent) {
+  if (reference !== null) {
     return (
       <SentMessage title="Thank You For Your Feedback">
         <p>
           We read every message. If you’ve asked us to get back to you, we’ll reply to <strong>{form.email}</strong>.
         </p>
+        {reference && (
+          <p>
+            Your reference is <strong>{reference}</strong>.
+          </p>
+        )}
       </SentMessage>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="relative">
+      <BotTrap />
       <fieldset>
         <legend className="mb-3 text-base font-bold text-brand-ink lg:u-mb-12 lg:u-text-23">I want to give my...</legend>
         <div className="flex flex-wrap gap-2 lg:u-gap-15">
@@ -82,7 +88,7 @@ export function FeedbackForm() {
         <TextArea id="feedback-message" required value={form.message} onChange={(e) => set('message', e.target.value)} />
       </div>
 
-      <SubmitRow thanks="Thank you for starting a conversation with us!" />
+      <SubmitRow thanks="Thank you for starting a conversation with us!" error={error} pending={pending} />
     </form>
   );
 }

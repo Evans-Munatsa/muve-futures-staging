@@ -273,23 +273,27 @@ export const contactPageSchema: Field = object({
   careers: object(
     {
       title: text('Heading'),
-      emptyMessage: textarea('Shown when there are no vacancies', { rows: 2 }),
-      vacancies: list(
-        'Vacancies',
-        object({
-          title: text('Job title'),
-          hours: text('Hours', { placeholder: 'Full Time' }),
-          location: text('Location'),
-          listedOn: text('Date listed', { placeholder: 'yyyy-mm-dd', help: 'Shown as “Listed 2 weeks ago”.' }),
-          open: bool('Open for applications'),
-          description: textarea('Description (shown by “View”)', { rows: 5, help: 'Leave a blank line to start a new paragraph.' }),
-          applyUrl: text('Apply link (optional)', { placeholder: 'https://… or mailto:…', help: 'Leave empty to open an email to the enquiries address.' }),
-        }),
-        { itemTitle: 'title' }
-      ),
+      emptyMessage: textarea('Shown when there are no open vacancies', { rows: 2 }),
     },
-    'Careers'
+    'Careers',
+    'The vacancies themselves are under Careers in the dashboard menu.'
   ),
+});
+
+export const vacancySchema: Field = object({
+  title: text('Job title'),
+  open: bool('Open for applications', 'Switch off to stop applications. The advert stays listed as closed until you delete it.'),
+  hours: text('Hours', { placeholder: 'Full Time' }),
+  location: text('Location', { placeholder: 'Birmingham' }),
+  salary: text('Salary (optional)', { placeholder: '£26,000 – £30,000 per year' }),
+  listedOn: text('Date listed', { placeholder: 'yyyy-mm-dd', help: 'Shown as “Listed 2 weeks ago”.' }),
+  closingDate: text('Closing date (optional)', { placeholder: 'yyyy-mm-dd', help: 'Applications close at the end of this day.' }),
+  summary: textarea('Summary', { rows: 2, help: 'One or two sentences, shown at the top of the job page and in search results.' }),
+  description: textarea('Full advert', {
+    rows: 16,
+    help: 'Markdown: ## Heading, **bold**, - bullet point. A blank line starts a new paragraph.',
+  }),
+  order: num('Order', 'Lower numbers are listed first.'),
 });
 
 export const resourcesSchema: Field = object({

@@ -2,24 +2,28 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ExternalLink, FileText, LayoutDashboard, LogOut, Newspaper, Users } from 'lucide-react';
+import { Briefcase, ExternalLink, FileText, Inbox, LayoutDashboard, LogOut, Newspaper, Users } from 'lucide-react';
 import { logout } from '@/lib/admin/auth-actions';
 import { cn } from '@/lib/utils';
 
 const LINKS = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
+  { href: '/admin/inbox', label: 'Inbox', icon: Inbox, badge: 'inbox' as const },
   { href: '/admin/content', label: 'Website content', icon: FileText },
   { href: '/admin/blog', label: 'Blog', icon: Newspaper },
+  { href: '/admin/careers', label: 'Careers', icon: Briefcase, badge: 'careers' as const },
   { href: '/admin/users', label: 'Admins', icon: Users },
 ];
 
-export function AdminNav({ name }: { name: string }) {
+/** `counts` are unread Inbox messages and new job applications, shown as badges. */
+export function AdminNav({ name, counts }: { name: string; counts: { inbox: number; careers: number } }) {
   const pathname = usePathname();
 
   return (
     <nav aria-label="Dashboard" className="flex h-full flex-col gap-1 p-4 text-sm">
-      {LINKS.map(({ href, label, icon: Icon, exact }) => {
+      {LINKS.map(({ href, label, icon: Icon, exact, badge }) => {
         const active = exact ? pathname === href : pathname.startsWith(href);
+        const n = badge ? counts[badge] : 0;
         return (
           <Link
             key={href}
@@ -31,6 +35,12 @@ export function AdminNav({ name }: { name: string }) {
             )}
           >
             <Icon className="h-4 w-4" aria-hidden="true" /> {label}
+            {n > 0 && (
+              <span className="ml-auto rounded-full bg-brand-orange px-2 py-0.5 text-[11px] font-bold text-white">
+                {n > 99 ? '99+' : n}
+                <span className="sr-only"> new</span>
+              </span>
+            )}
           </Link>
         );
       })}

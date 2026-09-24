@@ -316,19 +316,44 @@ export const DEFAULT_FORMS: FormsContent = {
 
 // ── Contact page & careers ─────────────────────────────────────────────────
 
+/**
+ * A job advert. Vacancies are a dashboard collection (`vacancy:<slug>`), each
+ * with its own page at /careers/<slug> where people apply.
+ */
 export interface Vacancy {
   title: string;
   /** e.g. Full Time, Part Time. */
   hours: string;
   location: string;
+  /** Optional, e.g. "£26,000 – £30,000 per year". */
+  salary: string;
   /** yyyy-mm-dd; shown as "Listed 2 weeks ago". */
   listedOn: string;
+  /** yyyy-mm-dd, optional. Applications close at the end of this day. */
+  closingDate: string;
+  /** Switch off to stop applications without deleting the advert. */
   open: boolean;
-  /** Shown when "View" is pressed. A blank line starts a new paragraph. */
+  /** One or two sentences for the listing and search engines. */
+  summary: string;
+  /** The full advert, in Markdown. */
   description: string;
-  /** Where "Apply" goes (a link or mailto:). Empty emails the enquiries address. */
-  applyUrl: string;
+  /** Lower numbers are listed first. */
+  order: number;
 }
+
+/** A blank vacancy for "New vacancy" in the dashboard: closed until it's ready. */
+export const blankVacancy = (): Vacancy => ({
+  title: 'New vacancy',
+  hours: 'Full Time',
+  location: 'Birmingham',
+  salary: '',
+  listedOn: new Date().toISOString().slice(0, 10),
+  closingDate: '',
+  open: false,
+  summary: '',
+  description: '## About the role\n\n\n## What you’ll do\n\n- \n\n## About you\n\n- \n\n## What we offer\n\n- ',
+  order: 100,
+});
 
 /** The parts of /contact beyond the heading (which lives in Form pages → Contact page). */
 export interface ContactPageContent {
@@ -338,7 +363,8 @@ export interface ContactPageContent {
   refer: { title: string; body: string; cta: string };
   talk: { title: string; body: string; cta: string };
   where: { eyebrow: string; title: string; body: string; areas: string[] };
-  careers: { title: string; emptyMessage: string; vacancies: Vacancy[] };
+  /** The vacancies themselves are the dashboard's Careers collection. */
+  careers: { title: string; emptyMessage: string };
 }
 
 export const DEFAULT_CONTACT_PAGE: ContactPageContent = {
@@ -360,38 +386,6 @@ export const DEFAULT_CONTACT_PAGE: ContactPageContent = {
   careers: {
     title: 'Careers',
     emptyMessage: 'There are no open roles right now. Check back soon, or get in touch to register your interest.',
-    // Placeholder roles, to be replaced with real vacancies in the dashboard.
-    vacancies: [
-      {
-        title: 'Alternative Provision Tutor',
-        hours: 'Full Time',
-        location: 'Birmingham',
-        listedOn: '2026-09-09',
-        open: true,
-        description:
-          'Deliver personalised one-to-one and small group learning for young people who are not currently in mainstream school.\n\nYou will plan around each learner’s needs and interests, build trusted relationships and help them move towards their next step in education.',
-        applyUrl: '',
-      },
-      {
-        title: 'SEND Learning Mentor',
-        hours: 'Part Time',
-        location: 'Solihull',
-        listedOn: '2026-09-09',
-        open: true,
-        description:
-          'Support learners with SEND and SEMH needs to re-engage with learning, working closely with families, schools and our tutors.',
-        applyUrl: '',
-      },
-      {
-        title: 'Online Tutor (Maths & English)',
-        hours: 'Part Time',
-        location: 'Remote',
-        listedOn: '2026-09-09',
-        open: true,
-        description: 'Teach engaging live online sessions in Maths and English for learners across the West Midlands.',
-        applyUrl: '',
-      },
-    ],
   },
 };
 

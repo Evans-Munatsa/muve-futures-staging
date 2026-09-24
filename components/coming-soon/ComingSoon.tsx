@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
+import { BotTrap, readBotMeta } from '@/components/forms/BotTrap';
+import { subscribeNewsletter } from '@/lib/forms/submit';
 import Link from 'next/link';
 import { MotionConfig } from 'motion/react';
 import { REFERRAL_HREF } from '@/constants';
@@ -91,12 +93,20 @@ const SocialLink = ({
 export function ComingSoon({ heading, socials }: { heading: string; socials: SettingsContent['socials'] }) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [error, setError] = useState('');
+  const [pending, startTransition] = useTransition();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Sign-ups are listed in the dashboard (Inbox → Newsletter).
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    // TODO: send `email` to your mailing list / API route here
-    setSubscribed(true);
+    if (!email.trim() || pending) return;
+    setError('');
+    const meta = readBotMeta(e.currentTarget);
+    startTransition(async () => {
+      const result = await subscribeNewsletter(email, 'coming-soon', meta).catch(() => ({ ok: false as const, error: 'Sorry, that didn’t work. Please try again.' }));
+      if (result.ok) setSubscribed(true);
+      else setError(result.error);
+    });
   };
 
   return (
@@ -144,11 +154,18 @@ export function ComingSoon({ heading, socials }: { heading: string; socials: Set
               />
               <button
                 type="submit"
-                className="absolute right-0 top-0 h-full rounded-full px-[18px] text-[17px] font-bold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                disabled={pending}
+                className="absolute right-0 top-0 h-full rounded-full px-[18px] text-[17px] font-bold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-70"
                 style={{ backgroundColor: CORAL }}
               >
-                {subscribed ? 'Subscribed' : 'Subscribe'}
+                {subscribed ? 'Subscribed' : pending ? 'Sending…' : 'Subscribe'}
               </button>
+              <BotTrap />
+              {error && (
+                <p role="alert" className="absolute inset-x-0 top-full mt-2 text-center text-sm font-semibold">
+                  {error}
+                </p>
+              )}
             </form>
           </StaggerItem>
           <StaggerItem>
