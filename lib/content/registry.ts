@@ -8,6 +8,7 @@ import type { Field } from './fields';
 import {
   DEFAULT_ABOUT,
   DEFAULT_BLOG_PAGE,
+  DEFAULT_CONTACT_PAGE,
   DEFAULT_FORMS,
   DEFAULT_HOME,
   DEFAULT_RESOURCES,
@@ -16,6 +17,7 @@ import {
   DEFAULT_WHO_WE_SUPPORT_PAGE,
   type AboutContent,
   type BlogPageContent,
+  type ContactPageContent,
   type FormsContent,
   type HomeContent,
   type ResourcesContent,
@@ -27,6 +29,7 @@ import {
   aboutSchema,
   audienceSchema,
   blogPageSchema,
+  contactPageSchema,
   formsSchema,
   homeSchema,
   legalSchema,
@@ -55,6 +58,7 @@ export interface SingleTypes {
   forms: FormsContent;
   resources: ResourcesContent;
   'blog-page': BlogPageContent;
+  'contact-page': ContactPageContent;
 }
 
 export type SingleKey = keyof SingleTypes;
@@ -103,6 +107,13 @@ export const SINGLES: { [K in SingleKey]: SingleDef<SingleTypes[K]> } = {
     schema: blogPageSchema,
     defaults: DEFAULT_BLOG_PAGE,
     path: '/blog',
+  },
+  'contact-page': {
+    label: 'Contact page & careers',
+    description: 'The contact form, side cards, where we work and the careers vacancies.',
+    schema: contactPageSchema,
+    defaults: DEFAULT_CONTACT_PAGE,
+    path: '/contact',
   },
 };
 

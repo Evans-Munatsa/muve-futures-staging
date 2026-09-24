@@ -258,6 +258,40 @@ export const formsSchema: Field = object({
   feedbackClosing: object({ title: heading(), body: body(), cta: text('Button') }, 'Feedback page: call to action under the form'),
 });
 
+const titledCta = (label: string) => object({ title: text('Heading'), body: body(), cta: text('Button') }, label);
+
+export const contactPageSchema: Field = object({
+  subtitle: text('Subtitle under the page heading', { help: 'The heading and introduction are under Form pages → Contact page.' }),
+  form: object({ title: text('Heading'), intro: body('Introduction'), submit: text('Button') }, '“Chat to us” form'),
+  getInTouch: object({ title: text('Heading') }, 'Orange contact card', 'Email, phone and address come from Site settings.'),
+  refer: titledCta('Ready to refer'),
+  talk: titledCta('Pink “prefer to talk first” card'),
+  where: object(
+    { eyebrow: text('Eyebrow'), title: text('Heading'), body: body(), areas: list('Areas', text('Area')) },
+    'Where we work'
+  ),
+  careers: object(
+    {
+      title: text('Heading'),
+      emptyMessage: textarea('Shown when there are no vacancies', { rows: 2 }),
+      vacancies: list(
+        'Vacancies',
+        object({
+          title: text('Job title'),
+          hours: text('Hours', { placeholder: 'Full Time' }),
+          location: text('Location'),
+          listedOn: text('Date listed', { placeholder: 'yyyy-mm-dd', help: 'Shown as “Listed 2 weeks ago”.' }),
+          open: bool('Open for applications'),
+          description: textarea('Description (shown by “View”)', { rows: 5, help: 'Leave a blank line to start a new paragraph.' }),
+          applyUrl: text('Apply link (optional)', { placeholder: 'https://… or mailto:…', help: 'Leave empty to open an email to the enquiries address.' }),
+        }),
+        { itemTitle: 'title' }
+      ),
+    },
+    'Careers'
+  ),
+});
+
 export const resourcesSchema: Field = object({
   hero: object({ title: heading('Page heading'), intro: body('Introduction'), cta: text('Button') }, 'Top of the page'),
   intro: object({ title: heading(), body: body() }, 'Introduction beside the orange line'),

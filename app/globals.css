@@ -88,6 +88,23 @@
   }
 }
 
+/* Coral thumb on a white track, as on the careers list. */
+@utility scrollbar-coral {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-brand-coral) white;
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 9999px;
+    background: white;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: var(--color-brand-coral);
+  }
+}
+
 @layer base {
   :root {
     /* One design pixel (see the u-* utilities above). */

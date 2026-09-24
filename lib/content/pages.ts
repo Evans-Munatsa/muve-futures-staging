@@ -284,7 +284,7 @@ export const DEFAULT_FORMS: FormsContent = {
     badge: 'Contact',
     title: "We're Here To Help",
     intro:
-      "Whether you're a parent looking for guidance, a school seeking support or a professional exploring provision for a learner, our team is here to listen.",
+      'We work with schools, local authorities, professionals and community organisations to create better education pathways for children and young people.',
   },
   // Referral, partnership and feedback follow public/design; their intros sit above the form.
   referral: {
@@ -311,6 +311,87 @@ export const DEFAULT_FORMS: FormsContent = {
     title: 'Let’s Support More\nLearners Together',
     body: 'Whether you need support for an individual learner or want to discuss longer-term provision, our team is here to help.',
     cta: 'Book an Intro',
+  },
+};
+
+// ── Contact page & careers ─────────────────────────────────────────────────
+
+export interface Vacancy {
+  title: string;
+  /** e.g. Full Time, Part Time. */
+  hours: string;
+  location: string;
+  /** yyyy-mm-dd; shown as "Listed 2 weeks ago". */
+  listedOn: string;
+  open: boolean;
+  /** Shown when "View" is pressed. A blank line starts a new paragraph. */
+  description: string;
+  /** Where "Apply" goes (a link or mailto:). Empty emails the enquiries address. */
+  applyUrl: string;
+}
+
+/** The parts of /contact beyond the heading (which lives in Form pages → Contact page). */
+export interface ContactPageContent {
+  subtitle: string;
+  form: { title: string; intro: string; submit: string };
+  getInTouch: { title: string };
+  refer: { title: string; body: string; cta: string };
+  talk: { title: string; body: string; cta: string };
+  where: { eyebrow: string; title: string; body: string; areas: string[] };
+  careers: { title: string; emptyMessage: string; vacancies: Vacancy[] };
+}
+
+export const DEFAULT_CONTACT_PAGE: ContactPageContent = {
+  subtitle: 'Let’s start a conversation',
+  form: {
+    title: 'Chat to Us',
+    intro: 'Questions about our services, capacity, careers or partnerships? We’d love to hear from you.',
+    submit: 'Send Message',
+  },
+  getInTouch: { title: 'Get In Touch' },
+  refer: { title: 'Ready to Refer?', body: 'Tell us about the learner and we’ll help find the right education pathway.', cta: 'Make a Referral' },
+  talk: { title: 'Prefer to talk first?', body: 'Book a short introduction with our team to talk things through.', cta: 'Book an Intro' },
+  where: {
+    eyebrow: 'Where We Work',
+    title: 'Supporting Learners Across The West Midlands',
+    body: 'Our teachers and mentors work with learners at home, in the community and in local learning spaces across the region.',
+    areas: ['Birmingham', 'Sandwell + Dudley', 'Worcestershire', 'Wolverhampton & Walsall', 'Solihull'],
+  },
+  careers: {
+    title: 'Careers',
+    emptyMessage: 'There are no open roles right now. Check back soon, or get in touch to register your interest.',
+    // Placeholder roles, to be replaced with real vacancies in the dashboard.
+    vacancies: [
+      {
+        title: 'Alternative Provision Tutor',
+        hours: 'Full Time',
+        location: 'Birmingham',
+        listedOn: '2026-09-09',
+        open: true,
+        description:
+          'Deliver personalised one-to-one and small group learning for young people who are not currently in mainstream school.\n\nYou will plan around each learner’s needs and interests, build trusted relationships and help them move towards their next step in education.',
+        applyUrl: '',
+      },
+      {
+        title: 'SEND Learning Mentor',
+        hours: 'Part Time',
+        location: 'Solihull',
+        listedOn: '2026-09-09',
+        open: true,
+        description:
+          'Support learners with SEND and SEMH needs to re-engage with learning, working closely with families, schools and our tutors.',
+        applyUrl: '',
+      },
+      {
+        title: 'Online Tutor (Maths & English)',
+        hours: 'Part Time',
+        location: 'Remote',
+        listedOn: '2026-09-09',
+        open: true,
+        description: 'Teach engaging live online sessions in Maths and English for learners across the West Midlands.',
+        applyUrl: '',
+      },
+    ],
   },
 };
 

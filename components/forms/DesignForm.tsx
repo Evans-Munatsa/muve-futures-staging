@@ -37,13 +37,20 @@ export function TextInput({ className, ...props }: InputProps) {
  * Note: cn() can't tell that two u-* classes set the same property, so a
  * size variant is chosen with a prop rather than overridden with className.
  */
-export function TextArea({ short = false, className, ...props }: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { short?: boolean }) {
+const TEXTAREA_HEIGHT = { short: 'h-28 lg:u-h-106', default: 'h-44 lg:u-h-208', tall: 'h-48 lg:u-h-234' };
+
+export function TextArea({
+  short = false,
+  tall = false,
+  className,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { short?: boolean; tall?: boolean }) {
   return (
     <textarea
       {...props}
       className={cn(
         'block w-full resize-y rounded-2xl bg-white px-4 py-3 lg:u-rounded-15 lg:u-px-17 lg:u-py-12',
-        short ? 'h-28 lg:u-h-106' : 'h-44 lg:u-h-208',
+        TEXTAREA_HEIGHT[short ? 'short' : tall ? 'tall' : 'default'],
         fieldText,
         focusRing,
         className
