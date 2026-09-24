@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      // Job applications include a CV (up to 4MB, see lib/careers/shared.ts).
+      bodySizeLimit: '5mb',
+    },
+  },
   images: {
     remotePatterns: [
       // Images uploaded from the dashboard (Vercel Blob).

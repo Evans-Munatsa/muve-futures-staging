@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { BotTrap, useFormSubmit } from '@/components/forms/BotTrap';
 import {
   Bubble,
   ChoiceGroup,
@@ -16,6 +17,7 @@ import {
   toggle,
 } from '@/components/forms/DesignForm';
 import { PersonFields, emptyPerson, type Person } from '@/components/forms/PersonFields';
+import { submitReferral } from '@/lib/forms/submit';
 import { cn } from '@/lib/utils';
 
 const REFERRING_FOR = [
@@ -37,6 +39,8 @@ type ReferringFor = (typeof REFERRING_FOR)[number];
 
 interface ReferralData {
   referrer: Person;
+  email: string;
+  phone: string;
   organisation: string;
   role: string;
   relationship: string;
@@ -73,6 +77,8 @@ function fromService(service?: string): Pick<ReferralData, 'referringFor' | 'ref
 
 const emptyForm = (service?: string): ReferralData => ({
   referrer: emptyPerson(),
+  email: '',
+  phone: '',
   organisation: '',
   role: '',
   relationship: '',
@@ -115,25 +121,28 @@ function Specify({ value, onChange, active, onActivate }: { value: string; onCha
   );
 }
 
-/** The referral form (public/design/Screenshot 2026-09-23 151041.png). */
+/** The referral form (public/design/Screenshot 2026-09-23 151041.png). Referrals go to the dashboard Inbox. */
 export function ReferralForm({ preselectedService }: { preselectedService?: string }) {
   const [form, setForm] = useState<ReferralData>(() => emptyForm(preselectedService));
-  const [reference, setReference] = useState<string | null>(null);
-  const [error, setError] = useState('');
+  const { pending, error: sendError, reference, submit } = useFormSubmit();
+  const [checkError, setCheckError] = useState('');
   const set = <K extends keyof ReferralData>(key: K, value: ReferralData[K]) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Browsers can't require "at least one" of a group of checkboxes.
     if (form.referringFor.length === 0) {
-      setError('Please choose at least one type of support you are referring for.');
+      setCheckError('Please choose at least one type of support you are referring for.');
       return;
     }
-    setError('');
-    // TODO: send `form` to the referrals inbox / CRM.
-    setReference(`MF-${Math.floor(100000 + Math.random() * 900000)}`);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCheckError('');
+    submit(e.currentTarget, (meta) => submitReferral(form, meta));
   };
+
+  // The thank-you replaces a long form, so bring its top into view.
+  useEffect(() => {
+    if (reference) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [reference]);
 
   if (reference) {
     return (
@@ -148,10 +157,14 @@ export function ReferralForm({ preselectedService }: { preselectedService?: stri
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="relative">
+      <BotTrap />
       <Section title="1. Referrer Details" first>
         <PersonFields value={form.referrer} onChange={(referrer) => set('referrer', referrer)} />
         <div className={cn('grid gap-6 lg:grid-cols-2 lg:u-gap-x-28 lg:u-gap-y-26', groupGap)}>
+          {/* Not in the design, but without them the team couldn't reply. */}
+          <Field label="Email*" type="email" required autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} />
+          <Field label="Phone*" type="tel" required autoComplete="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} />
           <Field label="Organisation*" required autoComplete="organization" placeholder="Name Organisation" value={form.organisation} onChange={(e) => set('organisation', e.target.value)} />
           <Field label="Role (if applicable)" autoComplete="organization-title" value={form.role} onChange={(e) => set('role', e.target.value)} />
           <Field label="Relationship to Referee*" required placeholder="e.g. Teacher, SENCO, parent" value={form.relationship} onChange={(e) => set('relationship', e.target.value)} />
@@ -262,7 +275,7 @@ export function ReferralForm({ preselectedService }: { preselectedService?: stri
         />
       </Section>
 
-      <SubmitRow thanks="Thank you for starting a conversation with us!" error={error} />
+      <SubmitRow thanks="Thank you for starting a conversation with us!" error={checkError || sendError} pending={pending} />
     </form>
   );
 }

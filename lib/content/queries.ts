@@ -79,7 +79,7 @@ export function getCollection<C extends CollectionName>(name: C): Promise<WithSl
           if (rows.length === 0) return fromDefaults();
           return rows.map((row) => {
             const slug = row.key.slice(name.length + 1);
-            const fallback = (def.defaults[slug] ?? Object.values(def.defaults)[0]) as CollectionTypes[C];
+            const fallback = (def.defaults[slug] ?? Object.values(def.defaults)[0] ?? def.blank?.()) as CollectionTypes[C];
             return { ...withDefaults(row.data, fallback), slug };
           });
         },

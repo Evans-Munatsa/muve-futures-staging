@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SocialLinks } from '@/components/common/SocialLinks';
+import { BotTrap, readBotMeta } from '@/components/forms/BotTrap';
 import type { SiteChrome } from '@/lib/content/chrome-types';
+import { subscribeNewsletter } from '@/lib/forms/submit';
 
 const SUBSCRIBED_RESET_MS = 4000;
 
@@ -23,10 +25,20 @@ export function Footer({ settings, legalLinks }: { settings: SiteChrome['setting
     return () => clearTimeout(timeout);
   }, [subscribed]);
 
+  const [error, setError] = useState('');
+  const [pending, startTransition] = useTransition();
+
+  // Sign-ups are listed in the dashboard (Inbox → Newsletter).
   const handleSubscribe = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: send `email` to the mailing list provider.
-    setSubscribed(true);
+    if (pending) return;
+    setError('');
+    const meta = readBotMeta(e.currentTarget);
+    startTransition(async () => {
+      const result = await subscribeNewsletter(email, 'footer', meta).catch(() => ({ ok: false as const, error: 'Sorry, that didn’t work. Please try again.' }));
+      if (result.ok) setSubscribed(true);
+      else setError(result.error);
+    });
   };
 
   return (
@@ -53,6 +65,7 @@ export function Footer({ settings, legalLinks }: { settings: SiteChrome['setting
                 <Button
                   id="footer-btn-subscribe"
                   type="submit"
+                  disabled={pending}
                   variant="orange"
                   className="h-full shrink-0 px-5 text-sm lg:absolute lg:top-0 lg:right-0 lg:u-h-42 lg:u-w-107 lg:px-0 lg:u-text-16"
                 >
@@ -70,6 +83,12 @@ export function Footer({ settings, legalLinks }: { settings: SiteChrome['setting
                   Thank you for subscribing!
                 </p>
               )}
+              {error && (
+                <p role="alert" className="mt-2 text-xs font-semibold text-white">
+                  {error}
+                </p>
+              )}
+              <BotTrap />
             </form>
 
             <address className="mt-4 text-center not-italic leading-snug md:text-left lg:absolute lg:u-left-269 lg:u-top-188 lg:mt-0 lg:u-text-20 lg:leading-[1.2]">

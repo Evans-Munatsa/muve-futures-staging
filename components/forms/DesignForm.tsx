@@ -201,7 +201,20 @@ export function toggle<T>(list: T[], option: T): T[] {
   return list.includes(option) ? list.filter((o) => o !== option) : [...list, option];
 }
 
-export function SubmitRow({ thanks, label = 'Submit', error, spacious = false }: { thanks: string; label?: string; error?: string; spacious?: boolean }) {
+export function SubmitRow({
+  thanks,
+  label = 'Submit',
+  error,
+  spacious = false,
+  pending = false,
+}: {
+  thanks: string;
+  label?: string;
+  error?: string;
+  spacious?: boolean;
+  /** While sending: the button is disabled and says so. */
+  pending?: boolean;
+}) {
   return (
     <div className={spacious ? 'mt-16 lg:u-mt-183' : 'mt-12 lg:u-mt-80'}>
       {error && (
@@ -212,12 +225,13 @@ export function SubmitRow({ thanks, label = 'Submit', error, spacious = false }:
       <p className="text-sm font-bold text-brand-ink lg:u-text-19">{thanks}</p>
       <button
         type="submit"
+        disabled={pending}
         className={cn(
-          'mt-3 h-10 w-44 cursor-pointer rounded-full bg-brand-ink text-base font-bold uppercase tracking-wide text-white transition hover:-translate-y-0.5 hover:shadow-lg lg:u-mt-14 lg:u-h-42 lg:u-w-227 lg:u-text-22',
+          'mt-3 h-10 w-44 cursor-pointer rounded-full bg-brand-ink text-base font-bold uppercase tracking-wide text-white transition hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-wait disabled:opacity-70 lg:u-mt-14 lg:u-h-42 lg:u-w-227 lg:u-text-22',
           focusRing
         )}
       >
-        {label}
+        {pending ? 'Sending…' : label}
       </button>
     </div>
   );

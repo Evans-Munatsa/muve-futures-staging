@@ -4,16 +4,25 @@ import { ChatForm } from '@/components/contact/ChatForm';
 import { ContactCards, WhereWeWork } from '@/components/contact/ContactCards';
 import { Lines } from '@/components/common/Lines';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
-import { getSingle } from '@/lib/content/queries';
+import { renderTime } from '@/lib/careers/shared';
+import { getCollection, getSingle } from '@/lib/content/queries';
 
 export const metadata: Metadata = {
   title: 'Contact',
   description: 'Get in touch with MUVE Futures, make a learner referral, book an introduction or see our current vacancies.',
 };
 
+// Re-render regularly so vacancies past their closing date show as closed.
+export const revalidate = 600;
+
 /** Contact and careers, from public/design. From lg up, sizes are design pixels (u-* units). */
 export default async function ContactPage() {
-  const [{ contact: hero }, content, settings] = await Promise.all([getSingle('forms'), getSingle('contact-page'), getSingle('settings')]);
+  const [{ contact: hero }, content, settings, vacancies] = await Promise.all([
+    getSingle('forms'),
+    getSingle('contact-page'),
+    getSingle('settings'),
+    getCollection('vacancy'),
+  ]);
 
   return (
     <div className="w-full overflow-hidden bg-brand-green pb-20 sm:pb-28 lg:u-pb-150">
@@ -49,7 +58,7 @@ export default async function ContactPage() {
         <WhereWeWork content={content.where} />
       </Reveal>
 
-      <Careers content={content.careers} email={settings.contact.enquiriesEmail} />
+      <Careers content={content.careers} vacancies={vacancies} renderedAt={renderTime()} />
     </div>
   );
 }

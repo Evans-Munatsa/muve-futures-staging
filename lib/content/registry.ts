@@ -18,6 +18,8 @@ import {
   type AboutContent,
   type BlogPageContent,
   type ContactPageContent,
+  type Vacancy,
+  blankVacancy,
   type FormsContent,
   type HomeContent,
   type ResourcesContent,
@@ -30,6 +32,7 @@ import {
   audienceSchema,
   blogPageSchema,
   contactPageSchema,
+  vacancySchema,
   formsSchema,
   homeSchema,
   legalSchema,
@@ -128,6 +131,7 @@ export interface CollectionTypes {
   service: ServiceItem;
   audience: AudienceItem;
   legal: LegalItem;
+  vacancy: Vacancy;
 }
 
 export type CollectionName = keyof CollectionTypes;
@@ -195,6 +199,17 @@ export const COLLECTIONS: { [K in CollectionName]: CollectionDef<CollectionTypes
     defaults: bySlug(LEGAL_PAGES, (page) => page),
     allowCreate: false,
     path: (slug) => `/${slug}`,
+  },
+  vacancy: {
+    label: 'Careers: vacancies',
+    itemNoun: 'vacancy',
+    description: 'Each job advert and its page at /careers/…, where people apply. Applications are under Careers in the menu.',
+    schema: vacancySchema,
+    // None built in, so no example jobs ever go live.
+    defaults: {},
+    allowCreate: true,
+    path: (slug) => `/careers/${slug}`,
+    blank: blankVacancy,
   },
 };
 

@@ -63,6 +63,7 @@ export default async function ContentIndex() {
               {def.allowCreate && <NewItemForm collection={name} noun={def.itemNoun} pathPrefix={def.path('')} />}
             </div>
             <ul className="mt-2 divide-y divide-neutral-200 rounded-xl border border-neutral-200 bg-white">
+              {collectionItems(name).length === 0 && <li className="px-4 py-3 text-sm text-neutral-500">None yet.</li>}
               {collectionItems(name).map((item) => (
                 <li key={item.slug}>
                   <Link href={`/admin/content/${name}/${item.slug}`} className="flex items-center gap-4 px-4 py-3 hover:bg-neutral-50">

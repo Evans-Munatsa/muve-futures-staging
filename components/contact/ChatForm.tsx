@@ -1,21 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import { BotTrap, useFormSubmit } from '@/components/forms/BotTrap';
 import { FieldLabel, TextArea, TextInput } from '@/components/forms/DesignForm';
 import type { ContactPageContent } from '@/lib/content/pages';
+import { submitContact } from '@/lib/forms/submit';
 
 const EMPTY = { name: '', email: '', phone: '', subject: '', message: '' };
 
-/** The "Chat to Us" enquiry form on the light-green card. */
+/** The "Chat to Us" enquiry form on the light-green card. Messages go to the dashboard Inbox. */
 export function ChatForm({ content }: { content: ContactPageContent['form'] }) {
   const [form, setForm] = useState(EMPTY);
-  const [sent, setSent] = useState(false);
+  const { pending, error, reference, submit, reset } = useFormSubmit();
+  const sent = reference !== null;
   const set = (key: keyof typeof EMPTY, value: string) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: send `form` to the enquiries inbox.
-    setSent(true);
+    submit(e.currentTarget, (meta) => submitContact(form, meta));
   };
 
   return (
@@ -27,21 +29,22 @@ export function ChatForm({ content }: { content: ContactPageContent['form'] }) {
         <div role="status" className="mt-8 rounded-2xl bg-white p-6 text-brand-ink lg:u-mt-40 lg:u-rounded-15 lg:u-p-30">
           <p className="font-bold lg:u-text-22">Message sent. Thank you!</p>
           <p className="mt-2 text-sm lg:u-text-18">
-            We’ll reply to <strong>{form.email}</strong> within one working day.
+            We’ll reply to <strong>{form.email}</strong> within one working day. Your reference is <strong>{reference}</strong>.
           </p>
           <button
             type="button"
             className="mt-4 cursor-pointer text-sm font-bold underline lg:u-text-18"
             onClick={() => {
               setForm(EMPTY);
-              setSent(false);
+              reset();
             }}
           >
             Send another message
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="mt-8 lg:u-mt-40">
+        <form onSubmit={handleSubmit} className="relative mt-8 lg:u-mt-40">
+          <BotTrap />
           <div className="grid gap-5 sm:grid-cols-2 lg:u-gap-x-30 lg:u-gap-y-30">
             <div>
               <FieldLabel htmlFor="chat-name">Name*</FieldLabel>
@@ -64,11 +67,17 @@ export function ChatForm({ content }: { content: ContactPageContent['form'] }) {
             <FieldLabel htmlFor="chat-message">Your Message*</FieldLabel>
             <TextArea id="chat-message" required tall value={form.message} onChange={(e) => set('message', e.target.value)} />
           </div>
+          {error && (
+            <p role="alert" className="mt-5 rounded-xl bg-white px-4 py-3 text-sm font-bold text-brand-ink lg:u-mt-24 lg:u-text-18">
+              {error}
+            </p>
+          )}
           <button
             type="submit"
-            className="mt-6 h-10 cursor-pointer rounded-full bg-brand-orange px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#d94e20] hover:shadow-lg focus-visible:ring-2 focus-visible:ring-brand-ink focus-visible:ring-offset-2 focus-visible:outline-none lg:u-mt-40 lg:u-h-44 lg:u-min-w-228 lg:u-text-20"
+            disabled={pending}
+            className="mt-6 h-10 cursor-pointer disabled:cursor-wait disabled:opacity-70 rounded-full bg-brand-orange px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#d94e20] hover:shadow-lg focus-visible:ring-2 focus-visible:ring-brand-ink focus-visible:ring-offset-2 focus-visible:outline-none lg:u-mt-40 lg:u-h-44 lg:u-min-w-228 lg:u-text-20"
           >
-            {content.submit}
+            {pending ? 'Sending…' : content.submit}
           </button>
         </form>
       )}

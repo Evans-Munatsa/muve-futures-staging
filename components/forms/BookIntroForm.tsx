@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ChoiceChips, FormSection, FormSuccess } from '@/components/forms/FormParts';
+import { BotTrap, useFormSubmit } from '@/components/forms/BotTrap';
+import { ChoiceChips, FormError, FormSection, FormSuccess } from '@/components/forms/FormParts';
+import { submitBookIntro } from '@/lib/forms/submit';
 
 const TIMES = ['Morning (09:00 – 12:00)', 'Early afternoon (12:00 – 14:30)', 'Late afternoon (14:30 – 17:00)'] as const;
 
@@ -23,21 +25,24 @@ const EMPTY = {
   notes: '',
 };
 
+/** Requests go to the dashboard Inbox (Intro bookings). */
 export function BookIntroForm() {
   const [form, setForm] = useState(EMPTY);
-  const [confirmed, setConfirmed] = useState(false);
+  const { pending, error, reference, submit } = useFormSubmit();
 
   const update = <K extends keyof typeof EMPTY>(key: K, value: (typeof EMPTY)[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: send `form` to the bookings inbox / calendar.
-    setConfirmed(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    submit(e.currentTarget, (meta) => submitBookIntro(form, meta));
   };
 
-  if (confirmed) {
+  useEffect(() => {
+    if (reference) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [reference]);
+
+  if (reference !== null) {
     return (
       <FormSuccess
         title="Intro Requested"
@@ -51,12 +56,19 @@ export function BookIntroForm() {
           Thank you, <strong>{form.name}</strong>. We&apos;ve received your request and will email{' '}
           <strong>{form.email}</strong> to confirm a time.
         </p>
+        {reference && (
+          <p>
+            Your reference is <strong>{reference}</strong>.
+          </p>
+        )}
       </FormSuccess>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10">
+    <form onSubmit={handleSubmit} className="relative space-y-10">
+      <BotTrap />
+      <FormError message={error} />
       <FormSection title="1. Your details">
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
@@ -135,9 +147,9 @@ export function BookIntroForm() {
       </FormSection>
 
       <div className="flex justify-end border-t-2 border-brand-green pt-6">
-        <Button type="submit" variant="orange" size="pill" className="gap-2">
+        <Button type="submit" variant="orange" size="pill" className="gap-2" disabled={pending}>
           <Send className="h-4 w-4" aria-hidden="true" />
-          Request an Intro
+          {pending ? 'Sending…' : 'Request an Intro'}
         </Button>
       </div>
     </form>

@@ -15,6 +15,20 @@
       "when": 1790164659499,
       "tag": "0001_post_gallery",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790237198242,
+      "tag": "0002_job_applications",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790239776232,
+      "tag": "0003_form_inbox",
+      "breakpoints": true
     }
   ]
 }
