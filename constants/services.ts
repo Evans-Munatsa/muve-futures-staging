@@ -21,16 +21,16 @@ export const SERVICES_DATA: ServiceItem[] = [
     ageRange: '7–25 Years',
     deliveryMode: 'On-site'
   },
-  {
-    id: 'alternative-provision',
-    slug: 'alternative-provision',
-    name: 'Alternative Provision',
-    description: 'Personalised, accredited and non-accredited learning pathways tailored for young people who require an alternative to mainstream schooling.',
-    keyFeatures: ['Vocational and core academic subjects (GCSE & Functional Skills)', 'Trauma-informed, neuroaffirming staff team', 'Individualised pace and sensory-friendly learning spaces'],
-    category: 'Group Provision',
-    ageRange: '11–16 Years',
-    deliveryMode: 'On-site'
-  },
+  // {
+  //   id: 'alternative-provision',
+  //   slug: 'alternative-provision',
+  //   name: 'Alternative Provision',
+  //   description: 'Personalised, accredited and non-accredited learning pathways tailored for young people who require an alternative to mainstream schooling.',
+  //   keyFeatures: ['Vocational and core academic subjects (GCSE & Functional Skills)', 'Trauma-informed, neuroaffirming staff team', 'Individualised pace and sensory-friendly learning spaces'],
+  //   category: 'Group Provision',
+  //   ageRange: '11–16 Years',
+  //   deliveryMode: 'On-site'
+  // },
   {
     id: 'send-support',
     slug: 'send-support',

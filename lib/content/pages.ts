@@ -98,7 +98,7 @@ export const DEFAULT_HOME: HomeContent = {
   whoWeSupport: {
     eyebrow: 'Who We Support',
     title: 'Supporting Learners\nWith Diverse Needs',
-    body: 'We support children and young people experiencing SEND, SEMH, Emotionally Based School Non-Attendance (EBSNA), medical needs, disrupted education, risk of exclusion and transition between educational settings.',
+    body: 'We support children and young people with SEND, SEMH, Emotionally Based School Non-Attendance (EBSNA), medical needs, disrupted education, risk of exclusion and those transitioning between educational settings.',
     cta: 'Explore Our Services',
   },
   services: {
@@ -405,6 +405,8 @@ export interface ResourceItem {
 export interface ResourceGroup {
   /** Also the label of the group's filter pill. */
   name: string;
+  /** Shows a "Coming soon" label in place of the resources. */
+  comingSoon: boolean;
   items: ResourceItem[];
 }
 
@@ -441,6 +443,7 @@ export const DEFAULT_RESOURCES: ResourcesContent = {
     groups: [
       {
         name: 'Families',
+        comingSoon: false,
         items: [
           resource(
             'Parent and carer guide to MUVE Futures',
@@ -482,6 +485,7 @@ export const DEFAULT_RESOURCES: ResourcesContent = {
       },
       {
         name: 'Professionals',
+        comingSoon: false,
         items: [
           resource(
             'A guide to commissioning Alternative Provision',
@@ -499,10 +503,12 @@ export const DEFAULT_RESOURCES: ResourcesContent = {
       },
       {
         name: 'Referrals',
+        comingSoon: false,
         items: FAQ_ITEMS.map(({ question, answer }) => resource(question, answer)),
       },
       {
         name: 'Services',
+        comingSoon: false,
         items: [
           resource(
             'An overview of our services',
@@ -513,12 +519,14 @@ export const DEFAULT_RESOURCES: ResourcesContent = {
       },
       {
         name: 'Policies',
+        comingSoon: true,
         items: POLICY_DOCUMENTS.map(({ title, description, lastUpdated, fileSize }) =>
           resource(title, `${description}\n\nLast reviewed ${lastUpdated} · ${fileSize}`)
         ),
       },
       {
         name: 'Easy Read',
+        comingSoon: true,
         items: [
           resource(
             'What is MUVE Futures? (Easy Read)',

@@ -36,7 +36,7 @@ export async function getSiteChrome(): Promise<SiteChrome> {
         .filter((group) => group.name === 'Referrals')
         .flatMap((group) => group.items.map(({ title, body }) => ({ question: title, answer: body }))),
       policies: resources.library.groups
-        .filter((group) => group.name !== 'Referrals')
+        .filter((group) => group.name !== 'Referrals' && !group.comingSoon)
         .flatMap((group) => group.items.map(({ title, body }) => ({ title, category: group.name, description: body }))),
     },
   };

@@ -160,7 +160,7 @@ export function ReferralForm({ preselectedService }: { preselectedService?: stri
     <form onSubmit={handleSubmit} className="relative">
       <BotTrap />
       <Section title="1. Referrer Details" first>
-        <PersonFields value={form.referrer} onChange={(referrer) => set('referrer', referrer)} />
+        <PersonFields value={form.referrer} onChange={(referrer) => set('referrer', referrer)} withDateOfBirth={false} />
         <div className={cn('grid gap-6 lg:grid-cols-2 lg:u-gap-x-28 lg:u-gap-y-26', groupGap)}>
           {/* Not in the design, but without them the team couldn't reply. */}
           <Field label="Email*" type="email" required autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} />
@@ -179,7 +179,7 @@ export function ReferralForm({ preselectedService }: { preselectedService?: stri
       </Section>
 
       <Section title="2. Individual Details">
-        <PersonFields value={form.individual} onChange={(individual) => set('individual', individual)} preferredName />
+        <PersonFields value={form.individual} onChange={(individual) => set('individual', individual)} preferredName withTitle={false} />
         <fieldset className={groupGap}>
           <legend className={cn(labelClass, 'mb-2 lg:u-mb-10')}>Referral Note</legend>
           <div className="flex flex-wrap items-center gap-x-10 gap-y-3 lg:u-gap-x-60">

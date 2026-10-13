@@ -62,14 +62,7 @@ export function DesktopNavLink({
             align === 'right' ? 'right-0' : 'left-0'
           )}
         >
-          <Link
-            href={link.href}
-            onClick={onNavigate}
-            className="block text-lg font-bold text-white hover:underline"
-          >
-            {link.label}
-          </Link>
-          <ul className="mt-1 space-y-0.5">
+          <ul className="space-y-0.5">
             {link.dropdown!.map((item) => (
               <li key={item.label}>
                 <Link

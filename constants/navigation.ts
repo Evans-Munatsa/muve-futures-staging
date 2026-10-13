@@ -51,13 +51,13 @@ export function referralHref(service?: string): string {
 
 export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
   { id: 'home', label: 'Home', href: '/' },
-  // { id: 'about', label: 'About Us', href: '/about' },
+  { id: 'about', label: 'About Us', href: '/about' },
   {
     id: 'services',
     label: 'Services',
     href: '/services',
     dropdown: [
-      { label: 'Alternative Provision', href: '/services/alternative-provision' },
+      { label: 'Alternative Provision', href: '/services' },
       { label: 'SEND', href: '/services/send-support' },
       { label: 'One-To-One Education', href: '/services/one-to-one-education' },
       { label: 'Community Learning', href: '/services/community-learning' },
@@ -87,9 +87,7 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
     id: 'resources',
     label: 'Resources',
     href: '/resources',
-    // The design has no top-level About link; it lives in this menu instead.
     dropdown: [
-      { label: 'About', href: '/about' },
       // Topics is the blog.
       { label: 'Topics', href: '/blog' },
       { label: 'Downloads', href: '/resources#resource-library' },
