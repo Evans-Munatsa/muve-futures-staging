@@ -110,7 +110,7 @@ function person(value: unknown) {
     firstName: str(p.firstName, 100),
     middleName: str(p.middleName, 100),
     lastName: str(p.lastName, 100),
-    address: [p.address1, p.address2, p.city, p.region, p.postcode, p.country].map((v) => str(v, 120)).filter(Boolean).join(', '),
+    address: [p.address1, p.address2, p.city, p.region, p.postcode].map((v) => str(v, 120)).filter(Boolean).join(', '),
   };
 }
 

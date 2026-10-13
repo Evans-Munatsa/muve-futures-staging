@@ -307,6 +307,7 @@ export const resourcesSchema: Field = object({
         'Groups',
         object({
           name: text('Group name', { help: 'Also the label of its filter button.' }),
+          comingSoon: bool('Coming soon', 'Shows a “Coming soon” label instead of the resources below.'),
           items: list(
             'Resources',
             object({

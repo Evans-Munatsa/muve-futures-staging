@@ -117,23 +117,34 @@ function Group({ group, open, onToggle }: { group: ResourceGroup; open: boolean;
         aria-controls={panelId}
         className="flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left text-base font-bold text-white sm:text-xl"
       >
-        <span>{group.name}</span>
+        <span className="flex flex-wrap items-center gap-3">
+          {group.name}
+          {group.comingSoon && (
+            <span className="rounded-full bg-white px-3 py-0.5 text-xs font-bold text-brand-ink sm:text-sm">Coming soon</span>
+          )}
+        </span>
         <ToggleIcon open={open} />
       </button>
 
       <Collapse open={open} id={panelId}>
-        <ul>
-          {group.items.map((item, i) => (
-            <ResourceRow
-              key={`${item.title}-${i}`}
-              item={item}
-              // Closed rows alternate between the two brand greens.
-              shade={i % 2 === 0 ? 'bg-brand-green' : 'bg-brand-leaf'}
-              open={openItems.has(i)}
-              onToggle={() => toggleItem(i)}
-            />
-          ))}
-        </ul>
+        {group.comingSoon ? (
+          <p className="bg-brand-green py-5 pr-5 pl-6 text-sm font-bold text-white sm:pr-8 sm:pl-20 sm:text-lg">
+            We’re preparing these resources. Please check back soon.
+          </p>
+        ) : (
+          <ul>
+            {group.items.map((item, i) => (
+              <ResourceRow
+                key={`${item.title}-${i}`}
+                item={item}
+                // Closed rows alternate between the two brand greens.
+                shade={i % 2 === 0 ? 'bg-brand-green' : 'bg-brand-leaf'}
+                open={openItems.has(i)}
+                onToggle={() => toggleItem(i)}
+              />
+            ))}
+          </ul>
+        )}
       </Collapse>
     </div>
   );
@@ -141,7 +152,8 @@ function Group({ group, open, onToggle }: { group: ResourceGroup; open: boolean;
 
 /** The orange resource panel: filter pills over collapsible groups of resources. */
 export function ResourceLibrary({ content }: { content: ResourcesContent['library'] }) {
-  const groups = content.groups.filter((group) => group.items.length > 0);
+  // Coming-soon groups show even before they have any resources.
+  const groups = content.groups.filter((group) => group.comingSoon || group.items.length > 0);
   const [filter, setFilter] = useState<string | null>(null);
   const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set(groups[0] ? [groups[0].name] : []));
 

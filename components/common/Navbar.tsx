@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 const DROPDOWN_CLOSE_DELAY_MS = 180;
 
 // The logo sits between these two groups on desktop (it doubles as the Home link).
-const isLeft = (link: NavLinkConfig) => link.id === 'services' || link.id === 'who-we-support';
+const isLeft = (link: NavLinkConfig) => link.id === 'about' || link.id === 'services' || link.id === 'who-we-support';
 const isRight = (link: NavLinkConfig) => link.id === 'resources' || link.id === 'contact';
 
 interface NavbarProps {
@@ -110,7 +110,7 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
       )}
     >
       <div ref={barRef} className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:relative lg:block lg:u-h-305 lg:u-w-1920 lg:px-0">
-        <nav aria-label="Primary" className="hidden items-center lg:absolute lg:u-left-255 lg:u-top-160 lg:flex lg:u-gap-65">
+        <nav aria-label="Primary" className="hidden items-center lg:absolute lg:u-left-175 lg:u-top-160 lg:flex lg:u-gap-65">
           {renderDesktopLinks(LEFT_NAV, 'left')}
         </nav>
 

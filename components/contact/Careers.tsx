@@ -41,7 +41,12 @@ export function listedLabel(listedOn: string, now: number) {
 const pill =
   'inline-flex h-9 min-w-20 items-center justify-center rounded-full px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-lg lg:u-h-38 lg:u-min-w-92 lg:u-px-20 lg:u-text-16';
 
-/** Vacancies in a scrolling dark panel; each row links to the job's own page. */
+/** Opens a SeeMeHired job in a new tab; our own jobs stay on the site. */
+function JobLink({ vacancy, href, ...props }: { vacancy: ListedVacancy; href: string } & Omit<React.ComponentProps<'a'>, 'href'>) {
+  return vacancy.externalUrl ? <a href={href} target="_blank" rel="noopener noreferrer" {...props} /> : <Link href={href} {...props} />;
+}
+
+/** Vacancies in a scrolling dark panel; each row links to the job's own page (or its SeeMeHired advert). */
 export function Careers({
   content,
   vacancies,
@@ -72,30 +77,31 @@ export function Careers({
           <ul className="scrollbar-coral max-h-[34rem] space-y-3 overflow-y-auto pr-2 lg:u-max-h-440 lg:space-y-0 lg:u-pr-24">
             {vacancies.map((vacancy) => {
               const open = isAcceptingApplications(vacancy, new Date(now));
-              const href = `/careers/${vacancy.slug}`;
+              const href = vacancy.externalUrl ?? `/careers/${vacancy.slug}`;
+              const applyHref = vacancy.externalUrl ?? `${href}#apply`;
               return (
                 <li
                   key={vacancy.slug}
-                  className="grid gap-3 rounded-[2rem] bg-white px-6 py-5 text-brand-teal sm:grid-cols-[1fr_auto] sm:items-center lg:u-h-137 lg:grid-cols-[minmax(0,1fr)_calc(var(--u)*180)_calc(var(--u)*130)_auto] lg:u-gap-x-20 lg:rounded-full lg:py-0 lg:u-px-60 lg:[&:not(:first-child)]:u-mt-14"
+                  className="grid gap-3 rounded-[2rem] bg-white px-6 py-5 text-brand-teal sm:grid-cols-[1fr_auto] sm:items-center lg:u-min-h-137 lg:u-py-20 lg:grid-cols-[minmax(0,1fr)_calc(var(--u)*180)_calc(var(--u)*130)_auto] lg:u-gap-x-20 lg:rounded-full lg:py-0 lg:u-px-60 lg:[&:not(:first-child)]:u-mt-14"
                 >
                   <div>
-                    <h3 className="text-lg font-bold leading-tight lg:u-text-30">
-                      <Link href={href} className="hover:underline">
+                    <h3 className="text-base font-bold leading-tight text-balance break-words sm:text-lg lg:u-text-26">
+                      <JobLink vacancy={vacancy} href={href} className="hover:underline">
                         {vacancy.title}
-                      </Link>
+                      </JobLink>
                     </h3>
-                    <p className="mt-1 text-sm font-medium lg:u-mt-4 lg:u-text-24">{[vacancy.hours, vacancy.location].filter(Boolean).join(' | ')}</p>
+                    <p className="mt-1 text-sm font-medium lg:u-mt-4 lg:u-text-20">{[vacancy.hours, vacancy.location].filter(Boolean).join(' | ')}</p>
                   </div>
                   <p className="text-xs sm:col-start-1 lg:col-start-auto lg:u-text-18">{listedLabel(vacancy.listedOn, now)}</p>
                   <p className="text-xs sm:col-start-1 lg:col-start-auto lg:u-text-18">Status: {open ? 'Open' : 'Closed'}</p>
                   <div className="flex gap-2 sm:col-start-2 sm:row-span-3 sm:row-start-1 lg:col-start-auto lg:row-span-1 lg:row-start-auto lg:u-gap-14">
-                    <Link href={href} aria-label={`View ${vacancy.title}`} className={cn(pill, 'bg-brand-teal hover:bg-brand-teal/90')}>
+                    <JobLink vacancy={vacancy} href={href} aria-label={`View ${vacancy.title}`} className={cn(pill, 'bg-brand-teal hover:bg-brand-teal/90')}>
                       View
-                    </Link>
+                    </JobLink>
                     {open ? (
-                      <Link href={`${href}#apply`} aria-label={`Apply for ${vacancy.title}`} className={cn(pill, 'bg-brand-orange hover:bg-[#d94e20]')}>
+                      <JobLink vacancy={vacancy} href={applyHref} aria-label={`Apply for ${vacancy.title}`} className={cn(pill, 'bg-brand-orange hover:bg-[#d94e20]')}>
                         Apply
-                      </Link>
+                      </JobLink>
                     ) : (
                       <span className={cn(pill, 'cursor-not-allowed bg-neutral-400 hover:translate-y-0 hover:shadow-none')}>Closed</span>
                     )}

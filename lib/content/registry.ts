@@ -194,7 +194,7 @@ export const COLLECTIONS: { [K in CollectionName]: CollectionDef<CollectionTypes
   legal: {
     label: 'Legal & governance pages',
     itemNoun: 'page',
-    description: 'The five pages linked from the footer.',
+    description: 'The four pages linked from the footer.',
     schema: legalSchema,
     defaults: bySlug(LEGAL_PAGES, (page) => page),
     allowCreate: false,

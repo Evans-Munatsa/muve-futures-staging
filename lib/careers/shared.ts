@@ -14,8 +14,11 @@ export function isAcceptingApplications(vacancy: { open: boolean; closingDate: s
   return now.getTime() <= endOfDayUtc - londonOffset * 60 * 1000;
 }
 
-/** A vacancy with its web address, as listed on the site. */
-export type ListedVacancy = Vacancy & { slug: string };
+/**
+ * A vacancy with its web address, as listed on the site. Jobs from SeeMeHired
+ * have an `externalUrl` instead of a page of their own; people apply there.
+ */
+export type ListedVacancy = Vacancy & { slug: string; externalUrl?: string };
 
 /** 9 September 2026, or '' if the date can't be read. */
 export function formatVacancyDate(date: string): string {

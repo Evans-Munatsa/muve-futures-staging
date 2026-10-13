@@ -66,43 +66,6 @@ export const LEGAL_PAGES: LegalPage[] = [
     ],
   },
   {
-    slug: 'modern-slavery',
-    label: 'Modern Slavery',
-    title: 'Modern Slavery Statement',
-    intro:
-      'MUVE Futures has a zero-tolerance approach to modern slavery, human trafficking and exploitation in all its forms, across our education provision, our workforce and our supply chains.',
-    contactEmail: 'info@muvefutures.co.uk',
-    sections: [
-      {
-        heading: 'Our commitment',
-        paragraphs: [
-          'We are committed to acting ethically and with integrity in all our relationships, and to putting in place effective systems to make sure slavery and human trafficking are not taking place anywhere in our organisation or supply chains.',
-        ],
-      },
-      {
-        heading: 'Our people',
-        list: [
-          'Safer recruitment practices, including right-to-work and enhanced DBS checks',
-          'Fair pay and clear terms of employment for all staff',
-          'Training so that staff can recognise and report signs of exploitation',
-          'A whistleblowing procedure that lets concerns be raised in confidence',
-        ],
-      },
-      {
-        heading: 'Our suppliers',
-        paragraphs: [
-          'We expect everyone we work with to share our standards. We consider the risk of modern slavery when choosing suppliers and will act on any concerns raised about a supplier or partner.',
-        ],
-      },
-      {
-        heading: 'Reporting a concern',
-        paragraphs: [
-          'Anyone who suspects modern slavery connected with our work should report it to us. Concerns can also be reported to the Modern Slavery & Exploitation Helpline on 08000 121 700, or to the police.',
-        ],
-      },
-    ],
-  },
-  {
     slug: 'privacy-policy',
     label: 'Privacy Policy',
     title: 'Privacy Policy',

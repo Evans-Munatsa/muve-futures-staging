@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Careers } from '@/components/contact/Careers';
+import { getSeeMeHiredVacancies } from '@/lib/careers/seemehired';
 import { renderTime } from '@/lib/careers/shared';
 import { getCollection, getSingle } from '@/lib/content/queries';
 
@@ -12,10 +13,10 @@ export const metadata: Metadata = {
 export const revalidate = 600;
 
 export default async function CareersPage() {
-  const [{ careers }, vacancies] = await Promise.all([getSingle('contact-page'), getCollection('vacancy')]);
+  const [{ careers }, vacancies, seemehired] = await Promise.all([getSingle('contact-page'), getCollection('vacancy'), getSeeMeHiredVacancies()]);
   return (
     <div className="w-full overflow-hidden bg-brand-green pt-4 pb-20 sm:pb-28 lg:u-pb-200">
-      <Careers content={careers} vacancies={vacancies} renderedAt={renderTime()} headingLevel="h1" />
+      <Careers content={careers} vacancies={[...vacancies, ...seemehired]} renderedAt={renderTime()} headingLevel="h1" />
     </div>
   );
 }

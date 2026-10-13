@@ -19,8 +19,6 @@ const InfoModal = dynamic(() => import('@/components/common/InfoModal').then((m)
 function getActivePage(pathname: string): PageId {
   const [segment] = pathname.replace(/^\//, '').split('/');
   switch (segment) {
-    // About sits in the Resources menu, so that tab is highlighted.
-    case 'about':
     case 'blog':
       return 'resources';
     // The form pages are reached from the Contact menu.
@@ -29,6 +27,7 @@ function getActivePage(pathname: string): PageId {
     case 'partnerships':
     case 'feedback':
       return 'contact';
+    case 'about':
     case 'services':
     case 'who-we-support':
     case 'resources':

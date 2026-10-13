@@ -4,6 +4,7 @@ import { ChatForm } from '@/components/contact/ChatForm';
 import { ContactCards, WhereWeWork } from '@/components/contact/ContactCards';
 import { Lines } from '@/components/common/Lines';
 import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal';
+import { getSeeMeHiredVacancies } from '@/lib/careers/seemehired';
 import { renderTime } from '@/lib/careers/shared';
 import { getCollection, getSingle } from '@/lib/content/queries';
 
@@ -17,11 +18,12 @@ export const revalidate = 600;
 
 /** Contact and careers, from public/design. From lg up, sizes are design pixels (u-* units). */
 export default async function ContactPage() {
-  const [{ contact: hero }, content, settings, vacancies] = await Promise.all([
+  const [{ contact: hero }, content, settings, vacancies, seemehired] = await Promise.all([
     getSingle('forms'),
     getSingle('contact-page'),
     getSingle('settings'),
     getCollection('vacancy'),
+    getSeeMeHiredVacancies(),
   ]);
 
   return (
@@ -58,7 +60,7 @@ export default async function ContactPage() {
         <WhereWeWork content={content.where} />
       </Reveal>
 
-      <Careers content={content.careers} vacancies={vacancies} renderedAt={renderTime()} />
+      <Careers content={content.careers} vacancies={[...vacancies, ...seemehired]} renderedAt={renderTime()} />
     </div>
   );
 }
