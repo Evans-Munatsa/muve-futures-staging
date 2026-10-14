@@ -111,8 +111,8 @@ export function FourStageApproach({
       {/* Classroom photo */}
       <div className="relative -mt-6 aspect-[1920/1046] w-full lg:absolute lg:u-top-424 lg:mt-0">
         <Image
-          src="/images/home/framework-photo.webp"
-          alt="Three young children engaged in learning together around a classroom table"
+          src="/images/home/framework-boy-desk.webp"
+          alt="Boy working at a desk by a window, with books and crayons around him"
           fill
           sizes="100vw"
           className="object-cover"
