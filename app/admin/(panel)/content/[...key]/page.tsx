@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { ArrowLeft } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
+import { contentArea } from '@/lib/auth/permissions';
 import { withDefaults } from '@/lib/content/fields';
 import { COLLECTIONS, SINGLES, parseKey } from '@/lib/content/registry';
 import { ContentEditor } from '@/components/admin/ContentEditor';
@@ -14,9 +15,9 @@ import { deleteCollectionItem, resetContent } from '@/lib/admin/content-actions'
 export const metadata: Metadata = { title: 'Edit content' };
 
 export default async function EditContentPage({ params }: PageProps<'/admin/content/[...key]'>) {
-  await requireAdmin();
   const segments = (await params).key;
   const key = segments.join(':');
+  await requireAccess(contentArea(key));
   const parsed = parseKey(key);
   if (!parsed) notFound();
 

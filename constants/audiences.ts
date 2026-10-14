@@ -32,7 +32,7 @@ export const AUDIENCES: Audience[] = [
         title: "When School Isn't Working, There Is Another Way Forward",
         intro:
           "Watching your child struggle with education can feel overwhelming. Whether they're experiencing anxiety, SEND, EBSNA, SEMH needs or another challenge, MUVE Futures provides personalised education pathways designed to rebuild confidence and create positive futures.",
-        cta: { label: 'Discuss Local Provision', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       blocks: [
         {
@@ -63,7 +63,7 @@ export const AUDIENCES: Audience[] = [
       closing: {
         title: "Let's Talk About The Next Step",
         body: "If you're looking for guidance, we're here to help you understand the options available.",
-        cta: { label: 'Chat to Our Team', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
     },
   },
@@ -143,7 +143,7 @@ export const AUDIENCES: Audience[] = [
         title: 'Flexible Alternative Provision That Supports Better Outcomes',
         intro:
           'Local Authorities require trusted providers who can deliver personalised education while maintaining flexibility, accountability and quality. MUVE Futures works collaboratively with commissioning teams to create meaningful education pathways for children and young people.',
-        cta: { label: 'Discuss Local Provision', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       blocks: [
         {
@@ -194,7 +194,7 @@ export const AUDIENCES: Audience[] = [
         // The design repeats the Local Authorities intro here; this reuses the Commissioners card copy instead.
         intro:
           'MUVE Futures helps commissioners respond to complex educational needs while increasing access to flexible local provision, with personalised planning, adaptable delivery and regular reporting built into every pathway.',
-        cta: { label: 'Discuss Local Provision', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       blocks: [
         {
@@ -215,7 +215,7 @@ export const AUDIENCES: Audience[] = [
       closing: {
         title: "Let's Explore Partnership Opportunities",
         body: "We'll work with you to understand local demand and identify the most appropriate education solutions.",
-        cta: { label: 'Discuss Local Provision', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },
@@ -261,7 +261,7 @@ export const AUDIENCES: Audience[] = [
       closing: {
         title: "Let's Support Every Learner Together",
         body: 'Speak with our team about personalised education pathways for children and young people in care.',
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
     },
   },
@@ -306,7 +306,7 @@ export const AUDIENCES: Audience[] = [
       closing: {
         title: "Let's Find The Right Way Forward",
         body: 'Speak with our team about education pathways for the young people in your care.',
-        cta: { label: 'Chat to Our Team', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },
@@ -343,7 +343,7 @@ export const AUDIENCES: Audience[] = [
       closing: {
         title: "Let's Work Together",
         body: 'Speak with our team about a learner or about working in partnership.',
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },

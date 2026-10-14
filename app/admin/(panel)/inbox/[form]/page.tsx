@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { and, count, desc, eq, isNull, type SQL } from 'drizzle-orm';
 import { ArrowLeft, Download } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { INBOXES, SUBMISSION_STATUS_LABELS } from '@/lib/forms/shared';
 import type { FormKind, SubmissionStatus } from '@/lib/db/schema';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,7 @@ const pill = (active: boolean) =>
   cn('rounded-full border px-3 py-1 text-xs font-bold transition', active ? 'border-brand-ink bg-brand-ink text-white' : 'border-neutral-300 bg-white hover:border-brand-ink');
 
 export default async function FormInbox({ params, searchParams }: PageProps<'/admin/inbox/[form]'>) {
-  await requireAdmin();
+  await requireAccess('inbox');
   const { form: formParam } = await params;
   if (!Object.hasOwn(INBOXES, formParam)) notFound();
   const form = formParam as FormKind;

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { getCurrentAdmin } from '@/lib/auth/dal';
+import { canAccess } from '@/lib/auth/permissions';
 
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'];
 const DOCUMENT_TYPES = ['application/pdf'];
@@ -26,6 +27,8 @@ export async function POST(request: Request): Promise<NextResponse> {
       onBeforeGenerateToken: async (_pathname, clientPayload) => {
         const admin = await getCurrentAdmin();
         if (!admin) throw new Error('Not signed in');
+        // Uploads are for the editors: website content, blog posts and vacancies.
+        if (!(['content', 'blog', 'careers'] as const).some((area) => canAccess(admin, area))) throw new Error('Not allowed');
         const documents = clientPayload === 'document';
         return {
           allowedContentTypes: documents ? DOCUMENT_TYPES : IMAGE_TYPES,

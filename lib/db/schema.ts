@@ -1,11 +1,20 @@
 import { integer, jsonb, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
+/**
+ * Super admins can do everything, including managing other admins. Managers
+ * can only use the dashboard areas listed in their `permissions`.
+ */
+export const adminRole = pgEnum('admin_role', ['super_admin', 'manager']);
+
 /** People who can sign in to /admin. Passwords are bcrypt hashes, never plain text. */
 export const adminUsers = pgTable('admin_users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),
   name: text('name').notNull(),
   passwordHash: text('password_hash').notNull(),
+  role: adminRole('role').notNull().default('manager'),
+  /** Dashboard areas a manager can use, see lib/auth/permissions.ts. Ignored for super admins. */
+  permissions: text('permissions').array().notNull().default([]),
   /** Consecutive failed logins; reset on success. */
   failedLogins: integer('failed_logins').notNull().default(0),
   /** Sign-in is refused until this time after too many failures. */

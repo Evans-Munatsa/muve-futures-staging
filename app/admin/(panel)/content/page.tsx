@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
+import { canAccess, contentArea } from '@/lib/auth/permissions';
 import { COLLECTIONS, SINGLES, type CollectionName, type SingleKey } from '@/lib/content/registry';
 import { NewItemForm } from '@/components/admin/NewItemForm';
 
@@ -12,7 +13,7 @@ const titleOf = (data: unknown) => (data && typeof data === 'object' && 'title' 
 const orderOf = (data: unknown) => (data && typeof data === 'object' && 'order' in data ? Number((data as { order: unknown }).order) || 0 : 0);
 
 export default async function ContentIndex() {
-  await requireAdmin();
+  const admin = await requireAccess('content');
   const rows = await db().select({ key: schema.content.key, data: schema.content.data, updatedAt: schema.content.updatedAt }).from(schema.content);
   const saved = new Map(rows.map((r) => [r.key, r]));
 
@@ -51,7 +52,8 @@ export default async function ContentIndex() {
         </ul>
       </section>
 
-      {(Object.keys(COLLECTIONS) as CollectionName[]).map((name) => {
+      {/* Vacancies are only listed for admins with Careers access. */}
+      {(Object.keys(COLLECTIONS) as CollectionName[]).filter((name) => canAccess(admin, contentArea(name))).map((name) => {
         const def = COLLECTIONS[name];
         return (
           <section key={name} id={name} className="scroll-mt-6">

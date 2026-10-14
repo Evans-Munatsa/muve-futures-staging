@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { count, desc, eq, isNull } from 'drizzle-orm';
 import { Briefcase, ChevronRight, Mail } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { FORM_KINDS, INBOXES } from '@/lib/forms/shared';
 
 export const metadata: Metadata = { title: 'Inbox' };
 
 export default async function InboxHome() {
-  await requireAdmin();
+  await requireAccess('inbox');
   const [byForm, subscribers, newApplications, recent] = await Promise.all([
     db()
       .select({ form: schema.formSubmissions.form, status: schema.formSubmissions.status, unread: isNull(schema.formSubmissions.readAt), n: count() })

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { ArrowLeft, Download, Eye } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { ApplicationStatusForm } from '@/components/admin/ApplicationStatusForm';
 import { ConfirmButton } from '@/components/admin/ConfirmButton';
 import { StatusBadge } from '@/components/admin/StatusBadge';
@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: 'Application' };
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function ApplicationPage({ params }: PageProps<'/admin/careers/[id]'>) {
-  await requireAdmin();
+  await requireAccess('careers');
   const { id } = await params;
   if (!UUID.test(id)) notFound();
   const [a] = await db().select().from(schema.jobApplications).where(eq(schema.jobApplications.id, id));

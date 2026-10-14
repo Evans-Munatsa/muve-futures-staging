@@ -65,7 +65,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: "Let's Build The Right Pathway Together",
         body: "Tell us about the learner and we'll help you identify the most appropriate education pathway.",
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
     },
   },
@@ -107,7 +107,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: 'Every Learner Deserves The Opportunity To Thrive',
         body: "Let's create an education pathway designed around the learner's strengths and goals.",
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },
@@ -155,7 +155,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: 'Education Should Inspire Curiosity.',
         body: "Let's explore whether Community Learning is the right pathway for your learner.",
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
     },
   },
@@ -250,7 +250,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: 'Every Learner Deserves The Opportunity To Thrive',
         body: "Let's create an education pathway designed around the learner's strengths and goals.",
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
     },
   },
@@ -314,7 +314,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
         title: "Preparing Learners For What's Next",
         intro:
           'Educational transitions can be exciting, challenging and sometimes overwhelming. Our Transition Support programmes help learners move confidently between educational settings and future opportunities.',
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       blocks: [
         {
@@ -356,7 +356,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
         title: 'Individual Programmes Designed Around Need',
         intro:
           'Every EOTAS pathway is built collaboratively with families, professionals and commissioning organisations to provide education that is meaningful, flexible and learner centred.',
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       blocks: [
         {
@@ -380,7 +380,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: "Let's Build The Right Education Pathway Together",
         body: 'Speak with our team about personalised EOTAS provision for your learner.',
-        cta: { label: 'Discuss Local Provision', action: 'contact' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },
@@ -481,7 +481,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: 'Every Learner Deserves The Opportunity To Thrive',
         body: "Let's create an education pathway that recognises the learner's strengths, responds to their needs and supports meaningful progress.",
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },
@@ -535,7 +535,7 @@ export const SERVICE_OFFERINGS: ServiceOffering[] = [
       closing: {
         title: 'Every Learner Deserves To Feel Understood',
         body: "Tell us about the learner and we'll help you find the right way forward.",
-        cta: { label: 'Discuss a Learner', action: 'referral' },
+        cta: { label: 'Make a Referral', action: 'referral' },
       },
       placeholderCopy: true,
     },

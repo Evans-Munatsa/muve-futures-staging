@@ -1,17 +1,19 @@
 import { get } from '@vercel/blob';
 import { eq } from 'drizzle-orm';
 import { getCurrentAdmin } from '@/lib/auth/dal';
+import { canAccess } from '@/lib/auth/permissions';
 import { db, schema } from '@/lib/db';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Streams an applicant's CV from private Blob storage. Only signed-in admins
- * can download; the file itself never has a public URL.
+ * with Careers access can download; the file itself never has a public URL.
  */
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const admin = await getCurrentAdmin();
   if (!admin) return new Response('Not signed in', { status: 401 });
+  if (!canAccess(admin, 'careers')) return new Response('Not allowed', { status: 403 });
 
   const { id } = await params;
   if (!UUID.test(id)) return new Response('Not found', { status: 404 });

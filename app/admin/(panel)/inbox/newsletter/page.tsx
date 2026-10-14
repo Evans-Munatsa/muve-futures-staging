@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { desc } from 'drizzle-orm';
 import { ArrowLeft, Download, Trash2 } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { deleteSubscriber } from '@/lib/admin/inbox-actions';
 
 export const metadata: Metadata = { title: 'Newsletter' };
 
 export default async function NewsletterInbox() {
-  await requireAdmin();
+  await requireAccess('inbox');
   const subscribers = await db().select().from(schema.newsletterSubscribers).orderBy(desc(schema.newsletterSubscribers.createdAt)).limit(5000);
 
   return (

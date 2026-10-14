@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { del } from '@vercel/blob';
 import { eq } from 'drizzle-orm';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { STATUS_LABELS } from '@/lib/careers/shared';
 import type { ApplicationStatus } from '@/lib/db/schema';
 
@@ -15,7 +15,7 @@ export type UpdateApplicationState = { ok?: boolean; error?: string; savedAt?: s
 
 /** Saves an application's status and the team's notes. */
 export async function updateApplication(id: string, _prev: UpdateApplicationState, formData: FormData): Promise<UpdateApplicationState> {
-  await requireAdmin();
+  await requireAccess('careers');
   if (!UUID.test(id)) return { error: 'Unknown application.' };
 
   const status = String(formData.get('status') ?? '');
@@ -33,7 +33,7 @@ export async function updateApplication(id: string, _prev: UpdateApplicationStat
 
 /** Deletes an application and its CV for good (e.g. at the end of the retention period, or on request). */
 export async function deleteApplication(id: string) {
-  await requireAdmin();
+  await requireAccess('careers');
   if (!UUID.test(id)) return;
   const [application] = await db()
     .select({ cvPathname: schema.jobApplications.cvPathname })

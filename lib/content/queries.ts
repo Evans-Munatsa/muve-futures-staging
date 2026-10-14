@@ -33,10 +33,10 @@ async function safely<T>(what: string, run: () => Promise<T>, fallback: T): Prom
 }
 
 /**
- * Part of the singles' and blog posts' cache keys. Bump it when a content type changes shape
+ * Part of the content cache keys (singles, collections and blog posts). Bump it when a content type changes shape
  * so cached copies in the old shape aren't served (they outlive deploys).
  */
-const SHAPE_VERSION = '4';
+const SHAPE_VERSION = '6';
 
 /** A single page's content (e.g. `home`), merged over its defaults. */
 export function getSingle<K extends SingleKey>(key: K): Promise<SingleTypes[K]> {
@@ -87,7 +87,7 @@ export function getCollection<C extends CollectionName>(name: C): Promise<WithSl
       ).then((items) =>
         items.sort((a, b) => ((a as { order?: number }).order ?? 0) - ((b as { order?: number }).order ?? 0))
       ),
-    ['content', 'collection', name],
+    ['content', 'collection', name, SHAPE_VERSION],
     { tags: [contentTag.collection(name)] }
   )();
 }

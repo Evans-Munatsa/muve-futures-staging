@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { updateTag } from 'next/cache';
 import { and, eq, ne } from 'drizzle-orm';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { contentTag } from '@/lib/content/registry';
 import type { GalleryImage } from '@/lib/db/schema';
 import { SLUG_PATTERN } from '@/lib/slug';
@@ -48,7 +48,7 @@ function problems(input: PostInput): string[] {
 
 /** Creates (id = null) or updates a post. */
 export async function savePost(id: string | null, input: PostInput): Promise<PostResult> {
-  await requireAdmin();
+  await requireAccess('blog');
   const data = {
     ...input,
     title: input.title.trim(),
@@ -101,7 +101,7 @@ export async function savePost(id: string | null, input: PostInput): Promise<Pos
 }
 
 export async function deletePost(id: string) {
-  await requireAdmin();
+  await requireAccess('blog');
   await db().delete(schema.blogPosts).where(eq(schema.blogPosts.id, id));
   updateTag(contentTag.blog);
   redirect('/admin/blog');
