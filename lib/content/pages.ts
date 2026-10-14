@@ -163,11 +163,11 @@ export const DEFAULT_ABOUT: AboutContent = {
     title: 'More Than\nAlternative Provision',
     intro:
       'MUVE Futures provides personalised education that helps children and young people reconnect with learning, build confidence and prepare for positive futures. We believe education should adapt to the learner, not the learner to education.',
-    cta: 'Book an Intro',
+    cta: 'Make a Referral',
   },
   intro: {
-    title: 'Education Built Around The Individual',
-    body: 'Every child deserves an education that recognises their strengths, understands their challenges and provides the support they need to succeed. Our personalised approach focuses on the whole learner, not simply the barriers they face.',
+    title: 'Education Built Around\nThe Individual',
+    body: 'Every child deserves an education that recognises their strengths, understands their challenges and provides the support they need to succeed.\nOur personalised approach focuses on the whole learner, not simply the barriers they face.',
   },
   whyWeExist: {
     title: 'Why We Exist',
@@ -196,7 +196,7 @@ export const DEFAULT_ABOUT: AboutContent = {
   closing: {
     title: "Let's Build Better Futures Together",
     body: "Whether you're looking for Alternative Provision, exploring partnership opportunities or seeking advice about a learner, we'd love to hear from you.",
-    cta: 'Book an Intro',
+    cta: 'Make a Referral',
   },
 };
 
