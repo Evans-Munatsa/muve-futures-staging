@@ -1,5 +1,6 @@
 import { asc, eq } from 'drizzle-orm';
 import { getCurrentAdmin } from '@/lib/auth/dal';
+import { canAccess } from '@/lib/auth/permissions';
 import { db, schema } from '@/lib/db';
 import { INBOXES, SUBMISSION_STATUS_LABELS } from '@/lib/forms/shared';
 import type { FormKind } from '@/lib/db/schema';
@@ -34,7 +35,9 @@ const stamp = () => new Date().toISOString().slice(0, 10);
 const when = (d: Date) => d.toLocaleString('en-GB', { timeZone: 'Europe/London' });
 
 export async function GET(_request: Request, { params }: { params: Promise<{ form: string }> }) {
-  if (!(await getCurrentAdmin())) return new Response('Not signed in', { status: 401 });
+  const admin = await getCurrentAdmin();
+  if (!admin) return new Response('Not signed in', { status: 401 });
+  if (!canAccess(admin, 'inbox')) return new Response('Not allowed', { status: 403 });
   const { form } = await params;
 
   if (form === 'newsletter') {

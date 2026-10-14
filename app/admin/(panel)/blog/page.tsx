@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { desc } from 'drizzle-orm';
 import { PenSquare } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = { title: 'Blog' };
@@ -15,7 +15,7 @@ function status(post: { status: string; publishedAt: Date | null }) {
 }
 
 export default async function BlogAdmin() {
-  await requireAdmin();
+  await requireAccess('blog');
   const posts = await db()
     .select({ id: schema.blogPosts.id, title: schema.blogPosts.title, slug: schema.blogPosts.slug, status: schema.blogPosts.status, publishedAt: schema.blogPosts.publishedAt, updatedAt: schema.blogPosts.updatedAt })
     .from(schema.blogPosts)

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { and, count, desc, eq, like, type SQL } from 'drizzle-orm';
 import { ExternalLink, Pencil } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { NewItemForm } from '@/components/admin/NewItemForm';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { isAcceptingApplications, STATUS_LABELS } from '@/lib/careers/shared';
@@ -17,7 +17,7 @@ const pill = (active: boolean) =>
   cn('rounded-full border px-3 py-1 text-xs font-bold transition', active ? 'border-brand-ink bg-brand-ink text-white' : 'border-neutral-300 bg-white hover:border-brand-ink');
 
 export default async function CareersAdmin({ searchParams }: PageProps<'/admin/careers'>) {
-  await requireAdmin();
+  await requireAccess('careers');
   const params = await searchParams;
   const role = typeof params.role === 'string' ? params.role : '';
   const status = typeof params.status === 'string' && Object.hasOwn(STATUS_LABELS, params.status) ? (params.status as ApplicationStatus) : '';

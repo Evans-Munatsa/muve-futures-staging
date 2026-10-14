@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { and, eq, isNull } from 'drizzle-orm';
 import { ArrowLeft, Mail, Phone } from 'lucide-react';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { ConfirmButton } from '@/components/admin/ConfirmButton';
 import { RefreshOnMount } from '@/components/admin/RefreshOnMount';
 import { SubmissionStatusForm } from '@/components/admin/SubmissionStatusForm';
@@ -17,7 +17,7 @@ export const metadata: Metadata = { title: 'Message' };
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function MessagePage({ params }: PageProps<'/admin/inbox/[form]/[id]'>) {
-  await requireAdmin();
+  await requireAccess('inbox');
   const { form: formParam, id } = await params;
   if (!Object.hasOwn(INBOXES, formParam) || !UUID.test(id)) notFound();
   const form = formParam as FormKind;

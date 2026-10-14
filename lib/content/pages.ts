@@ -227,7 +227,7 @@ export const DEFAULT_SERVICES_PAGE: ServicesPageContent = {
   closing: {
     title: 'Finding The Right Pathway Starts With A Conversation',
     body: "Every referral begins by understanding the learner. We'll help you identify the most appropriate education pathway and work collaboratively to achieve positive outcomes.",
-    cta: 'Discuss a Learner',
+    cta: 'Make a Referral',
   },
 };
 

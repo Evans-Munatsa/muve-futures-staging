@@ -1,5 +1,6 @@
 /**
- * Creates a dashboard admin (or resets an existing admin's password).
+ * Creates a dashboard super admin (or resets an existing admin's password,
+ * leaving their role as it is). Managers are added from the dashboard's Admins page.
  *
  *   npm run admin:create
  *   npm run admin:create -- --email you@example.com --name "Your Name"
@@ -71,8 +72,8 @@ async function main() {
     await db.update(schema.adminUsers).set({ name, passwordHash, failedLogins: 0, lockedUntil: null }).where(eq(schema.adminUsers.id, existing.id));
     console.log(`Updated ${email}. They can sign in at /admin/login with the new password.`);
   } else {
-    await db.insert(schema.adminUsers).values({ email, name, passwordHash });
-    console.log(`Created admin ${email}. Sign in at /admin/login.`);
+    await db.insert(schema.adminUsers).values({ email, name, passwordHash, role: 'super_admin' });
+    console.log(`Created super admin ${email}. Sign in at /admin/login.`);
   }
 }
 

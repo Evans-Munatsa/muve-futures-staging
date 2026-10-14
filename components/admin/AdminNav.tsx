@@ -4,24 +4,52 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Briefcase, ExternalLink, FileText, Inbox, LayoutDashboard, LogOut, Newspaper, Users } from 'lucide-react';
 import { logout } from '@/lib/admin/auth-actions';
+import type { AdminArea } from '@/lib/auth/permissions';
 import { cn } from '@/lib/utils';
 
-const LINKS = [
+interface NavLink {
+  href: string;
+  label: string;
+  icon: typeof Inbox;
+  exact?: boolean;
+  badge?: 'inbox' | 'careers';
+  /** Only shown to admins with access to this area. */
+  area?: AdminArea;
+}
+
+const LINKS: NavLink[] = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
-  { href: '/admin/inbox', label: 'Inbox', icon: Inbox, badge: 'inbox' as const },
-  { href: '/admin/content', label: 'Website content', icon: FileText },
-  { href: '/admin/blog', label: 'Blog', icon: Newspaper },
-  { href: '/admin/careers', label: 'Careers', icon: Briefcase, badge: 'careers' as const },
-  { href: '/admin/users', label: 'Admins', icon: Users },
+  { href: '/admin/inbox', label: 'Inbox', icon: Inbox, badge: 'inbox', area: 'inbox' },
+  { href: '/admin/content', label: 'Website content', icon: FileText, area: 'content' },
+  { href: '/admin/blog', label: 'Blog', icon: Newspaper, area: 'blog' },
+  { href: '/admin/careers', label: 'Careers', icon: Briefcase, badge: 'careers', area: 'careers' },
 ];
 
-/** `counts` are unread Inbox messages and new job applications, shown as badges. */
-export function AdminNav({ name, counts }: { name: string; counts: { inbox: number; careers: number } }) {
+/**
+ * `counts` are unread Inbox messages and new job applications, shown as badges.
+ * `areas` are the parts of the dashboard this admin can use.
+ */
+export function AdminNav({
+  name,
+  counts,
+  areas,
+  superAdmin,
+}: {
+  name: string;
+  counts: { inbox: number; careers: number };
+  areas: AdminArea[];
+  superAdmin: boolean;
+}) {
   const pathname = usePathname();
+  // Managers use the same page to change their own password.
+  const links = [
+    ...LINKS.filter((link) => !link.area || areas.includes(link.area)),
+    { href: '/admin/users', label: superAdmin ? 'Admins' : 'Your account', icon: Users },
+  ];
 
   return (
     <nav aria-label="Dashboard" className="flex h-full flex-col gap-1 p-4 text-sm">
-      {LINKS.map(({ href, label, icon: Icon, exact, badge }) => {
+      {links.map(({ href, label, icon: Icon, exact, badge }: NavLink) => {
         const active = exact ? pathname === href : pathname.startsWith(href);
         const n = badge ? counts[badge] : 0;
         return (

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { PostEditor } from '@/components/admin/PostEditor';
 
 export const metadata: Metadata = { title: 'Edit post' };
@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: 'Edit post' };
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function EditPostPage({ params }: PageProps<'/admin/blog/[id]'>) {
-  await requireAdmin();
+  await requireAccess('blog');
   const { id } = await params;
   if (!UUID.test(id)) notFound();
   const [post] = await db().select().from(schema.blogPosts).where(eq(schema.blogPosts.id, id));

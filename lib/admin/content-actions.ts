@@ -4,7 +4,8 @@ import { redirect } from 'next/navigation';
 import { updateTag } from 'next/cache';
 import { eq, like } from 'drizzle-orm';
 import { db, schema } from '@/lib/db';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
+import { contentArea } from '@/lib/auth/permissions';
 import { ContentValidationError, validate } from '@/lib/content/fields';
 import { COLLECTIONS, SINGLES, contentKey, contentTag, parseKey, type CollectionName } from '@/lib/content/registry';
 import { SLUG_PATTERN } from '@/lib/slug';
@@ -37,7 +38,7 @@ function refresh(key: string) {
 
 /** Validates and stores one document. `data` comes from the dashboard editor. */
 export async function saveContent(key: string, data: unknown): Promise<SaveResult> {
-  const admin = await requireAdmin();
+  const admin = await requireAccess(contentArea(key));
   const parsed = parseKey(key);
   if (!parsed) return { ok: false, errors: ['Unknown content.'] };
 
@@ -64,7 +65,7 @@ export async function saveContent(key: string, data: unknown): Promise<SaveResul
 
 /** Throws away saved changes to a single page, going back to the built-in copy. */
 export async function resetContent(key: string) {
-  await requireAdmin();
+  await requireAccess(contentArea(key));
   const parsed = parseKey(key);
   if (parsed?.kind !== 'single') return;
   await db().delete(schema.content).where(eq(schema.content.key, key));
@@ -81,7 +82,7 @@ export async function createCollectionItem(
   _prev: CreateItemState,
   formData: FormData
 ): Promise<CreateItemState> {
-  await requireAdmin();
+  const admin = await requireAccess(contentArea(collection));
   const def = COLLECTIONS[collection];
   if (!def?.allowCreate || !def.blank) return { error: 'New items can’t be added here.' };
 
@@ -93,18 +94,18 @@ export async function createCollectionItem(
   const [taken] = await db().select({ key: schema.content.key }).from(schema.content).where(eq(schema.content.key, key));
   if (taken) return { error: 'That address is already used.' };
 
-  const admin = await requireAdmin();
   await db().insert(schema.content).values({ key, data: def.blank(), updatedBy: admin.id });
   refresh(key);
   redirect(`/admin/content/${collection}/${slug}`);
 }
 
 export async function deleteCollectionItem(key: string) {
-  await requireAdmin();
+  await requireAccess(contentArea(key));
   const parsed = parseKey(key);
   if (parsed?.kind !== 'collection' || !COLLECTIONS[parsed.collection].allowCreate) return;
   await ensureCollectionSeeded(parsed.collection);
   await db().delete(schema.content).where(eq(schema.content.key, key));
   refresh(key);
-  redirect(`/admin/content#${parsed.collection}`);
+  // Vacancies are listed under Careers; everything else under Website content.
+  redirect(parsed.collection === 'vacancy' ? '/admin/careers' : `/admin/content#${parsed.collection}`);
 }

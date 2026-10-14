@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import { requireAdmin } from '@/lib/auth/dal';
+import { requireAccess } from '@/lib/auth/dal';
 import { PostEditor } from '@/components/admin/PostEditor';
 
 export const metadata: Metadata = { title: 'New post' };
 
 export default async function NewPostPage() {
-  const admin = await requireAdmin();
+  const admin = await requireAccess('blog');
   return (
     <PostEditor
       id={null}
