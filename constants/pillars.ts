@@ -5,7 +5,7 @@ export const PILLARS_DATA: PillarItem[] = [
     id: 'personalised',
     title: 'Personalised',
     subtitle: 'Every learner is unique, so every curriculum is custom-built.',
-    image: '/images/home/pillar-personalised.webp',
+    image: '/images/home/pillar-personalised-friends.webp',
     tag: 'Personalised',
     description: 'We discard rigid one-size-fits-all curricula. Instead, learning pathways are co-designed around the young person’s passions, sensory thresholds, and pace.',
     points: [
@@ -31,7 +31,7 @@ export const PILLARS_DATA: PillarItem[] = [
     id: 'flexible',
     title: 'Flexible',
     subtitle: 'Adapting timetable, location, and teaching style to learner well-being.',
-    image: '/images/home/pillar-flexible.webp',
+    image: '/images/home/pillar-flexible-laptop.webp',
     tag: 'Flexible',
     description: 'Provisions adapt dynamically in real-time. Whether delivered in the home, community hub, or virtual classroom, we meet learners wherever they are.',
     points: [

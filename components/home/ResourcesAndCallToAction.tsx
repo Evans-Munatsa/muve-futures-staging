@@ -45,8 +45,8 @@ export function ResourcesAndCallToAction({
       <section className="relative bg-brand-orange px-6 pb-14 text-white lg:u-h-612 lg:p-0">
         <Reveal from="left" className="relative mx-auto aspect-[879/608] w-3/4 max-w-sm lg:absolute lg:-u-left-48 lg:u-top-26 lg:u-h-608 lg:u-w-879 lg:max-w-none">
           <Image
-            src="/images/home/apple-books.webp"
-            alt="Stack of books with a red apple on top"
+            src="/images/home/lightbulb.webp"
+            alt="Clear lightbulb lying on its side"
             fill
             sizes="(min-width: 1024px) 46vw, 75vw"
             className="object-contain"
