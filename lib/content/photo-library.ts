@@ -198,6 +198,12 @@ export const PHOTO_LIBRARY: LibraryPhoto[] = [
     transparent: false
   },
   {
+    src: '/images/home/framework-boy-desk.webp',
+    width: 1920,
+    height: 1046,
+    transparent: false
+  },
+  {
     src: '/images/home/hero.webp',
     width: 2000,
     height: 1207,
