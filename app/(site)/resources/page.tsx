@@ -4,7 +4,8 @@ import { ResourceLibrary } from '@/components/resources/ResourceLibrary';
 import { BookIntroButton } from '@/components/common/ActionButtons';
 import { Lines } from '@/components/common/Lines';
 import { Reveal } from '@/components/motion/Reveal';
-import { getSingle } from '@/lib/content/queries';
+import { getCollection, getSingle } from '@/lib/content/queries';
+import { withPolicies } from '@/lib/content/policies';
 
 export const metadata: Metadata = {
   title: 'Resources',
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ResourcesPage() {
-  const { hero, intro, library, closing } = await getSingle('resources');
+  const [{ hero, intro, library: saved, closing }, policies] = await Promise.all([getSingle('resources'), getCollection('policy')]);
+  const library = withPolicies(saved, policies);
 
   return (
     <div className="w-full overflow-hidden bg-brand-green pb-20 sm:pb-28">

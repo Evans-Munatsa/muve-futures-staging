@@ -3,7 +3,7 @@
  * (services, audiences, legal pages). The dashboard lists these, the editor
  * uses their schemas, and the site reads them through lib/content/queries.ts.
  */
-import { AUDIENCES, LEGAL_PAGES, SERVICE_OFFERINGS, type Audience, type LegalPage, type ServiceOffering } from '@/constants';
+import { AUDIENCES, LEGAL_PAGES, POLICIES, SERVICE_OFFERINGS, type Audience, type LegalPage, type Policy, type ServiceOffering } from '@/constants';
 import type { Field } from './fields';
 import {
   DEFAULT_ABOUT,
@@ -36,6 +36,7 @@ import {
   formsSchema,
   homeSchema,
   legalSchema,
+  policySchema,
   resourcesSchema,
   serviceSchema,
   servicesPageSchema,
@@ -126,11 +127,13 @@ export const SINGLES: { [K in SingleKey]: SingleDef<SingleTypes[K]> } = {
 export type ServiceItem = Omit<ServiceOffering, 'slug'> & { order: number; listed: boolean };
 export type AudienceItem = Omit<Audience, 'slug'> & { order: number };
 export type LegalItem = Omit<LegalPage, 'slug'>;
+export type PolicyItem = Omit<Policy, 'slug'>;
 
 export interface CollectionTypes {
   service: ServiceItem;
   audience: AudienceItem;
   legal: LegalItem;
+  policy: PolicyItem;
   vacancy: Vacancy;
 }
 
@@ -199,6 +202,27 @@ export const COLLECTIONS: { [K in CollectionName]: CollectionDef<CollectionTypes
     defaults: bySlug(LEGAL_PAGES, (page) => page),
     allowCreate: false,
     path: (slug) => `/${slug}`,
+  },
+  policy: {
+    label: 'Policies & procedures',
+    itemNoun: 'policy',
+    description: 'Each policy and its page at /policies/…, listed under Policies in the Resources library.',
+    schema: policySchema,
+    defaults: bySlug(POLICIES, (policy) => policy),
+    allowCreate: true,
+    path: (slug) => `/policies/${slug}`,
+    blank: () => ({
+      title: 'New policy',
+      summary: '',
+      reviewedBy: '',
+      date: '',
+      approvedBy: '',
+      approvedDate: '',
+      reviewDate: '',
+      version: '1',
+      body: '## Introduction\n\n',
+      order: 100,
+    }),
   },
   vacancy: {
     label: 'Careers: vacancies',
