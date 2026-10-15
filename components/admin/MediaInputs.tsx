@@ -5,7 +5,7 @@ import { FileText, ImageIcon, Images, Loader2, Upload, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { PHOTO_LIBRARY } from '@/lib/content/photo-library';
 import type { Photo } from '@/lib/content/fields';
-import { imageSize, uploadError, uploadFile } from './uploads';
+import { IMAGE_ACCEPT, imageSize, uploadError, uploadFile } from './uploads';
 import { cn } from '@/lib/utils';
 
 const inputClass =
@@ -111,7 +111,7 @@ function ImagePicker({ src, onChange }: { src: string; onChange: (src: string, s
         <input
           ref={fileRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+          accept={IMAGE_ACCEPT}
           className="hidden"
           onChange={(e) => pickFile(e.target.files?.[0])}
         />
@@ -225,7 +225,7 @@ export function GalleryInput({ value, onChange }: { value: GalleryImageValue[]; 
         ref={fileRef}
         type="file"
         multiple
-        accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+        accept={IMAGE_ACCEPT}
         className="hidden"
         onChange={(e) => uploadMany(e.target.files)}
       />
