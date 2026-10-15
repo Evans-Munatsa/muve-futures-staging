@@ -1,26 +1,33 @@
 import 'server-only';
 import { NAV_LINKS_CONFIG } from '@/constants';
 import { getCollection, getSingle } from './queries';
+import { withPolicies } from './policies';
 import type { SiteChrome } from './chrome-types';
 
 export type { SiteChrome };
 
 export async function getSiteChrome(): Promise<SiteChrome> {
-  const [settings, services, audiences, legal, resources] = await Promise.all([
+  const [settings, services, audiences, legal, savedResources, policies] = await Promise.all([
     getSingle('settings'),
     getCollection('service'),
     getCollection('audience'),
     getCollection('legal'),
     getSingle('resources'),
+    getCollection('policy'),
   ]);
+  // Search lists the policies too.
+  const resources = { ...savedResources, library: withPolicies(savedResources.library, policies) };
 
-  // The Services and Who We Support menus list whatever is in the CMS.
+  // The Services and Who We Support menus list whatever is in the CMS; Resources adds every policy.
   const navLinks = NAV_LINKS_CONFIG.map((link) => {
     if (link.id === 'services') {
       return { ...link, dropdown: services.filter((s) => s.listed).map((s) => ({ label: s.title, href: `/services/${s.slug}` })) };
     }
     if (link.id === 'who-we-support') {
       return { ...link, dropdown: audiences.map((a) => ({ label: a.title, href: `/who-we-support/${a.slug}` })) };
+    }
+    if (link.id === 'resources') {
+      return { ...link, dropdown: [...(link.dropdown ?? []), ...policies.map((p) => ({ label: p.title, href: `/policies/${p.slug}` }))] };
     }
     return link;
   });

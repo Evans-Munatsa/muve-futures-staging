@@ -129,6 +129,22 @@ export const legalSchema: Field = object({
   ),
 });
 
+export const policySchema: Field = object({
+  title: text('Policy title'),
+  summary: textarea('Summary', { rows: 2, help: 'One or two sentences, shown under the policy in the Resources library.' }),
+  reviewedBy: text('Reviewed by', { placeholder: 'Name - Role' }),
+  date: text('Date reviewed', { placeholder: 'dd-mm-yyyy' }),
+  approvedBy: text('Approved by', { placeholder: 'Name - Role' }),
+  approvedDate: text('Date approved', { placeholder: 'dd-mm-yyyy' }),
+  reviewDate: text('Next review', { placeholder: 'August 2027' }),
+  version: text('Version'),
+  body: textarea('Policy text', {
+    rows: 30,
+    help: 'Markdown: ## Section heading, ### Sub-heading, - bullet point, a blank line between paragraphs. Tables: | Stage | Timescale | rows.',
+  }),
+  order: num('Order', 'Lower numbers are listed first.'),
+});
+
 // ── Single pages ───────────────────────────────────────────────────────────
 
 export const settingsSchema: Field = object({

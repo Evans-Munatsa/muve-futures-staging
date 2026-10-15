@@ -6,7 +6,7 @@
  *
  * In headings, a line break ("\n") becomes a line break on larger screens.
  */
-import { FRAMEWORK_STAGES, PILLARS_DATA, SITE_CONFIG, FAQ_ITEMS, POLICY_DOCUMENTS } from '@/constants';
+import { FRAMEWORK_STAGES, PILLARS_DATA, SITE_CONFIG, FAQ_ITEMS } from '@/constants';
 import type { FrameworkStage } from '@/app/types';
 
 export interface CtaLabel {
@@ -519,10 +519,9 @@ export const DEFAULT_RESOURCES: ResourcesContent = {
       },
       {
         name: 'Policies',
-        comingSoon: true,
-        items: POLICY_DOCUMENTS.map(({ title, description, lastUpdated, fileSize }) =>
-          resource(title, `${description}\n\nLast reviewed ${lastUpdated} · ${fileSize}`)
-        ),
+        comingSoon: false,
+        // Left empty so it lists every policy (see lib/content/policies.ts).
+        items: [],
       },
       {
         name: 'Easy Read',
