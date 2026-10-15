@@ -136,7 +136,7 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
             type="button"
             id="btn-search"
             onClick={onOpenSearch}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-white text-brand-navy transition hover:shadow-md lg:u-h-42 lg:u-w-87"
+            className="flex cursor-pointer items-center justify-between gap-2 rounded-full bg-white text-brand-navy transition hover:shadow-md lg:u-h-42 lg:u-w-134 lg:u-pl-22 lg:u-pr-16"
             aria-label="Search site"
             title="Search site"
           >
@@ -208,7 +208,7 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
                 <button
                   type="button"
                   onClick={onOpenSearch}
-                  className="flex h-8 w-16 cursor-pointer items-center justify-center gap-1.5 rounded-full bg-white text-brand-navy transition hover:shadow-md"
+                  className="flex h-8 w-24 cursor-pointer items-center justify-between gap-1.5 rounded-full bg-white pr-2.5 pl-3.5 text-brand-navy transition hover:shadow-md"
                   aria-label="Search site"
                 >
                   <span className="text-sm font-bold leading-none" aria-hidden="true">…</span>

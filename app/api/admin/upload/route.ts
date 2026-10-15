@@ -3,7 +3,7 @@ import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { getCurrentAdmin } from '@/lib/auth/dal';
 import { canAccess } from '@/lib/auth/permissions';
 
-const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'];
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif', 'image/svg+xml'];
 const DOCUMENT_TYPES = ['application/pdf'];
 
 /**

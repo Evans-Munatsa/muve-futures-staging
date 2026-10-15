@@ -7,7 +7,7 @@ import type { AboutContent } from '@/lib/content/pages';
 
 export function AboutHero({ content }: { content: AboutContent['hero'] }) {
   return (
-    <section className="relative w-full overflow-hidden lg:-u-mt-37">
+    <section className="relative w-full overflow-hidden">
       <div className="relative aspect-[4/3] max-h-[48rem] w-full sm:aspect-[1920/767]">
         <Reveal onLoad from="fade" className="absolute inset-0">
           <Image
