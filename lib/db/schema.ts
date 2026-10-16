@@ -135,6 +135,18 @@ export const newsletterSubscribers = pgTable('newsletter_subscribers', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+/**
+ * Private settings that only super admins can see, e.g. `email` for the
+ * Microsoft Graph connection. Unlike `content`, nothing here is ever shown on
+ * the website. Secrets inside are encrypted (lib/email/settings.ts).
+ */
+export const appSettings = pgTable('app_settings', {
+  key: text('key').primaryKey(),
+  value: jsonb('value').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedBy: uuid('updated_by').references(() => adminUsers.id, { onDelete: 'set null' }),
+});
+
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type NewBlogPost = typeof blogPosts.$inferInsert;

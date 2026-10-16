@@ -1,7 +1,9 @@
 'use server';
 
 import { randomBytes } from 'node:crypto';
+import { after } from 'next/server';
 import { and, eq, gt } from 'drizzle-orm';
+import { notifyNewsletter, notifySubmission } from '@/lib/email/notify';
 import { db, hasDatabase, schema } from '@/lib/db';
 import { getSingle } from '@/lib/content/queries';
 import type { FormKind, SubmissionSection } from '@/lib/db/schema';
@@ -81,9 +83,12 @@ async function save(form: FormKind, meta: unknown, submission: Submission | stri
     if (recent) return { ok: true, reference: recent.reference };
 
     const ref = reference(form);
-    await db()
+    const [saved] = await db()
       .insert(schema.formSubmissions)
-      .values({ form, reference: ref, name: submission.name, email: submission.email, phone: submission.phone ?? '', subject: submission.subject, answers: submission.answers });
+      .values({ form, reference: ref, name: submission.name, email: submission.email, phone: submission.phone ?? '', subject: submission.subject, answers: submission.answers })
+      .returning({ id: schema.formSubmissions.id, createdAt: schema.formSubmissions.createdAt });
+    // Also forward it by email, after the response so it never slows or fails the form.
+    after(() => notifySubmission({ form, reference: ref, phone: '', ...submission, ...saved }));
     return { ok: true, reference: ref };
   } catch (error) {
     console.error(`[forms] Couldn’t save a ${form} submission`, error);
@@ -322,10 +327,14 @@ export async function subscribeNewsletter(emailInput: unknown, source: unknown, 
   if (isBot(meta)) return { ok: true, reference: '' };
   if (!hasDatabase) return unavailable();
   try {
-    await db()
+    const where = str(source, 40) === 'coming-soon' ? 'coming-soon' : 'footer';
+    const added = await db()
       .insert(schema.newsletterSubscribers)
-      .values({ email, source: str(source, 40) === 'coming-soon' ? 'coming-soon' : 'footer' })
-      .onConflictDoNothing({ target: schema.newsletterSubscribers.email });
+      .values({ email, source: where })
+      .onConflictDoNothing({ target: schema.newsletterSubscribers.email })
+      .returning({ id: schema.newsletterSubscribers.id });
+    // Only new sign-ups are emailed (when that's switched on in Settings → Email).
+    if (added.length) after(() => notifyNewsletter(email, where));
     return { ok: true, reference: '' };
   } catch (error) {
     console.error('[forms] Couldn’t save a newsletter sign-up', error);
