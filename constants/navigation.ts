@@ -43,6 +43,8 @@ export const SITE_CONFIG = {
 export const CONTACT_ENQUIRY_HREF = '/contact#contact-form';
 export const REFERRAL_HREF = '/referral';
 export const BOOK_INTRO_HREF = '/book-an-intro';
+/** The Policies group in the resource library (see components/resources/ResourceLibrary.tsx). */
+export const POLICIES_HREF = '/resources?section=policies#resource-library';
 
 /** Referral page link, optionally preselecting a service or need. */
 export function referralHref(service?: string): string {
@@ -91,6 +93,8 @@ export const NAV_LINKS_CONFIG: NavLinkConfig[] = [
       // Topics is the blog.
       { label: 'Topics', href: '/blog' },
       { label: 'Downloads', href: '/resources#resource-library' },
+      // Opens the resource library filtered to the Policies group.
+      { label: 'Policies/Procedures', href: POLICIES_HREF },
     ],
   },
   {

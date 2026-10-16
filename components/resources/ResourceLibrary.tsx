@@ -1,7 +1,8 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { Suspense, useEffect, useId, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
 import { Download, Minus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -151,6 +152,25 @@ function Group({ group, open, onToggle }: { group: ResourceGroup; open: boolean;
 }
 
 /** The orange resource panel: filter pills over collapsible groups of resources. */
+/** A group's name as used in links, e.g. "Easy Read" → "easy-read". */
+const sectionSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/**
+ * Picks the group named in `?section=` (e.g. /resources?section=policies#resource-library,
+ * the Policies/Procedures menu link). Kept in its own Suspense boundary so the
+ * rest of the page can still be rendered ahead of time.
+ */
+function SectionFromUrl({ groups, onSelect }: { groups: ResourceGroup[]; onSelect: (name: string) => void }) {
+  const section = useSearchParams().get('section');
+  useEffect(() => {
+    const match = section && groups.find((group) => sectionSlug(group.name) === section);
+    if (match) onSelect(match.name);
+    // Only when the address changes, not on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [section]);
+  return null;
+}
+
 export function ResourceLibrary({ content }: { content: ResourcesContent['library'] }) {
   // Coming-soon groups show even before they have any resources.
   const groups = content.groups.filter((group) => group.comingSoon || group.items.length > 0);
@@ -179,6 +199,9 @@ export function ResourceLibrary({ content }: { content: ResourcesContent['librar
 
   return (
     <section id="resource-library" className="relative z-20 mx-auto w-[90%] max-w-6xl scroll-mt-24">
+      <Suspense fallback={null}>
+        <SectionFromUrl groups={groups} onSelect={selectFilter} />
+      </Suspense>
       <Reveal className="rounded-tr-[3rem] bg-brand-orange px-5 py-10 sm:rounded-tr-[5rem] sm:px-16 sm:py-16">
         <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">{content.title}</h2>
 
