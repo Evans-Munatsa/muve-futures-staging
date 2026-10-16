@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, ExternalLink, FileText, Inbox, LayoutDashboard, LogOut, Newspaper, Users } from 'lucide-react';
+import { Briefcase, ExternalLink, FileText, Inbox, LayoutDashboard, LogOut, Newspaper, Settings, Users } from 'lucide-react';
 import { logout } from '@/lib/admin/auth-actions';
 import type { AdminArea } from '@/lib/auth/permissions';
 import { cn } from '@/lib/utils';
@@ -45,6 +45,8 @@ export function AdminNav({
   const links = [
     ...LINKS.filter((link) => !link.area || areas.includes(link.area)),
     { href: '/admin/users', label: superAdmin ? 'Admins' : 'Your account', icon: Users },
+    // Email keys and where forms are sent: super admins only.
+    ...(superAdmin ? [{ href: '/admin/settings', label: 'Settings', icon: Settings }] : []),
   ];
 
   return (

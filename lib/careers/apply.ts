@@ -1,7 +1,9 @@
 'use server';
 
 import { randomBytes } from 'node:crypto';
+import { after } from 'next/server';
 import { del, put } from '@vercel/blob';
+import { notifyJobApplication } from '@/lib/email/notify';
 import { and, eq, gt } from 'drizzle-orm';
 import { db, hasDatabase, schema } from '@/lib/db';
 import { getCollectionItem, getSingle } from '@/lib/content/queries';
@@ -113,8 +115,10 @@ export async function submitApplication(slug: string, _prev: ApplyState, formDat
     });
 
     const reference = newReference();
+    const cvFileName = cleanFileName(file!.name);
+    let saved: { id: string; createdAt: Date };
     try {
-      await db()
+      [saved] = await db()
         .insert(schema.jobApplications)
         .values({
           ...values,
@@ -122,15 +126,18 @@ export async function submitApplication(slug: string, _prev: ApplyState, formDat
           vacancySlug: slug,
           vacancyTitle: vacancy.title,
           cvPathname: blob.pathname,
-          cvFileName: cleanFileName(file!.name),
+          cvFileName,
           cvContentType: type!.contentType,
-        });
+        })
+        .returning({ id: schema.jobApplications.id, createdAt: schema.jobApplications.createdAt });
     } catch (error) {
       // Don't leave an orphaned CV behind.
       await del(blob.url).catch(() => {});
       throw error;
     }
 
+    // Also forward it by email, after the response so it never slows or fails the application.
+    after(() => notifyJobApplication({ ...values, ...saved, reference, vacancyTitle: vacancy.title, cvFileName }));
     return { ok: true, reference };
   } catch (error) {
     console.error('[careers] Couldn’t save application', error);
