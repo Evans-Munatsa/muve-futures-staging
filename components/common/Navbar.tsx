@@ -14,7 +14,9 @@ import { cn } from '@/lib/utils';
 
 const DROPDOWN_CLOSE_DELAY_MS = 180;
 
-// The logo sits between these two groups on desktop (it doubles as the Home link).
+// The logo sits between these two groups on desktop (it doubles as the Home link). Each group is
+// anchored 77 design units from the logo with 77 between items, and the search box is sized so the
+// right side is as wide as the left, keeping the header symmetric.
 const isLeft = (link: NavLinkConfig) => link.id === 'about' || link.id === 'services' || link.id === 'who-we-support';
 const isRight = (link: NavLinkConfig) => link.id === 'resources' || link.id === 'contact';
 
@@ -110,7 +112,7 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
       )}
     >
       <div ref={barRef} className="mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:relative lg:block lg:u-h-305 lg:u-w-1920 lg:px-0">
-        <nav aria-label="Primary" className="hidden items-center lg:absolute lg:u-left-175 lg:u-top-160 lg:flex lg:u-gap-65">
+        <nav aria-label="Primary" className="hidden items-center lg:absolute lg:u-right-1177 lg:u-top-156 lg:flex lg:u-h-42 lg:u-gap-77">
           {renderDesktopLinks(LEFT_NAV, 'left')}
         </nav>
 
@@ -127,8 +129,8 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
           </Link>
         </div>
 
-        <div className="hidden items-center lg:absolute lg:u-left-1264 lg:u-top-156 lg:flex lg:u-h-42 lg:u-gap-66">
-          <nav aria-label="Secondary" className="flex items-center lg:u-gap-67">
+        <div className="hidden items-center lg:absolute lg:u-left-1177 lg:u-top-156 lg:flex lg:u-h-42 lg:u-gap-77">
+          <nav aria-label="Secondary" className="flex items-center lg:u-gap-77">
             {renderDesktopLinks(RIGHT_NAV, 'right')}
           </nav>
 
@@ -136,7 +138,7 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
             type="button"
             id="btn-search"
             onClick={onOpenSearch}
-            className="flex cursor-pointer items-center justify-between gap-2 rounded-full bg-white text-brand-navy transition hover:shadow-md lg:u-h-42 lg:u-w-134 lg:u-pl-22 lg:u-pr-16"
+            className="flex cursor-pointer items-center justify-between gap-2 rounded-full bg-white text-brand-navy transition hover:shadow-md lg:u-h-42 lg:u-w-199 lg:u-pl-24 lg:u-pr-18"
             aria-label="Search site"
             title="Search site"
           >
@@ -192,8 +194,8 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
             transition={{ type: 'spring', stiffness: 320, damping: 32 }}
             className="fixed inset-x-0 top-0 z-50 hidden bg-brand-green shadow-lg lg:block"
           >
-            <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-12 px-8">
-              <nav aria-label="Primary (compact)" className="flex items-center justify-end gap-10">
+            <div className="mx-auto grid h-20 grid-cols-[1fr_auto_1fr] items-center gap-12 px-8 lg:u-gap-x-77">
+              <nav aria-label="Primary (compact)" className="flex items-center justify-end gap-10 lg:u-gap-77">
                 {renderDesktopLinks(LEFT_NAV, 'left', true)}
               </nav>
               <Link href="/" onClick={closeMenus} aria-label="Muve Futures home">
@@ -202,13 +204,13 @@ export function Navbar({ currentPage, onOpenSearch, links }: NavbarProps) {
                 </motion.span>
               </Link>
               <div className="flex items-center gap-10">
-                <nav aria-label="Secondary (compact)" className="flex items-center gap-10">
+                <nav aria-label="Secondary (compact)" className="flex items-center gap-10 lg:u-gap-77">
                   {renderDesktopLinks(RIGHT_NAV, 'right', true)}
                 </nav>
                 <button
                   type="button"
                   onClick={onOpenSearch}
-                  className="flex h-8 w-24 cursor-pointer items-center justify-between gap-1.5 rounded-full bg-white pr-2.5 pl-3.5 text-brand-navy transition hover:shadow-md"
+                  className="flex h-8 w-24 lg:u-w-150 cursor-pointer items-center justify-between gap-1.5 rounded-full bg-white pr-2.5 pl-3.5 text-brand-navy transition hover:shadow-md"
                   aria-label="Search site"
                 >
                   <span className="text-sm font-bold leading-none" aria-hidden="true">…</span>

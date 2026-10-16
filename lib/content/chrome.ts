@@ -18,16 +18,13 @@ export async function getSiteChrome(): Promise<SiteChrome> {
   // Search lists the policies too.
   const resources = { ...savedResources, library: withPolicies(savedResources.library, policies) };
 
-  // The Services and Who We Support menus list whatever is in the CMS; Resources adds every policy.
+  // The Services and Who We Support menus list whatever is in the CMS.
   const navLinks = NAV_LINKS_CONFIG.map((link) => {
     if (link.id === 'services') {
       return { ...link, dropdown: services.filter((s) => s.listed).map((s) => ({ label: s.title, href: `/services/${s.slug}` })) };
     }
     if (link.id === 'who-we-support') {
       return { ...link, dropdown: audiences.map((a) => ({ label: a.title, href: `/who-we-support/${a.slug}` })) };
-    }
-    if (link.id === 'resources') {
-      return { ...link, dropdown: [...(link.dropdown ?? []), ...policies.map((p) => ({ label: p.title, href: `/policies/${p.slug}` }))] };
     }
     return link;
   });
